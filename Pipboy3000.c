@@ -42,6 +42,68 @@ typedef struct {
 } GameState;
 
 GameState game_state;
+void play_sound(const char *file) {
+    Mix_Chunk *sound = Mix_LoadWAV(file);
+    if (!sound) {
+        fprintf(stderr, "Failed to load sound %s: %s\n", file, Mix_GetError());
+        return;
+    }
+    Mix_PlayChannel(-1, sound, 0);
+    while (Mix_Playing(-1)) {
+        SDL_Delay(10);
+    }
+    Mix_FreeChunk(sound);
+}
+
+void play_animation(SDL_Renderer *renderer, SDL_Texture *frames[], int frame_count) {
+    for (int i = 0; i < frame_count; i++) {
+        if (frames[i]) {
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, frames[i], NULL, NULL);
+            SDL_RenderPresent(renderer);
+            SDL_Delay(1000 / FRAME_RATE);
+        }
+    }
+}
+
+void show_boot_animation(SDL_Renderer *renderer) {
+    const int NUM_BOOTUP_FRAMES = 60;
+    const int NUM_BOOTBOY_FRAMES = 14;
+
+    SDL_Texture *bootup_frames[NUM_BOOTUP_FRAMES];
+    SDL_Texture *bootboy_frames[NUM_BOOTBOY_FRAMES];
+
+    for (int i = 0; i < NUM_BOOTUP_FRAMES; i++) bootup_frames[i] = NULL;
+    for (int i = 0; i < NUM_BOOTBOY_FRAMES; i++) bootboy_frames[i] = NULL;
+
+    char path[256];
+
+    for (int i = 0; i < NUM_BOOTUP_FRAMES; i++) {
+        snprintf(path, sizeof(path), "BOOT/BOOTUP/%d.jpg", i);
+        SDL_Surface *surface = IMG_Load(path);
+        if (!surface) continue;
+        bootup_frames[i] = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    for (int i = 0; i < NUM_BOOTBOY_FRAMES; i++) {
+        snprintf(path, sizeof(path), "BOOT/BootBoy/%d.jpg", i);
+        SDL_Surface *surface = IMG_Load(path);
+        if (!surface) continue;
+        bootboy_frames[i] = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+    }
+
+    play_animation(renderer, bootup_frames, NUM_BOOTUP_FRAMES);
+    play_animation(renderer, bootboy_frames, NUM_BOOTBOY_FRAMES);
+
+    for (int i = 0; i < NUM_BOOTUP_FRAMES; i++) {
+        if (bootup_frames[i]) SDL_DestroyTexture(bootup_frames[i]);
+    }
+    for (int i = 0; i < NUM_BOOTBOY_FRAMES; i++) {
+        if (bootboy_frames[i]) SDL_DestroyTexture(bootboy_frames[i]);
+    }
+}
 
 void load_vaultboy_frames(SDL_Renderer *renderer) {
     char path[256];
@@ -219,7 +281,9 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "TTF_OpenFont Error: %s\n", TTF_GetError());
         return 1;
     }
-
+    printf("Starting boot animation...\n");
+    play_sound("Sounds/On.mp3");
+    show_boot_animation(renderer);
     load_vaultboy_frames(renderer);
 
     bool running = true;
