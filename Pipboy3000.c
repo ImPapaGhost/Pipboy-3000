@@ -149,32 +149,46 @@ void render_vaultboy(SDL_Renderer *renderer) {
     }
 }
 
+
 void load_special_animations(SDL_Renderer *renderer, GameState *state) {
-    const char *special_names[7] = {"strength", "perception", "endurance", "charisma", "intelligence", "agility", "luck"};
+    const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
     char path[256];
 
     for (int i = 0; i < 7; i++) {
-        for (int j = 0; j < 10; j++) {
-            snprintf(path, sizeof(path), "STAT/%s/%02d.png", special_names[i], j); // Adjust path as needed
+        for (int j = 0; j < 10; j++) { // Assuming 10 frames per animation
+            snprintf(path, sizeof(path), "STAT/%s/%d.jpg", special_names[i], j);
             SDL_Surface *surface = IMG_Load(path);
-            if (!surface) continue;
+            if (!surface) {
+                fprintf(stderr, "Failed to load: %s\n", path);
+                state->special_animations[i][j] = NULL;
+                continue;
+            }
             state->special_animations[i][j] = SDL_CreateTextureFromSurface(renderer, surface);
             SDL_FreeSurface(surface);
         }
     }
 }
 
-void render_special_animation(SDL_Renderer *renderer, GameState *state) {
-    int current_stat = state->selector_position; // Assume this controls which SPECIAL stat is highlighted
-    static int frame_index = 0;
-    frame_index = (frame_index + 1) % 10; // Cycle through 10 frames
 
+void render_special_animation(SDL_Renderer *renderer, GameState *state) {
+    static Uint32 last_frame_time = 0;
+    static int frame_index = 0;
+    Uint32 current_time = SDL_GetTicks();
+
+    // Update frame every 100ms
+    if (current_time - last_frame_time > 100) {
+        frame_index = (frame_index + 1) % 10; // 10 frames per animation
+        last_frame_time = current_time;
+    }
+
+    int current_stat = state->selector_position;
     SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
     if (current_frame) {
-        SDL_Rect dest_rect = {400, 50, 200, 200}; // Adjust position and size
+        SDL_Rect dest_rect = {325, 150, 150, 150}; // Position and size of animation
         SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
     }
 }
+
 
 
 void load_special_stats_from_csv(const char *file_path, GameState *state) {
@@ -312,7 +326,7 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *s
     const char *attributes[] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
     char attribute_text[50];
     for (int i = 0; i < 7; i++) {
-        snprintf(attribute_text, sizeof(attribute_text), "%s: %d", attributes[i], state->special_stats[i]);
+        snprintf(attribute_text, sizeof(attribute_text), "%s: %02d", attributes[i], state->special_stats[i]);
         SDL_Surface *attr_surface = TTF_RenderText_Solid(font, attribute_text, color);
         SDL_Texture *attr_texture = SDL_CreateTextureFromSurface(renderer, attr_surface);
         SDL_Rect attr_rect = {50, 120 + i * 40, attr_surface->w, attr_surface->h};
@@ -477,14 +491,9 @@ void handle_navigation(SDL_Event *event, GameState *state) {
                     state->selector_position = (state->selector_position + 1) % 7;
                 }
                 break;
-
-            // Add additional navigation logic if needed
         }
     }
 }
-
-
-
 
 int main(int argc, char *argv[]) {
     SDL_Window *window = NULL;
@@ -512,6 +521,7 @@ int main(int argc, char *argv[]) {
     play_sound("Sounds/On.mp3");
     show_boot_animation(renderer);
     load_vaultboy_frames(renderer);
+    load_special_animations(renderer, &game_state);
 
     bool running = true;
     SDL_Event event;
@@ -532,11 +542,22 @@ int main(int argc, char *argv[]) {
             last_vaultboy_update = current_time;
         }
 
+        // Update SPECIAL attribute animation
+        static Uint32 last_special_frame_time = 0;
+        static int frame_index = 0;
+        if (current_time - last_special_frame_time > 100) { // 100ms for 10 FPS
+            frame_index = (frame_index + 1) % 10; // 10 frames per animation
+            last_special_frame_time = current_time;
+        }
+
         SDL_RenderClear(renderer);
 
         render_tabs(renderer, font, &game_state);
         render_current_tab(renderer, font, &game_state);
-
+        // Render SPECIAL animations if in the SPECIAL sub-tab
+        if (game_state.current_tab == TAB_STAT && game_state.current_subtab == SUBTAB_SPECIAL) {
+            render_special_animation(renderer, &game_state);
+        }
         SDL_RenderPresent(renderer);
 
         SDL_Delay(1000 / FRAME_RATE);
