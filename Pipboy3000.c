@@ -149,18 +149,6 @@ void render_vaultboy(SDL_Renderer *renderer) {
     }
 }
 
-void render_special_animation(SDL_Renderer *renderer, GameState *state) {
-    int current_stat = state->selector_position; // Assume this controls which SPECIAL stat is highlighted
-    static int frame_index = 0;
-    frame_index = (frame_index + 1) % 10; // Cycle through 10 frames
-
-    SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
-    if (current_frame) {
-        SDL_Rect dest_rect = {400, 50, 200, 200}; // Adjust position and size
-        SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
-    }
-}
-
 void load_special_animations(SDL_Renderer *renderer, GameState *state) {
     const char *special_names[7] = {"strength", "perception", "endurance", "charisma", "intelligence", "agility", "luck"};
     char path[256];
@@ -175,6 +163,20 @@ void load_special_animations(SDL_Renderer *renderer, GameState *state) {
         }
     }
 }
+
+void render_special_animation(SDL_Renderer *renderer, GameState *state) {
+    int current_stat = state->selector_position; // Assume this controls which SPECIAL stat is highlighted
+    static int frame_index = 0;
+    frame_index = (frame_index + 1) % 10; // Cycle through 10 frames
+
+    SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
+    if (current_frame) {
+        SDL_Rect dest_rect = {400, 50, 200, 200}; // Adjust position and size
+        SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
+    }
+}
+
+
 void load_special_stats_from_csv(const char *file_path, GameState *state) {
     FILE *file = fopen(file_path, "r");
     if (!file) {
@@ -189,6 +191,12 @@ void load_special_stats_from_csv(const char *file_path, GameState *state) {
         i++;
     }
     fclose(file);
+}
+void render_health_bar(SDL_Renderer *renderer, int health) {
+    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/PIPBAR1.png");
+    SDL_Rect bar_rect = {50, 100, 300 * (health / 100.0), 20};  // Adjust width based on health
+    SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
+    SDL_DestroyTexture(bar);
 }
 
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
@@ -206,7 +214,7 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     }
 
     // Highlight active main tab
-    SDL_Rect highlight_rect = {50 + state->current_tab * 150, 20, 150, 30};
+    SDL_Rect highlight_rect = {50 + state->current_tab * 150, 20, 150, 25};
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
     SDL_RenderDrawRect(renderer, &highlight_rect);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -215,6 +223,32 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     if (state->current_tab == TAB_STAT) {
         render_stat_subtabs(renderer, font, state);
     }
+}
+void render_static_overlays(SDL_Renderer *renderer) {
+    SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/CATEGORYLINE.png");
+    SDL_Rect line_rect = {0, 0, SCREEN_WIDTH, 10};  // Adjust dimensions and position
+    SDL_RenderCopy(renderer, category_line, NULL, &line_rect);
+    SDL_DestroyTexture(category_line);
+}
+
+void render_attribute_description(SDL_Renderer *renderer, TTF_Font *font, int selector_position) {
+    const char *descriptions[] = {
+        "Strength: Increases carrying capacity and melee damage.",
+        "Perception: Affects weapon accuracy and environmental awareness.",
+        "Endurance: Increases total health and stamina.",
+        "Charisma: Improves dialogue options and social interactions.",
+        "Intelligence: Enhances experience gain and hacking.",
+        "Agility: Improves sneak and action points regeneration.",
+        "Luck: Affects critical hits and loot chances."
+    };
+
+    SDL_Color color = {0, 255, 0, 255};
+    SDL_Surface *desc_surface = TTF_RenderText_Solid(font, descriptions[selector_position], color);
+    SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
+    SDL_Rect desc_rect = {250, 350, desc_surface->w, desc_surface->h};
+    SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
+    SDL_FreeSurface(desc_surface);
+    SDL_DestroyTexture(desc_texture);
 }
 
 void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
@@ -235,6 +269,7 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
             render_perks_content(renderer, font, state);
             break;
     }
+
     // Render general stats at the bottom
     char stats_text[100];
     snprintf(stats_text, sizeof(stats_text), "Health: %d  Level %d XP: %d AP: %d", state->health, state->level, state->experience, state->ap);
@@ -284,7 +319,18 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *s
         SDL_RenderCopy(renderer, attr_texture, NULL, &attr_rect);
         SDL_FreeSurface(attr_surface);
         SDL_DestroyTexture(attr_texture);
+
+        // Highlight the selected attribute
+        if (i == state->selector_position) {
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            SDL_Rect highlight_rect = {45, 120 + i * 40 - 5, 150, 30}; // Adjust dimensions for the highlight
+            SDL_RenderDrawRect(renderer, &highlight_rect);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        }
     }
+
+    // Render attribute description
+    render_attribute_description(renderer, font, state->selector_position);
 }
 
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
@@ -326,7 +372,7 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *stat
         SDL_DestroyTexture(texture);
     }
 
-    SDL_Rect highlight_rect = {50 + state->current_subtab * 150, 60, 150, 30};
+    SDL_Rect highlight_rect = {50 + state->current_subtab * 150, 60, 150, 22};
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
     SDL_RenderDrawRect(renderer, &highlight_rect);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -399,34 +445,46 @@ void render_current_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state
 
 void handle_navigation(SDL_Event *event, GameState *state) {
     if (event->type == SDL_KEYDOWN) {
-        if (state->current_tab == TAB_STAT) {
-            // Handle sub-tabs navigation when on STAT tab
-            switch (event->key.keysym.sym) {
-                case SDLK_DOWN:
-                    state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
-                    break;
-                case SDLK_UP:
+        switch (event->key.keysym.sym) {
+            // Main Tabs Navigation (Q for left, E for right)
+            case SDLK_q:
+                state->current_tab = (state->current_tab - 1 + NUM_TABS) % NUM_TABS;
+                break;
+            case SDLK_e:
+                state->current_tab = (state->current_tab + 1) % NUM_TABS;
+                break;
+
+            // Sub-tabs Navigation within STAT (A for left, D for right)
+            case SDLK_a:
+                if (state->current_tab == TAB_STAT) {
                     state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
-                    break;
-                case SDLK_LEFT:
-                case SDLK_RIGHT:
-                    // Allow switching main tabs from sub-tabs
-                    state->current_tab = (state->current_tab + (event->key.keysym.sym == SDLK_RIGHT ? 1 : -1) + NUM_TABS) % NUM_TABS;
-                    break;
-            }
-        } else {
-            // Handle main tabs navigation
-            switch (event->key.keysym.sym) {
-                case SDLK_RIGHT:
-                    state->current_tab = (state->current_tab + 1) % NUM_TABS;
-                    break;
-                case SDLK_LEFT:
-                    state->current_tab = (state->current_tab - 1 + NUM_TABS) % NUM_TABS;
-                    break;
-            }
+                }
+                break;
+            case SDLK_d:
+                if (state->current_tab == TAB_STAT) {
+                    state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
+                }
+                break;
+
+            // SPECIAL Attributes Navigation (W for up, S for down)
+            case SDLK_w:
+                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL) {
+                    state->selector_position = (state->selector_position - 1 + 7) % 7; // 7 attributes
+                }
+                break;
+            case SDLK_s:
+                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL) {
+                    state->selector_position = (state->selector_position + 1) % 7;
+                }
+                break;
+
+            // Add additional navigation logic if needed
         }
     }
 }
+
+
+
 
 int main(int argc, char *argv[]) {
     SDL_Window *window = NULL;
