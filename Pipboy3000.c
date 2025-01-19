@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/stat.h> // Required for checking file existence
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
@@ -15,6 +16,12 @@
 SDL_Texture *vaultboy_frames[NUM_VAULTBOY_FRAMES];
 int vaultboy_frame_index = 0;
 Uint32 last_vaultboy_update = 0; // Time tracker for animation updates
+int file_exists(const char *path);
+
+int file_exists(const char *path) {
+    struct stat buffer;
+    return (stat(path, &buffer) == 0);
+}
 
 typedef struct {
     SDL_Texture *texture;
@@ -156,16 +163,31 @@ void load_special_animations(SDL_Renderer *renderer, GameState *state) {
     char path[256];
 
     for (int i = 0; i < 7; i++) {
-        for (int j = 0; j < 10; j++) { // Assuming 10 frames per animation
-            snprintf(path, sizeof(path), "STAT/%s/%d.jpg", special_names[i], j);
-            SDL_Surface *surface = IMG_Load(path);
-            if (!surface) {
-                fprintf(stderr, "Failed to load: %s\n", path);
-                state->special_animations[i][j] = NULL;
-                continue;
+        int frame_count = 0; // Counter for available frames
+        int frame_number = 0; // Start checking frames from 0 upwards
+
+        while (frame_count < 10) { // Load up to 10 frames per animation
+            snprintf(path, sizeof(path), "STAT/%s/%d.jpg", special_names[i], frame_number);
+            if (file_exists(path)) {
+                SDL_Surface *surface = IMG_Load(path);
+                if (!surface) {
+                    fprintf(stderr, "Failed to load: %s\n", path);
+                    state->special_animations[i][frame_count++] = NULL;
+                } else {
+                    state->special_animations[i][frame_count++] = SDL_CreateTextureFromSurface(renderer, surface);
+                    SDL_FreeSurface(surface);
+                }
+            } else if (frame_number > 50) { // Stop searching if the file is missing after 50 attempts
+                break;
             }
-            state->special_animations[i][j] = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_FreeSurface(surface);
+            frame_number++;
+        }
+
+        fprintf(stdout, "Loaded %d frames for %s\n", frame_count, special_names[i]);
+
+        // Fill remaining slots with NULL
+        for (int j = frame_count; j < 10; j++) {
+            state->special_animations[i][j] = NULL;
         }
     }
 }
@@ -176,21 +198,28 @@ void render_special_animation(SDL_Renderer *renderer, GameState *state) {
     static int frame_index = 0;
     Uint32 current_time = SDL_GetTicks();
 
+    int current_stat = state->selector_position;
+
+    // Determine the actual number of frames for the current stat
+    int frame_count = 0;
+    while (frame_count < 10 && state->special_animations[current_stat][frame_count] != NULL) {
+        frame_count++;
+    }
+
+    if (frame_count == 0) return; // No frames available, skip rendering
+
     // Update frame every 100ms
     if (current_time - last_frame_time > 100) {
-        frame_index = (frame_index + 1) % 10; // 10 frames per animation
+        frame_index = (frame_index + 1) % frame_count; // Cycle through available frames
         last_frame_time = current_time;
     }
 
-    int current_stat = state->selector_position;
     SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
     if (current_frame) {
         SDL_Rect dest_rect = {325, 150, 150, 150}; // Position and size of animation
         SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
     }
 }
-
-
 
 void load_special_stats_from_csv(const char *file_path, GameState *state) {
     FILE *file = fopen(file_path, "r");
@@ -207,12 +236,93 @@ void load_special_stats_from_csv(const char *file_path, GameState *state) {
     }
     fclose(file);
 }
-void render_health_bar(SDL_Renderer *renderer, int health) {
-    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/PIPBAR1.png");
-    SDL_Rect bar_rect = {50, 100, 300 * (health / 100.0), 20};  // Adjust width based on health
+
+void render_health_bar(SDL_Renderer *renderer, TTF_Font *font, int health, int max_health) {
+    // Ensure max_health is valid
+    if (max_health <= 0) {
+        fprintf(stderr, "Invalid max_health value: %d\n", max_health);
+        return;
+    }
+
+    // Debug: Log health and max_health values
+    fprintf(stdout, "Health: %d, Max Health: %d\n", health, max_health);
+
+    // Calculate health ratio
+    float health_ratio = health / (float)max_health;
+    fprintf(stdout, "Health Ratio: %.2f\n", health_ratio);
+
+    // Ensure health_ratio is within valid bounds
+    if (health_ratio < 0 || health_ratio > 1) {
+        fprintf(stderr, "Invalid health ratio: %.2f\n", health_ratio);
+        return;
+    }
+
+    // Load the health bar texture
+    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
+    if (!bar) {
+        fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
+        return;
+    }
+
+    // Define bar dimensions
+    int bar_width = 300;  // Maximum width of the bar
+    int bar_height = 20;  // Height of the bar
+    SDL_Rect bar_rect = {50, 430, (int)(bar_width * health_ratio), bar_height};
+
+    // Debug: Log the calculated bar dimensions
+    fprintf(stdout, "Rendering health bar at x=%d, y=%d, width=%d, height=%d\n", 
+            bar_rect.x, bar_rect.y, bar_rect.w, bar_rect.h);
+
+    // Set the texture color mod to green
+    SDL_SetTextureColorMod(bar, 0, 255, 0);
+
+    // Render the health bar
     SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
     SDL_DestroyTexture(bar);
+
+    // Render health text (e.g., "HP 115/115")
+    char health_text[16];
+    snprintf(health_text, sizeof(health_text), "HP %d/%d", health, max_health);
+
+    SDL_Color color = {0, 255, 0, 255};
+    SDL_Surface *text_surface = TTF_RenderText_Solid(font, health_text, color);
+    if (!text_surface) {
+        fprintf(stderr, "Failed to render health text: %s\n", TTF_GetError());
+        return;
+    }
+
+    SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+    SDL_Rect text_rect = {50, 400, text_surface->w, text_surface->h}; // Position above the bar
+    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+
+    SDL_FreeSurface(text_surface);
+    SDL_DestroyTexture(text_texture);
 }
+
+void render_ap_bar(SDL_Renderer *renderer, TTF_Font *font, int ap, int max_ap) {
+    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
+    if (!bar) {
+        fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
+        return;  // Exit early if the texture failed to load
+    }
+    if (bar) {
+        SDL_Rect bar_rect = {450, 430, 300 * (ap / (float)max_ap), 20};
+        SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
+        SDL_DestroyTexture(bar);
+    }
+
+    // Render the AP text
+    char ap_text[16];
+    snprintf(ap_text, sizeof(ap_text), "AP %d/%d", ap, max_ap);
+    SDL_Color color = {0, 255, 0, 255};
+    SDL_Surface *text_surface = TTF_RenderText_Solid(font, ap_text, color);
+    SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
+    SDL_Rect text_rect = {450, 400, text_surface->w, text_surface->h}; // Above the bar
+    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
+    SDL_FreeSurface(text_surface);
+    SDL_DestroyTexture(text_texture);
+}
+
 
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
@@ -239,8 +349,14 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
         render_stat_subtabs(renderer, font, state);
     }
 }
+
 void render_static_overlays(SDL_Renderer *renderer) {
-    SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/CATEGORYLINE.png");
+    SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/CATEGORYLINE.jpg");
+     if (!category_line) {
+        // Log an error if the texture fails to load
+        fprintf(stderr, "Failed to load CATEGORYLINE.jpg: %s\n", SDL_GetError());
+        return;
+    }
     SDL_Rect line_rect = {0, 0, SCREEN_WIDTH, 10};  // Adjust dimensions and position
     SDL_RenderCopy(renderer, category_line, NULL, &line_rect);
     SDL_DestroyTexture(category_line);
@@ -499,6 +615,8 @@ void handle_navigation(SDL_Event *event, GameState *state) {
 int main(int argc, char *argv[]) {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
+    freopen("debug.log", "w", stdout);
+    freopen("debug.log", "a", stderr);
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
@@ -523,7 +641,6 @@ int main(int argc, char *argv[]) {
     show_boot_animation(renderer);
     load_vaultboy_frames(renderer);
     load_special_animations(renderer, &game_state);
-
     bool running = true;
     SDL_Event event;
     Uint32 last_frame_time = SDL_GetTicks();
@@ -563,6 +680,17 @@ int main(int argc, char *argv[]) {
 
         SDL_Delay(1000 / FRAME_RATE);
     }
+    SDL_RenderClear(renderer);
+
+    render_static_overlays(renderer);
+    // Render overlays before other UI components
+    render_static_overlays(renderer);
+    render_health_bar(renderer, font, game_state.health, 115); // Max health = 115
+    render_ap_bar(renderer, font, game_state.ap, 90);          // Max AP = 90
+    render_tabs(renderer, font, &game_state);
+    render_vaultboy(renderer);
+
+    SDL_RenderPresent(renderer);
 
     free_vaultboy_frames();
     TTF_CloseFont(font);
