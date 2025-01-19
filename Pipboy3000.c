@@ -121,10 +121,10 @@ void show_boot_animation(SDL_Renderer *renderer) {
 void load_vaultboy_frames(SDL_Renderer *renderer) {
     char path[256];
     for (int i = 0; i < NUM_VAULTBOY_FRAMES; i++) {
-        snprintf(path, sizeof(path), "STAT/VaultBoy/%02d.png", i);
+        snprintf(path, sizeof(path), "STAT/VaultBoy/com%02d.png", i);
         SDL_Surface *surface = IMG_Load(path);
         if (!surface) {
-            fprintf(stderr, "Failed to load VaultBoy frame %d: %s\n", i, path);
+            fprintf(stderr, "Failed to load VaultBoy frame com%d: %s\n", i, path);
             vaultboy_frames[i] = NULL;
             continue;
         }
@@ -145,6 +145,7 @@ void free_vaultboy_frames() {
 void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
         SDL_Rect dest_rect = {325, 150, 150, 150};
+        SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // turn vault boy
         SDL_RenderCopy(renderer, vaultboy_frames[vaultboy_frame_index], NULL, &dest_rect);
     }
 }
