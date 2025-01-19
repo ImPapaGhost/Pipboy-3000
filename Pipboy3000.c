@@ -51,6 +51,7 @@ typedef struct {
     int special_stats[7];
     int level;
     int health;
+    int max_health; // Add this field
     int ap;
     int experience;
     char perks[10][50];
@@ -157,6 +158,35 @@ void render_vaultboy(SDL_Renderer *renderer) {
     }
 }
 
+void initialize_game_state(GameState *state) {
+    state->current_tab = TAB_STAT;
+    state->current_subtab = SUBTAB_STATUS;
+    state->selector_position = 0;
+
+    // Set default SPECIAL stats
+    for (int i = 0; i < 7; i++) {
+        state->special_stats[i] = 5; // Default value for SPECIAL stats
+    }
+
+    state->health = 115;       // Full health
+    state->max_health = 115;   // Full Max health
+    state->ap = 90;            // Full action points
+    state->level = 1;          // Starting level
+    state->experience = 0;     // Starting experience
+
+    // Initialize perks to empty
+    for (int i = 0; i < 10; i++) {
+        memset(state->perks[i], 0, sizeof(state->perks[i]));
+    }
+
+    // Initialize SPECIAL animations to NULL
+    for (int i = 0; i < 7; i++) {
+        for (int j = 0; j < 10; j++) {
+            state->special_animations[i][j] = NULL;
+        }
+    }
+}
+
 
 void load_special_animations(SDL_Renderer *renderer, GameState *state) {
     const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
@@ -237,92 +267,67 @@ void load_special_stats_from_csv(const char *file_path, GameState *state) {
     fclose(file);
 }
 
-void render_health_bar(SDL_Renderer *renderer, TTF_Font *font, int health, int max_health) {
-    // Ensure max_health is valid
-    if (max_health <= 0) {
-        fprintf(stderr, "Invalid max_health value: %d\n", max_health);
+void render_health_background(SDL_Renderer *renderer) {
+    // Load the decorative PNG texture
+    SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOXHP1.jpg");
+    if (!background) {
+        fprintf(stderr, "Failed to load BOXHP1.jpg: %s\n", SDL_GetError());
         return;
+    } else {
+        fprintf(stdout, "Successfully loaded BOXHP1.jpg\n");
     }
 
-    // Debug: Log health and max_health values
-    fprintf(stdout, "Health: %d, Max Health: %d\n", health, max_health);
+    // Define the position and size of the decorative container
+    SDL_Rect background_rect = {50, 430, 100, 20}; // Adjust based on x, y, width, height
 
-    // Calculate health ratio
-    float health_ratio = health / (float)max_health;
-    fprintf(stdout, "Health Ratio: %.2f\n", health_ratio);
+    // Render the texture
+    SDL_RenderCopy(renderer, background, NULL, &background_rect);
 
-    // Ensure health_ratio is within valid bounds
-    if (health_ratio < 0 || health_ratio > 1) {
-        fprintf(stderr, "Invalid health ratio: %.2f\n", health_ratio);
-        return;
-    }
+    // Clean up the texture after rendering
+    SDL_DestroyTexture(background);
+}
 
-    // Load the health bar texture
-    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
+void render_ap_bar(SDL_Renderer *renderer) {
+    // Load the decorative PNG texture
+    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
     if (!bar) {
-        fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
+        fprintf(stderr, "Failed to load BOX4.jpg: %s\n", SDL_GetError());
         return;
+    } else {
+        fprintf(stdout, "Successfully loaded BOX4.jpg\n");
     }
 
-    // Define bar dimensions
-    int bar_width = 300;  // Maximum width of the bar
-    int bar_height = 20;  // Height of the bar
-    SDL_Rect bar_rect = {50, 430, (int)(bar_width * health_ratio), bar_height};
+    // Define the position and size of the decorative container
+    int bar_width = 100;  // Adjust based on your design
+    int bar_x = SCREEN_WIDTH - bar_width - 50; // Align with AP text
+    int bar_y = 430; // Same y-coordinate as the AP text
+    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 20};
 
-    // Debug: Log the calculated bar dimensions
-    fprintf(stdout, "Rendering health bar at x=%d, y=%d, width=%d, height=%d\n", 
-            bar_rect.x, bar_rect.y, bar_rect.w, bar_rect.h);
-
-    // Set the texture color mod to green
-    SDL_SetTextureColorMod(bar, 0, 255, 0);
-
-    // Render the health bar
+    // Render the texture
     SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
+
+    // Clean up the texture after rendering
     SDL_DestroyTexture(bar);
+}
 
-    // Render health text (e.g., "HP 115/115")
-    char health_text[16];
-    snprintf(health_text, sizeof(health_text), "HP %d/%d", health, max_health);
-
-    SDL_Color color = {0, 255, 0, 255};
-    SDL_Surface *text_surface = TTF_RenderText_Solid(font, health_text, color);
-    if (!text_surface) {
-        fprintf(stderr, "Failed to render health text: %s\n", TTF_GetError());
+void render_level_xp_background(SDL_Renderer *renderer) {
+    SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
+    if (!background) {
+        fprintf(stderr, "Failed to load BOX4.jpg: %s\n", SDL_GetError());
         return;
+    } else {
+        fprintf(stdout, "Successfully loaded BOX4.jpg\n");
     }
 
-    SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-    SDL_Rect text_rect = {50, 400, text_surface->w, text_surface->h}; // Position above the bar
-    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
-
-    SDL_FreeSurface(text_surface);
-    SDL_DestroyTexture(text_texture);
+    // Define the position and size of the decorative background
+    int bg_width = 250; // Adjust width to fit the Level/XP text
+    int bg_height = 30; // Adjust height as needed
+    int bg_x = SCREEN_WIDTH / 2 - bg_width / 2; // Center-align like the Level/XP text
+    int bg_y = 425; // Adjust y-coordinate for placement
+    SDL_Rect background_rect = {bg_x, bg_y, bg_width, bg_height};
+    SDL_RenderCopy(renderer, background, NULL, &background_rect); // Render the texture
+    SDL_DestroyTexture(background); // Clean up the texture after rendering
 }
-
-void render_ap_bar(SDL_Renderer *renderer, TTF_Font *font, int ap, int max_ap) {
-    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
-    if (!bar) {
-        fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
-        return;  // Exit early if the texture failed to load
-    }
-    if (bar) {
-        SDL_Rect bar_rect = {450, 430, 300 * (ap / (float)max_ap), 20};
-        SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
-        SDL_DestroyTexture(bar);
-    }
-
-    // Render the AP text
-    char ap_text[16];
-    snprintf(ap_text, sizeof(ap_text), "AP %d/%d", ap, max_ap);
-    SDL_Color color = {0, 255, 0, 255};
-    SDL_Surface *text_surface = TTF_RenderText_Solid(font, ap_text, color);
-    SDL_Texture *text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
-    SDL_Rect text_rect = {450, 400, text_surface->w, text_surface->h}; // Above the bar
-    SDL_RenderCopy(renderer, text_texture, NULL, &text_rect);
-    SDL_FreeSurface(text_surface);
-    SDL_DestroyTexture(text_texture);
-}
-
 
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
@@ -350,17 +355,17 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     }
 }
 
-void render_static_overlays(SDL_Renderer *renderer) {
-    SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/CATEGORYLINE.jpg");
+/*void render_static_overlays(SDL_Renderer *renderer) {
+    SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
      if (!category_line) {
         // Log an error if the texture fails to load
-        fprintf(stderr, "Failed to load CATEGORYLINE.jpg: %s\n", SDL_GetError());
+        fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
         return;
     }
     SDL_Rect line_rect = {0, 0, SCREEN_WIDTH, 10};  // Adjust dimensions and position
     SDL_RenderCopy(renderer, category_line, NULL, &line_rect);
     SDL_DestroyTexture(category_line);
-}
+}*/
 
 void render_attribute_description(SDL_Renderer *renderer, TTF_Font *font, int selector_position) {
     const char *descriptions[] = {
@@ -402,15 +407,35 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     }
 
     // Render general stats at the bottom
-    char stats_text[100];
-    snprintf(stats_text, sizeof(stats_text), "Health: %d  Level %d XP: %d AP: %d", state->health, state->level, state->experience, state->ap);
-    SDL_Surface *stats_surface = TTF_RenderText_Solid(font, stats_text, color);
-    SDL_Texture *stats_texture = SDL_CreateTextureFromSurface(renderer, stats_surface);
-    SDL_Rect stats_rect = {50, 400, stats_surface->w, stats_surface->h};
-    SDL_RenderCopy(renderer, stats_texture, NULL, &stats_rect);
-    SDL_FreeSurface(stats_surface);
-    SDL_DestroyTexture(stats_texture);
+    char hp_text[20];
+    snprintf(hp_text, sizeof(hp_text), "HP: %d/%d", state->health, state->max_health);
+    SDL_Surface *hp_surface = TTF_RenderText_Solid(font, hp_text, color);
+    SDL_Texture *hp_texture = SDL_CreateTextureFromSurface(renderer, hp_surface);
+    SDL_Rect hp_rect = {50, 430, hp_surface->w, hp_surface->h}; // Left aligned
+    SDL_RenderCopy(renderer, hp_texture, NULL, &hp_rect);
+    SDL_FreeSurface(hp_surface);
+    SDL_DestroyTexture(hp_texture);
+
+    char level_text[20];
+    snprintf(level_text, sizeof(level_text), "Level %d XP: %d", state->level, state->experience);
+    SDL_Surface *level_surface = TTF_RenderText_Solid(font, level_text, color);
+    SDL_Texture *level_texture = SDL_CreateTextureFromSurface(renderer, level_surface);
+    SDL_Rect level_rect = {SCREEN_WIDTH / 2 - level_surface->w / 2, 430, level_surface->w, level_surface->h};
+    SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
+    SDL_FreeSurface(level_surface);
+    SDL_DestroyTexture(level_texture);
+    
+
+    char ap_text[20];
+    snprintf(ap_text, sizeof(ap_text), "AP: %d", state->ap);
+    SDL_Surface *ap_surface = TTF_RenderText_Solid(font, ap_text, color);
+    SDL_Texture *ap_texture = SDL_CreateTextureFromSurface(renderer, ap_surface);
+    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 50, 430, ap_surface->w, ap_surface->h}; // Right aligned
+    SDL_RenderCopy(renderer, ap_texture, NULL, &ap_rect);
+    SDL_FreeSurface(ap_surface);
+    SDL_DestroyTexture(ap_texture);
 }
+
 void render_status_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
@@ -639,6 +664,7 @@ int main(int argc, char *argv[]) {
     printf("Starting boot animation...\n");
     play_sound("Sounds/On.mp3");
     show_boot_animation(renderer);
+    initialize_game_state(&game_state);
     load_vaultboy_frames(renderer);
     load_special_animations(renderer, &game_state);
     bool running = true;
@@ -669,7 +695,9 @@ int main(int argc, char *argv[]) {
         }
 
         SDL_RenderClear(renderer);
-
+        render_health_background(renderer); // render hp bar
+        render_ap_bar(renderer); // render ap bar
+        render_level_xp_background(renderer); // Level/XP background
         render_tabs(renderer, font, &game_state);
         render_current_tab(renderer, font, &game_state);
         // Render SPECIAL animations if in the SPECIAL sub-tab
@@ -681,14 +709,6 @@ int main(int argc, char *argv[]) {
         SDL_Delay(1000 / FRAME_RATE);
     }
     SDL_RenderClear(renderer);
-
-    render_static_overlays(renderer);
-    // Render overlays before other UI components
-    render_static_overlays(renderer);
-    render_health_bar(renderer, font, game_state.health, 115); // Max health = 115
-    render_ap_bar(renderer, font, game_state.ap, 90);          // Max AP = 90
-    render_tabs(renderer, font, &game_state);
-    render_vaultboy(renderer);
 
     SDL_RenderPresent(renderer);
 
