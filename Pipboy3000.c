@@ -145,7 +145,7 @@ void free_vaultboy_frames() {
 void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
         SDL_Rect dest_rect = {325, 150, 150, 150};
-        SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // turn vault boy
+        SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // SDL texture used to turn vault boy greeen
         SDL_RenderCopy(renderer, vaultboy_frames[vaultboy_frame_index], NULL, &dest_rect);
     }
 }
