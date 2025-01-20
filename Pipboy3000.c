@@ -51,8 +51,9 @@ typedef struct {
     int special_stats[7];
     int level;
     int health;
-    int max_health; // Add this field
+    int max_health;
     int ap;
+    int max_ap;
     int experience;
     char perks[10][50];
     SDL_Texture *special_animations[7][10]; // 10 frames per SPECIAL animation
@@ -278,8 +279,8 @@ void render_health_background(SDL_Renderer *renderer) {
     }
 
     // Define the position and size of the decorative container
-    SDL_Rect background_rect = {50, 430, 100, 20}; // Adjust based on x, y, width, height
-
+    SDL_Rect background_rect = {50, 425, 195, 30}; // Adjust based on x, y, width, height
+    SDL_SetTextureColorMod(background, 0, 255, 0);
     // Render the texture
     SDL_RenderCopy(renderer, background, NULL, &background_rect);
 
@@ -298,11 +299,11 @@ void render_ap_bar(SDL_Renderer *renderer) {
     }
 
     // Define the position and size of the decorative container
-    int bar_width = 100;  // Adjust based on your design
+    int bar_width = 195;  // Adjust based on your design
     int bar_x = SCREEN_WIDTH - bar_width - 50; // Align with AP text
-    int bar_y = 430; // Same y-coordinate as the AP text
-    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 20};
-
+    int bar_y = 425; // Same y-coordinate as the AP text
+    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 30};
+    SDL_SetTextureColorMod(bar, 0, 255, 0);
     // Render the texture
     SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
 
@@ -320,11 +321,12 @@ void render_level_xp_background(SDL_Renderer *renderer) {
     }
 
     // Define the position and size of the decorative background
-    int bg_width = 250; // Adjust width to fit the Level/XP text
+    int bg_width = 300; // Adjust width to fit the Level/XP text
     int bg_height = 30; // Adjust height as needed
     int bg_x = SCREEN_WIDTH / 2 - bg_width / 2; // Center-align like the Level/XP text
     int bg_y = 425; // Adjust y-coordinate for placement
     SDL_Rect background_rect = {bg_x, bg_y, bg_width, bg_height};
+    SDL_SetTextureColorMod(background, 0, 255, 0);
     SDL_RenderCopy(renderer, background, NULL, &background_rect); // Render the texture
     SDL_DestroyTexture(background); // Clean up the texture after rendering
 }
@@ -411,7 +413,7 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     snprintf(hp_text, sizeof(hp_text), "HP: %d/%d", state->health, state->max_health);
     SDL_Surface *hp_surface = TTF_RenderText_Solid(font, hp_text, color);
     SDL_Texture *hp_texture = SDL_CreateTextureFromSurface(renderer, hp_surface);
-    SDL_Rect hp_rect = {50, 430, hp_surface->w, hp_surface->h}; // Left aligned
+    SDL_Rect hp_rect = {55, 430, hp_surface->w, hp_surface->h}; // Left aligned
     SDL_RenderCopy(renderer, hp_texture, NULL, &hp_rect);
     SDL_FreeSurface(hp_surface);
     SDL_DestroyTexture(hp_texture);
@@ -424,13 +426,12 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
     SDL_FreeSurface(level_surface);
     SDL_DestroyTexture(level_texture);
-    
 
     char ap_text[20];
     snprintf(ap_text, sizeof(ap_text), "AP: %d", state->ap);
     SDL_Surface *ap_surface = TTF_RenderText_Solid(font, ap_text, color);
     SDL_Texture *ap_texture = SDL_CreateTextureFromSurface(renderer, ap_surface);
-    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 50, 430, ap_surface->w, ap_surface->h}; // Right aligned
+    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 65, 430, ap_surface->w, ap_surface->h}; // Right aligned
     SDL_RenderCopy(renderer, ap_texture, NULL, &ap_rect);
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
