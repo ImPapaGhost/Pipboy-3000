@@ -170,8 +170,9 @@ void initialize_game_state(GameState *state) {
     }
 
     state->health = 115;       // Full health
-    state->max_health = 115;   // Full Max health
+    state->max_health = 115;   // Full max health
     state->ap = 90;            // Full action points
+    state->max_ap = 90;        // Full max action points
     state->level = 1;          // Starting level
     state->experience = 0;     // Starting experience
 
@@ -428,7 +429,7 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     SDL_DestroyTexture(level_texture);
 
     char ap_text[20];
-    snprintf(ap_text, sizeof(ap_text), "AP: %d", state->ap);
+    snprintf(ap_text, sizeof(ap_text), "AP: %d/%d", state->ap, state->max_ap);
     SDL_Surface *ap_surface = TTF_RenderText_Solid(font, ap_text, color);
     SDL_Texture *ap_texture = SDL_CreateTextureFromSurface(renderer, ap_surface);
     SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 65, 430, ap_surface->w, ap_surface->h}; // Right aligned
