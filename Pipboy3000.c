@@ -177,7 +177,7 @@ void free_vaultboy_frames() {
 
 void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
-        SDL_Rect dest_rect = {325, 150, 150, 195};
+        SDL_Rect dest_rect = {325, 125, 150, 250};
         SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // SDL texture used to turn vault boy greeen
         SDL_RenderCopy(renderer, vaultboy_frames[vaultboy_frame_index], NULL, &dest_rect);
     }
@@ -357,23 +357,37 @@ void render_level_xp_background(SDL_Renderer *renderer) {
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
     SDL_Color color = {0, 255, 0, 255}; // Green color for tab text
-    
-    int tab_width = 100;  // Adjust based on tab design
-    int tab_spacing = 10; // Space between tabs
-    int tab_height = 30;  // Height of the tab area
+    int tab_spacing = 45; // Space between tabs
 
-    // Calculate total tab width and starting x-coordinate for centering
-    int total_tab_width = NUM_TABS * tab_width + (NUM_TABS - 1) * tab_spacing;
-    int tab_x = (SCREEN_WIDTH - total_tab_width) / 2;
-    int tab_y = 30; // Starting y-coordinate
+    // Load a larger font specifically for tabs
+    TTF_Font *tab_font = TTF_OpenFont("monofonto.ttf", 28); // Larger font size for tabs
+    if (!tab_font) {
+        fprintf(stderr, "Failed to load font for tabs: %s\n", TTF_GetError());
+        return;
+    }
+
+    // Calculate starting x-coordinate for centering
+    int total_tab_width = 0;
+    int tab_text_widths[NUM_TABS]; // Array to store text widths
+
+    for (int i = 0; i < NUM_TABS; i++) {
+        // Calculate the width of each tab's text
+        int w;
+        TTF_SizeText(tab_font, tab_names[i], &w, NULL);
+        tab_text_widths[i] = w;
+        total_tab_width += w + tab_spacing;
+    }
+    total_tab_width -= tab_spacing; // Remove extra spacing after the last tab
+    int tab_x = (SCREEN_WIDTH - total_tab_width) / 2; // Center-align tabs
+    int tab_y = 25; // Starting y-coordinate
 
     // Render the CATEGORYLINE graphic (background line for all tabs)
     if (categoryline_texture) {
         SDL_Rect categoryline_rect = {
-            tab_x - 85,                // Adjust to extend slightly to the left
-            tab_y - -22,               // Adjust to appear slightly above the tabs
-            total_tab_width + 165,      // Adjust to match the width of tabs
-            20                         // Height with padding
+            tab_x - 150,                // Adjust to extend slightly to the left
+            tab_y - -32,               // Adjust to appear slightly above the tabs
+            total_tab_width + 300,     // Adjust to match the width of tabs
+            12                         // Height with padding
         };
         SDL_SetTextureColorMod(categoryline_texture, 0, 255, 0); // Bright green for active tab
         SDL_RenderCopy(renderer, categoryline_texture, NULL, &categoryline_rect);
@@ -381,31 +395,40 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
 
     // Render the SELECTLINE graphic around the active tab
     if (selectline_texture) {
+        int active_tab_x = tab_x;
+        for (int i = 0; i < state->current_tab; i++) {
+            active_tab_x += tab_text_widths[i] + tab_spacing;
+        }
+
         SDL_Rect selectline_rect = {
-            tab_x + state->current_tab * (tab_width + tab_spacing) - 18, // Adjust horizontal position for active tab
-            tab_y - 5, // Position slightly above the tab text
-            95,        // Width matches the Python script
-            35         // Height matches the Python script
+            active_tab_x - 10, // Slight offset for alignment
+            tab_y + 11,        // Position slightly above the tab text
+            tab_text_widths[state->current_tab] + 18, // Adjust width to match the tab
+            26                // Height to cover the tab area
         };
         SDL_SetTextureColorMod(selectline_texture, 0, 255, 0); // Bright green for active tab
         SDL_RenderCopy(renderer, selectline_texture, NULL, &selectline_rect);
     }
 
     // Render each tab text on top of CATEGORYLINE and SELECTLINE
+    int current_x = tab_x;
     for (int i = 0; i < NUM_TABS; i++) {
-        TTF_Font *tab_font = TTF_OpenFont("monofonto.ttf", 25); // Larger font size for tabs
         SDL_Surface *surface = TTF_RenderText_Solid(tab_font, tab_names[i], color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_Rect text_rect = {
-            tab_x + i * (tab_width + tab_spacing),
+            current_x,
             tab_y,
             surface->w,
             surface->h
         };
         SDL_RenderCopy(renderer, texture, NULL, &text_rect);
+        current_x += tab_text_widths[i] + tab_spacing;
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
     }
+
+    // Close the larger font after rendering
+    TTF_CloseFont(tab_font);
 }
 
 /*void render_static_overlays(SDL_Renderer *renderer) {
