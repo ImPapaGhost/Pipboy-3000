@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <sys/stat.h> // Required for checking file existence
+#include <unistd.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
@@ -153,10 +154,10 @@ void load_categoryline(SDL_Renderer *renderer) {
 void load_vaultboy_frames(SDL_Renderer *renderer) {
     char path[256];
     for (int i = 0; i < NUM_VAULTBOY_FRAMES; i++) {
-        snprintf(path, sizeof(path), "STAT/VaultBoy/com%02d.png", i);
+        snprintf(path, sizeof(path), "STAT/VaultBoy/%02d.png", i);
         SDL_Surface *surface = IMG_Load(path);
         if (!surface) {
-            fprintf(stderr, "Failed to load VaultBoy frame com%d: %s\n", i, path);
+            fprintf(stderr, "Failed to load VaultBoy frame %d: %s\n", i, path);
             vaultboy_frames[i] = NULL;
             continue;
         }
@@ -176,7 +177,7 @@ void free_vaultboy_frames() {
 
 void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
-        SDL_Rect dest_rect = {325, 150, 150, 150};
+        SDL_Rect dest_rect = {325, 150, 150, 195};
         SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // SDL texture used to turn vault boy greeen
         SDL_RenderCopy(renderer, vaultboy_frames[vaultboy_frame_index], NULL, &dest_rect);
     }
@@ -212,7 +213,6 @@ void initialize_game_state(GameState *state) {
     }
 }
 
-
 void load_special_animations(SDL_Renderer *renderer, GameState *state) {
     const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
     char path[256];
@@ -232,7 +232,7 @@ void load_special_animations(SDL_Renderer *renderer, GameState *state) {
                     state->special_animations[i][frame_count++] = SDL_CreateTextureFromSurface(renderer, surface);
                     SDL_FreeSurface(surface);
                 }
-            } else if (frame_number > 50) { // Stop searching if the file is missing after 50 attempts
+            } else if (frame_number > 30) { // Stop searching if the file is missing after 50 attempts
                 break;
             }
             frame_number++;
@@ -246,7 +246,6 @@ void load_special_animations(SDL_Renderer *renderer, GameState *state) {
         }
     }
 }
-
 
 void render_special_animation(SDL_Renderer *renderer, GameState *state) {
     static Uint32 last_frame_time = 0;
@@ -264,14 +263,14 @@ void render_special_animation(SDL_Renderer *renderer, GameState *state) {
     if (frame_count == 0) return; // No frames available, skip rendering
 
     // Update frame every 100ms
-    if (current_time - last_frame_time > 100) {
+    if (current_time - last_frame_time > 175) {
         frame_index = (frame_index + 1) % frame_count; // Cycle through available frames
         last_frame_time = current_time;
     }
 
     SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
     if (current_frame) {
-        SDL_Rect dest_rect = {325, 150, 150, 150}; // Position and size of animation
+        SDL_Rect dest_rect = {325, 100, 225, 225}; // Position and size of animation
         SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
     }
 }
@@ -358,7 +357,7 @@ void render_level_xp_background(SDL_Renderer *renderer) {
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
     SDL_Color color = {0, 255, 0, 255}; // Green color for tab text
-
+    
     int tab_width = 100;  // Adjust based on tab design
     int tab_spacing = 10; // Space between tabs
     int tab_height = 30;  // Height of the tab area
@@ -371,9 +370,9 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     // Render the CATEGORYLINE graphic (background line for all tabs)
     if (categoryline_texture) {
         SDL_Rect categoryline_rect = {
-            tab_x - 100,                // Adjust to extend slightly to the left
+            tab_x - 85,                // Adjust to extend slightly to the left
             tab_y - -22,               // Adjust to appear slightly above the tabs
-            total_tab_width + 100,      // Adjust to match the width of tabs
+            total_tab_width + 165,      // Adjust to match the width of tabs
             20                         // Height with padding
         };
         SDL_SetTextureColorMod(categoryline_texture, 0, 255, 0); // Bright green for active tab
@@ -383,9 +382,9 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     // Render the SELECTLINE graphic around the active tab
     if (selectline_texture) {
         SDL_Rect selectline_rect = {
-            tab_x + state->current_tab * (tab_width + tab_spacing) - 15, // Adjust horizontal position for active tab
+            tab_x + state->current_tab * (tab_width + tab_spacing) - 18, // Adjust horizontal position for active tab
             tab_y - 5, // Position slightly above the tab text
-            85,        // Width matches the Python script
+            95,        // Width matches the Python script
             35         // Height matches the Python script
         };
         SDL_SetTextureColorMod(selectline_texture, 0, 255, 0); // Bright green for active tab
@@ -394,7 +393,8 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
 
     // Render each tab text on top of CATEGORYLINE and SELECTLINE
     for (int i = 0; i < NUM_TABS; i++) {
-        SDL_Surface *surface = TTF_RenderText_Solid(font, tab_names[i], color);
+        TTF_Font *tab_font = TTF_OpenFont("monofonto.ttf", 25); // Larger font size for tabs
+        SDL_Surface *surface = TTF_RenderText_Solid(tab_font, tab_names[i], color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_Rect text_rect = {
             tab_x + i * (tab_width + tab_spacing),
@@ -407,7 +407,6 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
         SDL_DestroyTexture(texture);
     }
 }
-
 
 /*void render_static_overlays(SDL_Renderer *renderer) {
     SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
@@ -472,8 +471,6 @@ void render_attribute_description(SDL_Renderer *renderer, TTF_Font *font, int se
         SDL_DestroyTexture(line_texture);
     }
 }
-
-
 
 void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     SDL_Color color = {0, 255, 0, 255};
@@ -649,7 +646,6 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *main_font, GameState 
     TTF_CloseFont(subtab_font);
 }
 
-
 void render_inv_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
     const char *placeholder = "Inventory Tab Placeholder";
@@ -820,7 +816,6 @@ int main(int argc, char *argv[]) {
     load_selectline(renderer);
     load_categoryline(renderer);
 
-
     // Main game loop
     bool running = true;
     SDL_Event event;
@@ -848,7 +843,6 @@ int main(int argc, char *argv[]) {
         render_health_background(renderer); // Render HP bar
         render_ap_bar(renderer);           // Render AP bar
         render_level_xp_background(renderer); // Render Level/XP bar
-        render_tabs(renderer, font, &game_state); // Render tabs
         render_tabs(renderer, font, &game_state); // Render the tabs with the selector line
         render_current_tab(renderer, font, &game_state); // Render active tab content
 
