@@ -8,12 +8,15 @@
 #include <stdlib.h>
 #include <sys/stat.h> // Required for checking file existence
 #include <unistd.h>
+#include <math.h>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
 #define FRAME_RATE 60
 #define NUM_VAULTBOY_FRAMES 8 // Total frames for VaultBoy animation
+#define SUBTAB_SPACING 75
 
+// Utility functions
 SDL_Texture *vaultboy_frames[NUM_VAULTBOY_FRAMES];
 int vaultboy_frame_index = 0;
 Uint32 last_vaultboy_update = 0; // Time tracker for animation updates
@@ -22,6 +25,11 @@ int file_exists(const char *path);
 int file_exists(const char *path) {
     struct stat buffer;
     return (stat(path, &buffer) == 0);
+}
+
+// Easing subtab animation
+float ease_out_cubic(float t) {
+    return 1 - pow(1 - t, 3);
 }
 
 typedef struct {
@@ -58,6 +66,9 @@ typedef struct {
     int experience;
     char perks[10][50];
     SDL_Texture *special_animations[7][10]; // 10 frames per SPECIAL animation
+    Uint32 animation_start_time; // Track the start of subtab animation
+    int subtab_animation_offset; // Offset for animation during transition
+    bool is_animating;           // Whether an animation is in progress
 } GameState;
 
 GameState game_state;
@@ -621,53 +632,58 @@ void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *sta
     }
 }
 
-void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *main_font, GameState *state) {
-    // Load a separate font for sub-tabs with a larger size
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 24); // Larger font size for sub-tabs
+void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+    const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
+    SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
+    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
+    // Load a larger font specifically for subtabs
+    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 18); // Increase font size
     if (!subtab_font) {
-        fprintf(stderr, "Failed to load sub-tab font: %s\n", TTF_GetError());
+        fprintf(stderr, "Failed to load font for subtabs: %s\n", TTF_GetError());
         return;
     }
+    // Base position for the subtabs group
+    int base_y = 65;          // Y-position of the subtabs
+    int subtab_spacing = SUBTAB_SPACING; // Spacing between subtabs
 
-    const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
-    SDL_Color color_active = {0, 255, 0, 255}; // Bright green for the active sub-tab
-    SDL_Color color_dimmed = {0, 100, 0, 255}; // Dim green for unselected sub-tabs
+    // Calculate animation progress
+    Uint32 current_time = SDL_GetTicks();
+    float progress = 1.0f; // Default to fully completed animation
+    if (state->is_animating) {
+        progress = (float)(current_time - state->animation_start_time) / 300; // 300ms duration
+        if (progress >= 1.0f) {
+            progress = 1.0f;
+            state->is_animating = false; // End animation
+        }
+    }
+    float offset = (1.0f - ease_out_cubic(progress)) * state->subtab_animation_offset;
 
-    int subtab_x = 55;       // Starting x-coordinate
-    int subtab_y = 65;       // Y-coordinate for sub-tabs
-    int subtab_spacing = 20; // Space between sub-tabs
+    // Base x-coordinate for the centered subtab
+    int base_x = 205 + offset; // Screen center (400) plus animation offset
 
+    // Render each subtab
     for (int i = 0; i < NUM_SUBTABS; i++) {
-        SDL_Color current_color = (i == state->current_subtab) ? color_active : color_dimmed;
+        // Calculate the position of each subtab relative to the center
+        int x_position = base_x + (i - state->current_subtab) * subtab_spacing;
 
-        // Render the sub-tab text with the larger font and selected color
+        // Determine text color (active or inactive)
+        SDL_Color current_color = (i == state->current_subtab) ? color_active : color_inactive;
+
+        // Render text
+        // Render text
         SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+        
 
-        // Apply dimming effect to unselected sub-tabs
-        if (i != state->current_subtab) {
-            SDL_SetTextureColorMod(texture, 0, 100, 0);
-        }
-
-        SDL_Rect rect = {
-            subtab_x,
-            subtab_y,
-            surface->w,
-            surface->h
-        };
+        SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h}; // Center text horizontally
         SDL_RenderCopy(renderer, texture, NULL, &rect);
 
-        // Update x-position for the next sub-tab
-        subtab_x += surface->w + subtab_spacing;
-
-        // Clean up resources for the current texture
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
     }
-
-    // Free the sub-tab font after rendering
-    TTF_CloseFont(subtab_font);
 }
+
+
 
 void render_inv_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
@@ -745,17 +761,23 @@ void handle_navigation(SDL_Event *event, GameState *state) {
                 break;
 
             // Sub-tabs Navigation within STAT (A for left, D for right)
-            case SDLK_a:
-                if (state->current_tab == TAB_STAT) {
+            case SDLK_a: // Navigate left
+                if (state->current_tab == TAB_STAT && !state->is_animating) {
+                    state->subtab_animation_offset = SUBTAB_SPACING; // Shift all tabs to the right
+                    state->is_animating = true;
+                    state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
                 }
                 break;
-            case SDLK_d:
-                if (state->current_tab == TAB_STAT) {
+
+            case SDLK_d: // Navigate right
+                if (state->current_tab == TAB_STAT && !state->is_animating) {
+                    state->subtab_animation_offset = -SUBTAB_SPACING; // Shift all tabs to the left
+                    state->is_animating = true;
+                    state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
                 }
                 break;
-
             // SPECIAL Attributes Navigation (W for up, S for down)
             case SDLK_w:
                 if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL) {
