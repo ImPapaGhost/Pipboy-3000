@@ -78,10 +78,6 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *s
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state);
 void play_sound(const char *file) {
     Mix_Chunk *sound = Mix_LoadWAV(file);
-    if (!sound) {
-        fprintf(stderr, "Failed to load sound %s: %s\n", file, Mix_GetError());
-        return;
-    }
     Mix_PlayChannel(-1, sound, 0);
     while (Mix_Playing(-1)) {
         SDL_Delay(10);
@@ -145,8 +141,6 @@ void load_selectline(SDL_Renderer *renderer) {
     if (surface) {
         selectline_texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
-    } else {
-        fprintf(stderr, "Failed to load SELECTLINE.jpg: %s\n", IMG_GetError());
     }
 }
 
@@ -157,8 +151,6 @@ void load_categoryline(SDL_Renderer *renderer) {
     if (surface) {
         categoryline_texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
-    } else {
-        fprintf(stderr, "Failed to load CATEGORYLINE.jpg: %s\n", IMG_GetError());
     }
 }
 
@@ -168,7 +160,6 @@ void load_vaultboy_frames(SDL_Renderer *renderer) {
         snprintf(path, sizeof(path), "STAT/VaultBoy/%02d.png", i);
         SDL_Surface *surface = IMG_Load(path);
         if (!surface) {
-            fprintf(stderr, "Failed to load VaultBoy frame %d: %s\n", i, path);
             vaultboy_frames[i] = NULL;
             continue;
         }
@@ -237,7 +228,6 @@ void load_special_animations(SDL_Renderer *renderer, GameState *state) {
             if (file_exists(path)) {
                 SDL_Surface *surface = IMG_Load(path);
                 if (!surface) {
-                    fprintf(stderr, "Failed to load: %s\n", path);
                     state->special_animations[i][frame_count++] = NULL;
                 } else {
                     state->special_animations[i][frame_count++] = SDL_CreateTextureFromSurface(renderer, surface);
@@ -249,7 +239,6 @@ void load_special_animations(SDL_Renderer *renderer, GameState *state) {
             frame_number++;
         }
 
-        fprintf(stdout, "Loaded %d frames for %s\n", frame_count, special_names[i]);
 
         // Fill remaining slots with NULL
         for (int j = frame_count; j < 10; j++) {
@@ -288,10 +277,7 @@ void render_special_animation(SDL_Renderer *renderer, GameState *state) {
 
 void load_special_stats_from_csv(const char *file_path, GameState *state) {
     FILE *file = fopen(file_path, "r");
-    if (!file) {
-        fprintf(stderr, "Failed to open file: %s\n", file_path);
-        return;
-    }
+
 
     char line[256];
     int i = 0;
@@ -305,12 +291,6 @@ void load_special_stats_from_csv(const char *file_path, GameState *state) {
 void render_health_background(SDL_Renderer *renderer) {
     // Load the decorative PNG texture
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOXHP1.jpg");
-    if (!background) {
-        fprintf(stderr, "Failed to load BOXHP1.jpg: %s\n", SDL_GetError());
-        return;
-    } else {
-        fprintf(stdout, "Successfully loaded BOXHP1.jpg\n");
-    }
 
     // Define the position and size of the decorative container
     SDL_Rect background_rect = {50, 425, 195, 30}; // Adjust based on x, y, width, height
@@ -325,12 +305,7 @@ void render_health_background(SDL_Renderer *renderer) {
 void render_ap_bar(SDL_Renderer *renderer) {
     // Load the decorative PNG texture
     SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    if (!bar) {
-        fprintf(stderr, "Failed to load BOX4.jpg: %s\n", SDL_GetError());
-        return;
-    } else {
-        fprintf(stdout, "Successfully loaded BOX4.jpg\n");
-    }
+
 
     // Define the position and size of the decorative container
     int bar_width = 195;  // Adjust based on your design
@@ -347,12 +322,7 @@ void render_ap_bar(SDL_Renderer *renderer) {
 
 void render_level_xp_background(SDL_Renderer *renderer) {
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    if (!background) {
-        fprintf(stderr, "Failed to load BOX4.jpg: %s\n", SDL_GetError());
-        return;
-    } else {
-        fprintf(stdout, "Successfully loaded BOX4.jpg\n");
-    }
+
 
     // Define the position and size of the decorative background
     int bg_width = 300; // Adjust width to fit the Level/XP text
@@ -372,10 +342,7 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
 
     // Load a larger font specifically for tabs
     TTF_Font *tab_font = TTF_OpenFont("monofonto.ttf", 28); // Larger font size for tabs
-    if (!tab_font) {
-        fprintf(stderr, "Failed to load font for tabs: %s\n", TTF_GetError());
-        return;
-    }
+
 
     // Calculate starting x-coordinate for centering
     int total_tab_width = 0;
@@ -633,15 +600,15 @@ void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *sta
 }
 
 void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+    static int last_logged_subtab = -1; // Keep track of the last logged subtab
     const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
+
     // Load a larger font specifically for subtabs
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 18); // Increase font size
-    if (!subtab_font) {
-        fprintf(stderr, "Failed to load font for subtabs: %s\n", TTF_GetError());
-        return;
-    }
+    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 18); // Adjust font size as needed
+
+
     // Base position for the subtabs group
     int base_y = 65;          // Y-position of the subtabs
     int subtab_spacing = SUBTAB_SPACING; // Spacing between subtabs
@@ -656,24 +623,34 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *stat
             state->is_animating = false; // End animation
         }
     }
-    float offset = (1.0f - ease_out_cubic(progress)) * state->subtab_animation_offset;
-
+    float offset = (1.0f - progress) * state->subtab_animation_offset;
     // Base x-coordinate for the centered subtab
-    int base_x = 205 + offset; // Screen center (400) plus animation offset
+    int base_x = 205; // Starting position for centered subtabs
+    // Log positions only if current_subtab changes
+    if (state->current_subtab != last_logged_subtab) {
+        fprintf(stdout, "Subtab positions (current_subtab = %d):\n", state->current_subtab);
+        for (int j = 0; j < NUM_SUBTABS; j++) {
+            int logged_x_position = base_x + (j - state->current_subtab) * subtab_spacing + offset;
+            fprintf(stdout, "  %s: x_position = %d\n", subtab_names[j], logged_x_position);
+        }
+        last_logged_subtab = state->current_subtab;
+    }
+    // Add debug statement here
+    fprintf(stdout, "Animation progress: %.2f, Offset: %.2f\n", progress, offset);
+
 
     // Render each subtab
     for (int i = 0; i < NUM_SUBTABS; i++) {
         // Calculate the position of each subtab relative to the center
-        int x_position = base_x + (i - state->current_subtab) * subtab_spacing;
-
+        int x_position = base_x + (i - state->current_subtab) * subtab_spacing + offset;
+        fprintf(stdout, "Subtab '%s': base_x = %d, i = %d, current_subtab = %d, offset = %.2f, x_position = %d\n",
+        subtab_names[i], base_x, i, state->current_subtab, offset, x_position);
         // Determine text color (active or inactive)
         SDL_Color current_color = (i == state->current_subtab) ? color_active : color_inactive;
 
         // Render text
-        // Render text
         SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-        
 
         SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h}; // Center text horizontally
         SDL_RenderCopy(renderer, texture, NULL, &rect);
@@ -681,7 +658,11 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *stat
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
     }
+
+    // Close the larger font after rendering
+    TTF_CloseFont(subtab_font);
 }
+
 
 
 
@@ -767,6 +748,7 @@ void handle_navigation(SDL_Event *event, GameState *state) {
                     state->is_animating = true;
                     state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
+                    fprintf(stdout, "Navigated left: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
                 }
                 break;
 
@@ -776,6 +758,7 @@ void handle_navigation(SDL_Event *event, GameState *state) {
                     state->is_animating = true;
                     state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
+                    fprintf(stdout, "Navigated right: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
                 }
                 break;
             // SPECIAL Attributes Navigation (W for up, S for down)
@@ -803,7 +786,6 @@ int main(int argc, char *argv[]) {
 
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
-        fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
         return 1;
     }
 
@@ -818,7 +800,6 @@ int main(int argc, char *argv[]) {
     );
 
     if (!window) {
-        fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
         SDL_Quit();
         return 1;
     }
@@ -826,7 +807,6 @@ int main(int argc, char *argv[]) {
     // Create SDL renderer
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
-        fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
         return 1;
@@ -834,7 +814,6 @@ int main(int argc, char *argv[]) {
 
     // Initialize SDL_ttf
     if (TTF_Init() == -1) {
-        fprintf(stderr, "TTF_Init Error: %s\n", TTF_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -844,7 +823,6 @@ int main(int argc, char *argv[]) {
     // Load font
     TTF_Font *font = TTF_OpenFont("monofonto.ttf", 16);
     if (!font) {
-        fprintf(stderr, "TTF_OpenFont Error: %s\n", TTF_GetError());
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
