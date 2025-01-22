@@ -600,66 +600,44 @@ void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *sta
 }
 
 void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
-    static int last_logged_subtab = -1; // Keep track of the last logged subtab
     const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
-    // Load a larger font specifically for subtabs
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 18); // Adjust font size as needed
+    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 18); // Font size for subtabs
 
-
-    // Base position for the subtabs group
-    int base_y = 65;          // Y-position of the subtabs
-    int subtab_spacing = SUBTAB_SPACING; // Spacing between subtabs
+    int base_x = 205; // Base x-coordinate for the centered subtab
+    int base_y = 65;  // Y-coordinate for subtabs
 
     // Calculate animation progress
     Uint32 current_time = SDL_GetTicks();
     float progress = 1.0f; // Default to fully completed animation
     if (state->is_animating) {
-        progress = (float)(current_time - state->animation_start_time) / 300; // 300ms duration
+        progress = (float)(current_time - state->animation_start_time) / 300; // 300ms animation duration
         if (progress >= 1.0f) {
             progress = 1.0f;
             state->is_animating = false; // End animation
         }
     }
-    float offset = (1.0f - progress) * state->subtab_animation_offset;
-    // Base x-coordinate for the centered subtab
-    int base_x = 205; // Starting position for centered subtabs
-    // Log positions only if current_subtab changes
-    if (state->current_subtab != last_logged_subtab) {
-        // fprintf(stdout, "Subtab positions (current_subtab = %d):\n", state->current_subtab);
-        for (int j = 0; j < NUM_SUBTABS; j++) {
-            int logged_x_position = base_x + (j - state->current_subtab) * subtab_spacing + offset;
-            // fprintf(stdout, "  %s: x_position = %d\n", subtab_names[j], logged_x_position);
-        }
-        last_logged_subtab = state->current_subtab;
-    }
-    // Add debug statement here
-    // // fprintf(stdout, "Animation progress: %.2f, Offset: %.2f\n", progress, offset);
 
+        float offset = (-1.0f + progress) * state->subtab_animation_offset;
 
     // Render each subtab
     for (int i = 0; i < NUM_SUBTABS; i++) {
-        // Calculate the position of each subtab relative to the center
-        int x_position = base_x + (i - state->current_subtab) * subtab_spacing + offset;
-        /* fprintf(stdout, "Subtab '%s': base_x = %d, i = %d, current_subtab = %d, offset = %.2f, x_position = %d\n",
-        subtab_names[i], base_x, i, state->current_subtab, offset, x_position); */
-        // Determine text color (active or inactive)
+        int x_position = base_x + (i - state->current_subtab) * SUBTAB_SPACING + offset;
+
         SDL_Color current_color = (i == state->current_subtab) ? color_active : color_inactive;
 
-        // Render text
         SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-        SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h}; // Center text horizontally
+        SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h};
         SDL_RenderCopy(renderer, texture, NULL, &rect);
 
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
     }
 
-    // Close the larger font after rendering
     TTF_CloseFont(subtab_font);
 }
 
@@ -744,23 +722,22 @@ void handle_navigation(SDL_Event *event, GameState *state) {
             // Sub-tabs Navigation within STAT (A for left, D for right)
             case SDLK_a: // Navigate left
                 if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    state->subtab_animation_offset = SUBTAB_SPACING; // Shift all tabs to the right
+                    state->subtab_animation_offset = SUBTAB_SPACING; // Move all subtabs right
                     state->is_animating = true;
                     state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
-                    // fprintf(stdout, "Navigated left: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
                 }
                 break;
 
             case SDLK_d: // Navigate right
                 if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    state->subtab_animation_offset = -SUBTAB_SPACING; // Shift all tabs to the left
+                    state->subtab_animation_offset = -SUBTAB_SPACING; // Move all subtabs left
                     state->is_animating = true;
                     state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
-                    // fprintf(stdout, "Navigated right: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
                 }
                 break;
+
             // SPECIAL Attributes Navigation (W for up, S for down)
             case SDLK_w:
                 if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL) {
