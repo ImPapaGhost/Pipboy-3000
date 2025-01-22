@@ -413,7 +413,7 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
      if (!category_line) {
         // Log an error if the texture fails to load
-        fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
+        // fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
         return;
     }
     SDL_Rect line_rect = {0, 0, SCREEN_WIDTH, 10};  // Adjust dimensions and position
@@ -628,23 +628,23 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *stat
     int base_x = 205; // Starting position for centered subtabs
     // Log positions only if current_subtab changes
     if (state->current_subtab != last_logged_subtab) {
-        fprintf(stdout, "Subtab positions (current_subtab = %d):\n", state->current_subtab);
+        // fprintf(stdout, "Subtab positions (current_subtab = %d):\n", state->current_subtab);
         for (int j = 0; j < NUM_SUBTABS; j++) {
             int logged_x_position = base_x + (j - state->current_subtab) * subtab_spacing + offset;
-            fprintf(stdout, "  %s: x_position = %d\n", subtab_names[j], logged_x_position);
+            // fprintf(stdout, "  %s: x_position = %d\n", subtab_names[j], logged_x_position);
         }
         last_logged_subtab = state->current_subtab;
     }
     // Add debug statement here
-    fprintf(stdout, "Animation progress: %.2f, Offset: %.2f\n", progress, offset);
+    // // fprintf(stdout, "Animation progress: %.2f, Offset: %.2f\n", progress, offset);
 
 
     // Render each subtab
     for (int i = 0; i < NUM_SUBTABS; i++) {
         // Calculate the position of each subtab relative to the center
         int x_position = base_x + (i - state->current_subtab) * subtab_spacing + offset;
-        fprintf(stdout, "Subtab '%s': base_x = %d, i = %d, current_subtab = %d, offset = %.2f, x_position = %d\n",
-        subtab_names[i], base_x, i, state->current_subtab, offset, x_position);
+        /* fprintf(stdout, "Subtab '%s': base_x = %d, i = %d, current_subtab = %d, offset = %.2f, x_position = %d\n",
+        subtab_names[i], base_x, i, state->current_subtab, offset, x_position); */
         // Determine text color (active or inactive)
         SDL_Color current_color = (i == state->current_subtab) ? color_active : color_inactive;
 
@@ -748,7 +748,7 @@ void handle_navigation(SDL_Event *event, GameState *state) {
                     state->is_animating = true;
                     state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
-                    fprintf(stdout, "Navigated left: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
+                    // fprintf(stdout, "Navigated left: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
                 }
                 break;
 
@@ -758,7 +758,7 @@ void handle_navigation(SDL_Event *event, GameState *state) {
                     state->is_animating = true;
                     state->animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
-                    fprintf(stdout, "Navigated right: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
+                    // fprintf(stdout, "Navigated right: new current_subtab = %d, animation_offset = %d\n", state->current_subtab, state->subtab_animation_offset);
                 }
                 break;
             // SPECIAL Attributes Navigation (W for up, S for down)
