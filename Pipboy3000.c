@@ -64,18 +64,20 @@ typedef struct {
     int ap;
     int max_ap;
     int experience;
+    int stimpaks;
+    int radaways;
     char perks[10][50];
     SDL_Texture *special_animations[7][10]; // 10 frames per SPECIAL animation
     Uint32 animation_start_time; // Track the start of subtab animation
     int subtab_animation_offset; // Offset for animation during transition
     bool is_animating;           // Whether an animation is in progress
-} GameState;
+} PipState;
 
-GameState game_state;
-void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state);
-void render_status_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state);
-void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state);
-void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state);
+PipState pip_state;
+void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
+void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
+void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
+void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
 void play_sound(const char *file) {
     Mix_Chunk *sound = Mix_LoadWAV(file);
     Mix_PlayChannel(-1, sound, 0);
@@ -185,7 +187,7 @@ void render_vaultboy(SDL_Renderer *renderer) {
     }
 }
 
-void initialize_game_state(GameState *state) {
+void initialize_pip_state(PipState *state) {
     state->current_tab = TAB_STAT;
     state->current_subtab = SUBTAB_STATUS;
     state->selector_position = 0;
@@ -201,6 +203,8 @@ void initialize_game_state(GameState *state) {
     state->max_ap = 90;        // Full max action points
     state->level = 1;          // Starting level
     state->experience = 0;     // Starting experience
+    state->stimpaks = 0; // Starting value
+    state->radaways = 0; // Starting value
 
     // Initialize perks to empty
     for (int i = 0; i < 10; i++) {
@@ -215,7 +219,7 @@ void initialize_game_state(GameState *state) {
     }
 }
 
-void load_special_animations(SDL_Renderer *renderer, GameState *state) {
+void load_special_animations(SDL_Renderer *renderer, PipState *state) {
     const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
     char path[256];
 
@@ -247,7 +251,7 @@ void load_special_animations(SDL_Renderer *renderer, GameState *state) {
     }
 }
 
-void render_special_animation(SDL_Renderer *renderer, GameState *state) {
+void render_special_animation(SDL_Renderer *renderer, PipState *state) {
     static Uint32 last_frame_time = 0;
     static int frame_index = 0;
     Uint32 current_time = SDL_GetTicks();
@@ -275,7 +279,7 @@ void render_special_animation(SDL_Renderer *renderer, GameState *state) {
     }
 }
 
-void load_special_stats_from_csv(const char *file_path, GameState *state) {
+void load_special_stats_from_csv(const char *file_path, PipState *state) {
     FILE *file = fopen(file_path, "r");
 
 
@@ -293,7 +297,7 @@ void render_health_background(SDL_Renderer *renderer) {
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOXHP1.jpg");
 
     // Define the position and size of the decorative container
-    SDL_Rect background_rect = {50, 425, 195, 30}; // Adjust based on x, y, width, height
+    SDL_Rect background_rect = {55, 425, 190, 30}; // Adjust based on x, y, width, height
     SDL_SetTextureColorMod(background, 0, 255, 0);
     // Render the texture
     SDL_RenderCopy(renderer, background, NULL, &background_rect);
@@ -307,8 +311,8 @@ void render_ap_bar(SDL_Renderer *renderer) {
     SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
 
 
-    // Define the position and size of the decorative container
-    int bar_width = 195;  // Adjust based on your design
+    // Define the position and size of the ap container
+    int bar_width = 195;  // Adjust based on design
     int bar_x = SCREEN_WIDTH - bar_width - 50; // Align with AP text
     int bar_y = 425; // Same y-coordinate as the AP text
     SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 30};
@@ -324,7 +328,7 @@ void render_level_xp_background(SDL_Renderer *renderer) {
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
 
 
-    // Define the position and size of the decorative background
+    // Define the position and size of the ap background
     int bg_width = 300; // Adjust width to fit the Level/XP text
     int bg_height = 30; // Adjust height as needed
     int bg_x = SCREEN_WIDTH / 2 - bg_width / 2; // Center-align like the Level/XP text
@@ -335,7 +339,8 @@ void render_level_xp_background(SDL_Renderer *renderer) {
     SDL_DestroyTexture(background); // Clean up the texture after rendering
 }
 
-void render_tabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+
+void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
     SDL_Color color = {0, 255, 0, 255}; // Green color for tab text
     int tab_spacing = 45; // Space between tabs
@@ -473,7 +478,8 @@ void render_attribute_description(SDL_Renderer *renderer, TTF_Font *font, int se
     }
 }
 
-void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+
+void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
     // Render the sub-tabs
@@ -497,7 +503,7 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     snprintf(hp_text, sizeof(hp_text), "HP: %d/%d", state->health, state->max_health);
     SDL_Surface *hp_surface = TTF_RenderText_Solid(font, hp_text, color);
     SDL_Texture *hp_texture = SDL_CreateTextureFromSurface(renderer, hp_surface);
-    SDL_Rect hp_rect = {55, 430, hp_surface->w, hp_surface->h}; // Left aligned
+    SDL_Rect hp_rect = {60, 430, hp_surface->w, hp_surface->h}; // Left aligned
     SDL_RenderCopy(renderer, hp_texture, NULL, &hp_rect);
     SDL_FreeSurface(hp_surface);
     SDL_DestroyTexture(hp_texture);
@@ -515,13 +521,13 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     snprintf(ap_text, sizeof(ap_text), "AP: %d/%d", state->ap, state->max_ap);
     SDL_Surface *ap_surface = TTF_RenderText_Solid(font, ap_text, color);
     SDL_Texture *ap_texture = SDL_CreateTextureFromSurface(renderer, ap_surface);
-    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 65, 430, ap_surface->w, ap_surface->h}; // Right aligned
+    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 70, 430, ap_surface->w, ap_surface->h}; // Right aligned
     SDL_RenderCopy(renderer, ap_texture, NULL, &ap_rect);
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
 }
 
-void render_status_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
     // Render title
@@ -535,9 +541,43 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, GameState *st
 
     // Render Vault Boy animation
     render_vaultboy(renderer);
+
+     // Render Stimpak Background
+    SDL_Texture *stimpak_background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
+    SDL_Rect stimpak_rect = {55, 390, 100, 30}; // Adjust based on position and size
+    SDL_SetTextureColorMod(stimpak_background, 100, 255, 100); // Green tint
+    SDL_RenderCopy(renderer, stimpak_background, NULL, &stimpak_rect);
+    SDL_DestroyTexture(stimpak_background);
+
+    // Render RadAway Background
+    SDL_Texture *radaway_background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
+    SDL_Rect radaway_rect = {215, 390, 100, 30}; // Adjust position to the right of Stimpak
+    SDL_SetTextureColorMod(radaway_background, 100, 255, 100); // Green tint
+    SDL_RenderCopy(renderer, radaway_background, NULL, &radaway_rect);
+    SDL_DestroyTexture(radaway_background);
+
+    // Render Stimpak Text
+    char stimpak_text[20];
+    snprintf(stimpak_text, sizeof(stimpak_text), "Stimpak (%d)", state->stimpaks);
+    SDL_Surface *stimpak_surface = TTF_RenderText_Solid(font, stimpak_text, color);
+    SDL_Texture *stimpak_texture = SDL_CreateTextureFromSurface(renderer, stimpak_surface);
+    SDL_Rect stimpak_text_rect = {60, 395, stimpak_surface->w, stimpak_surface->h}; // Center inside background
+    SDL_RenderCopy(renderer, stimpak_texture, NULL, &stimpak_text_rect);
+    SDL_FreeSurface(stimpak_surface);
+    SDL_DestroyTexture(stimpak_texture);
+
+    // Render RadAway Text
+    char radaway_text[20];
+    snprintf(radaway_text, sizeof(radaway_text), "RadAway (%d)", state->radaways);
+    SDL_Surface *radaway_surface = TTF_RenderText_Solid(font, radaway_text, color);
+    SDL_Texture *radaway_texture = SDL_CreateTextureFromSurface(renderer, radaway_surface);
+    SDL_Rect radaway_text_rect = {220, 395, radaway_surface->w, radaway_surface->h}; // Center inside background
+    SDL_RenderCopy(renderer, radaway_texture, NULL, &radaway_text_rect);
+    SDL_FreeSurface(radaway_surface);
+    SDL_DestroyTexture(radaway_texture);
 }
 
-void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
     // Render title
@@ -625,7 +665,7 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *s
             SDL_DestroyTexture(desc_texture);
         }
 }
-void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
     // Render title
@@ -650,7 +690,7 @@ void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *sta
     }
 }
 
-void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
@@ -739,7 +779,7 @@ void render_radio_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_DestroyTexture(texture);
 }
 
-void render_current_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
+void render_current_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     switch (state->current_tab) {
         case TAB_STAT:
             render_stat_tab(renderer, font, state);
@@ -759,7 +799,7 @@ void render_current_tab(SDL_Renderer *renderer, TTF_Font *font, GameState *state
     }
 }
 
-void handle_navigation(SDL_Event *event, GameState *state) {
+void handle_navigation(SDL_Event *event, PipState *state) {
     if (event->type == SDL_KEYDOWN) {
         switch (event->key.keysym.sym) {
             // Main Tabs Navigation (Q for left, E for right)
@@ -857,17 +897,17 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Load resources and initialize game state
+    // Load resources and initialize pip state
     printf("Starting boot animation...\n");
     play_sound("Sounds/On.mp3");
     show_boot_animation(renderer);
-    initialize_game_state(&game_state);
+    initialize_pip_state(&pip_state);
     load_vaultboy_frames(renderer);
-    load_special_animations(renderer, &game_state);
+    load_special_animations(renderer, &pip_state);
     load_selectline(renderer);
     load_categoryline(renderer);
 
-    // Main game loop
+    // Main pip loop
     bool running = true;
     SDL_Event event;
     Uint32 last_frame_time = SDL_GetTicks();
@@ -878,7 +918,7 @@ int main(int argc, char *argv[]) {
             if (event.type == SDL_QUIT) {
                 running = false;
             } else {
-                handle_navigation(&event, &game_state);
+                handle_navigation(&event, &pip_state);
             }
         }
 
@@ -894,11 +934,11 @@ int main(int argc, char *argv[]) {
         render_health_background(renderer); // Render HP bar
         render_ap_bar(renderer);           // Render AP bar
         render_level_xp_background(renderer); // Render Level/XP bar
-        render_tabs(renderer, font, &game_state); // Render the tabs with the selector line
-        render_current_tab(renderer, font, &game_state); // Render active tab content
+        render_tabs(renderer, font, &pip_state); // Render the tabs with the selector line
+        render_current_tab(renderer, font, &pip_state); // Render active tab content
 
-        if (game_state.current_tab == TAB_STAT && game_state.current_subtab == SUBTAB_SPECIAL) {
-            render_special_animation(renderer, &game_state); // Render SPECIAL animations if applicable
+        if (pip_state.current_tab == TAB_STAT && pip_state.current_subtab == SUBTAB_SPECIAL) {
+            render_special_animation(renderer, &pip_state); // Render SPECIAL animations if applicable
         }
 
         SDL_RenderPresent(renderer);
