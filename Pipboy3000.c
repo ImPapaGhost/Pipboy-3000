@@ -270,7 +270,7 @@ void render_special_animation(SDL_Renderer *renderer, GameState *state) {
 
     SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
     if (current_frame) {
-        SDL_Rect dest_rect = {325, 100, 225, 225}; // Position and size of animation
+        SDL_Rect dest_rect = {415, 65, 225, 225}; // Position and size of animation
         SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
     }
 }
@@ -544,7 +544,7 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *s
     const char *special_title = "SPECIAL";
     SDL_Surface *title_surface = TTF_RenderText_Solid(font, special_title, color);
     SDL_Texture *title_texture = SDL_CreateTextureFromSurface(renderer, title_surface);
-    SDL_Rect title_rect = {50, 100, title_surface->w, title_surface->h};
+    SDL_Rect title_rect = {50, 50, title_surface->w, title_surface->h}; // Adjusted title position
     SDL_RenderCopy(renderer, title_texture, NULL, &title_rect);
     SDL_FreeSurface(title_surface);
     SDL_DestroyTexture(title_texture);
@@ -552,28 +552,79 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, GameState *s
     // Render SPECIAL attributes list
     const char *attributes[] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
     char attribute_text[50];
+    int stat_x = 75; // X position for attribute names
+    int value_x = 300; // X position for stat values
+    int y_start = 100; // Starting Y position
+    int y_spacing = 40; // Spacing between rows
+
     for (int i = 0; i < 7; i++) {
-        snprintf(attribute_text, sizeof(attribute_text), "%s: %02d", attributes[i], state->special_stats[i]);
-        SDL_Surface *attr_surface = TTF_RenderText_Solid(font, attribute_text, color);
+        // Render attribute name
+        SDL_Surface *attr_surface = TTF_RenderText_Solid(font, attributes[i], color);
         SDL_Texture *attr_texture = SDL_CreateTextureFromSurface(renderer, attr_surface);
-        SDL_Rect attr_rect = {50, 120 + i * 40, attr_surface->w, attr_surface->h};
+        SDL_Rect attr_rect = {stat_x, y_start + i * y_spacing, attr_surface->w, attr_surface->h};
         SDL_RenderCopy(renderer, attr_texture, NULL, &attr_rect);
         SDL_FreeSurface(attr_surface);
         SDL_DestroyTexture(attr_texture);
 
+        // Render attribute value
+        snprintf(attribute_text, sizeof(attribute_text), "%d", state->special_stats[i]);
+        SDL_Surface *value_surface = TTF_RenderText_Solid(font, attribute_text, color);
+        SDL_Texture *value_texture = SDL_CreateTextureFromSurface(renderer, value_surface);
+        SDL_Rect value_rect = {value_x, y_start + i * y_spacing, value_surface->w, value_surface->h};
+        SDL_RenderCopy(renderer, value_texture, NULL, &value_rect);
+        SDL_FreeSurface(value_surface);
+        SDL_DestroyTexture(value_texture);
+
         // Highlight the selected attribute
         if (i == state->selector_position) {
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            SDL_Rect highlight_rect = {45, 120 + i * 40 - 5, 150, 30}; // Adjust dimensions for the highlight
+            SDL_Rect highlight_rect = {stat_x - 10, y_start + i * y_spacing - 5, value_x - stat_x + 50, y_spacing - 5};
             SDL_RenderDrawRect(renderer, &highlight_rect);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         }
     }
+        // Render attribute description
+        const int description_x = 350; // Adjusted description position
+        const int description_y = 300;
+        const char *descriptions[][3] = {
+            {"Strength is a measure of your raw physical power.",
+            "It affects how much you can carry and",
+            "determines the effectiveness of melee attacks."},
 
-    // Render attribute description
-    render_attribute_description(renderer, font, state->selector_position);
+            {"Perception is your environmental awareness",
+            "and 'sixth sense,' and affects weapon",
+            "accuracy in V.A.T.S."},
+
+            {"Endurance is a measure of your overall",
+            "physical fitness. It affects your total health,",
+            "and your resistance to damage and radiation."},
+
+            {"Charisma is your ability to charm and convince.",
+            "It affects your success in persuasion and",
+            "prices when you barter."},
+
+            {"Intelligence is a measure of your mental acuity.",
+            "It affects the number of Experience Points",
+            "earned."},
+
+            {"Agility is a measure of your finesse and reflexes.",
+            "It affects the number of action points in V.A.T.S.",
+            "and your ability to sneak."},
+
+            {"Luck is a measure of your general good fortune.",
+            "It affects the recharge rate of critical hits."}
+        };
+        for (int i = 0; i < 3; i++) {
+            if (descriptions[state->selector_position][i] == NULL) break;
+
+            SDL_Surface *desc_surface = TTF_RenderText_Solid(font, descriptions[state->selector_position][i], color);
+            SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
+            SDL_Rect desc_rect = {description_x, description_y + i * 25, desc_surface->w, desc_surface->h};
+            SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
+            SDL_FreeSurface(desc_surface);
+            SDL_DestroyTexture(desc_texture);
+        }
 }
-
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, GameState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
@@ -620,7 +671,7 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, GameState *stat
         }
     }
 
-        float offset = (-1.0f + progress) * state->subtab_animation_offset;
+        float offset = (-1.0f + progress) * state->subtab_animation_offset; // Control direction of animation by linear interpolation
 
     // Render each subtab
     for (int i = 0; i < NUM_SUBTABS; i++) {
