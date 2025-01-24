@@ -270,7 +270,7 @@ void render_special_animation(SDL_Renderer *renderer, GameState *state) {
 
     SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
     if (current_frame) {
-        SDL_Rect dest_rect = {415, 65, 225, 225}; // Position and size of animation
+        SDL_Rect dest_rect = {415, 65, 275, 225}; // Position and size of animation
         SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
     }
 }
