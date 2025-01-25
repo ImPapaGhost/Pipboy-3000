@@ -5,14 +5,14 @@
       "name": "Debug PipBoy",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/PipBoy3000.exe",
+      "program": "C:/Users/Jake/Documents/Pipboy3000/PipBoy3000.exe",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
+      "cwd": "C:/Users/Jake/Documents/Pipboy3000",
       "environment": [],
       "externalConsole": true,
       "MIMode": "gdb",
-      "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",

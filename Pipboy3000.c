@@ -64,6 +64,8 @@ typedef struct {
     int ap;
     int max_ap;
     int experience;
+    int current_xp;         // Current XP the player has
+    int xp_for_next_level;  // XP required for the next level
     int stimpaks;
     int radaways;
     char perks[10][50];
@@ -87,20 +89,20 @@ void play_sound(const char *file) {
     Mix_FreeChunk(sound);
 }
 
-void play_animation(SDL_Renderer *renderer, SDL_Texture *frames[], int frame_count) {
+void play_animation(SDL_Renderer *renderer, SDL_Texture *frames[], int frame_count, int frame_delay) {
     for (int i = 0; i < frame_count; i++) {
         if (frames[i]) {
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, frames[i], NULL, NULL);
-            SDL_RenderPresent(renderer);
-            SDL_Delay(1000 / FRAME_RATE);
+            SDL_RenderClear(renderer);                     // Clear the renderer
+            SDL_RenderCopy(renderer, frames[i], NULL, NULL); // Render the current frame
+            SDL_RenderPresent(renderer);                  // Present the frame
+            SDL_Delay(frame_delay);                       // Add delay for frame timing
         }
     }
 }
 
 void show_boot_animation(SDL_Renderer *renderer) {
-    const int NUM_BOOTUP_FRAMES = 119;
-    const int NUM_BOOTBOY_FRAMES = 14;
+    const int NUM_BOOTUP_FRAMES = 119;  // Number of bootup frames
+    const int NUM_BOOTBOY_FRAMES = 14; // Number of bootboy frames
 
     SDL_Texture *bootup_frames[NUM_BOOTUP_FRAMES];
     SDL_Texture *bootboy_frames[NUM_BOOTBOY_FRAMES];
@@ -110,6 +112,7 @@ void show_boot_animation(SDL_Renderer *renderer) {
 
     char path[256];
 
+    // Load bootup frames
     for (int i = 0; i < NUM_BOOTUP_FRAMES; i++) {
         snprintf(path, sizeof(path), "BOOT/BOOTUP/%d.jpg", i);
         SDL_Surface *surface = IMG_Load(path);
@@ -118,6 +121,7 @@ void show_boot_animation(SDL_Renderer *renderer) {
         SDL_FreeSurface(surface);
     }
 
+    // Load bootboy frames
     for (int i = 0; i < NUM_BOOTBOY_FRAMES; i++) {
         snprintf(path, sizeof(path), "BOOT/BootBoy/%d.jpg", i);
         SDL_Surface *surface = IMG_Load(path);
@@ -126,16 +130,23 @@ void show_boot_animation(SDL_Renderer *renderer) {
         SDL_FreeSurface(surface);
     }
 
-    play_animation(renderer, bootup_frames, NUM_BOOTUP_FRAMES);
-    play_animation(renderer, bootboy_frames, NUM_BOOTBOY_FRAMES);
+    // Play bootup animation with a slower frame delay (e.g., 150ms)
+    play_animation(renderer, bootup_frames, NUM_BOOTUP_FRAMES, 125);
 
+    // Play bootboy animation with a slower frame delay (e.g., 200ms)
+    play_animation(renderer, bootboy_frames, NUM_BOOTBOY_FRAMES, 140);
+
+    // Free bootup textures
     for (int i = 0; i < NUM_BOOTUP_FRAMES; i++) {
         if (bootup_frames[i]) SDL_DestroyTexture(bootup_frames[i]);
     }
+
+    // Free bootboy textures
     for (int i = 0; i < NUM_BOOTBOY_FRAMES; i++) {
         if (bootboy_frames[i]) SDL_DestroyTexture(bootboy_frames[i]);
     }
 }
+
 SDL_Texture *selectline_texture = NULL;
 
 void load_selectline(SDL_Renderer *renderer) {
@@ -205,6 +216,8 @@ void initialize_pip_state(PipState *state) {
     state->experience = 0;     // Starting experience
     state->stimpaks = 0; // Starting value
     state->radaways = 0; // Starting value
+    state->current_xp = 50;         // Start with 50 XP
+    state->xp_for_next_level = 100; // XP needed for level 2
 
     // Initialize perks to empty
     for (int i = 0; i < 10; i++) {
@@ -216,6 +229,16 @@ void initialize_pip_state(PipState *state) {
         for (int j = 0; j < 10; j++) {
             state->special_animations[i][j] = NULL;
         }
+    }
+}
+
+void add_experience(PipState *state, int xp) {
+    state->current_xp += xp;
+    if (state->current_xp >= state->xp_for_next_level) {
+        state->current_xp -= state->xp_for_next_level; // Rollover XP
+        state->level += 1;                            // Level up
+        state->xp_for_next_level += 50;               // Increase XP threshold
+        printf("Level up! Current level: %d\n", state->level);
     }
 }
 
@@ -242,7 +265,6 @@ void load_special_animations(SDL_Renderer *renderer, PipState *state) {
             }
             frame_number++;
         }
-
 
         // Fill remaining slots with NULL
         for (int j = frame_count; j < 10; j++) {
@@ -282,7 +304,6 @@ void render_special_animation(SDL_Renderer *renderer, PipState *state) {
 void load_special_stats_from_csv(const char *file_path, PipState *state) {
     FILE *file = fopen(file_path, "r");
 
-
     char line[256];
     int i = 0;
     while (fgets(line, sizeof(line), file) && i < 7) {
@@ -310,7 +331,6 @@ void render_ap_bar(SDL_Renderer *renderer) {
     // Load the decorative PNG texture
     SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
 
-
     // Define the position and size of the ap container
     int bar_width = 145;  // Adjust based on design
     int bar_x = SCREEN_WIDTH - bar_width - 100; // Align with AP text
@@ -324,20 +344,78 @@ void render_ap_bar(SDL_Renderer *renderer) {
     SDL_DestroyTexture(bar);
 }
 
-void render_level_xp_background(SDL_Renderer *renderer) {
+void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
+    // Load the decorative texture for the background
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
 
-
-    // Define the position and size of the ap background
-    int bg_width = 300; // Adjust width to fit the Level/XP text
-    int bg_height = 35; // Adjust height as needed
-    int bg_x = SCREEN_WIDTH / 2 - bg_width / 2; // Center-align like the Level/XP text
-    int bg_y = 425; // Adjust y-coordinate for placement
+    // Define the position and size of the decorative box
+    int bg_width = 300;  // Width of the decorative box
+    int bg_height = 35;  // Height of the decorative box
+    int bg_x = (SCREEN_WIDTH / 2) - (bg_width / 2); // Center horizontally
+    int bg_y = 425;       // Position above AP box but below HP text
     SDL_Rect background_rect = {bg_x, bg_y, bg_width, bg_height};
+
+    // Tint the decorative box green
     SDL_SetTextureColorMod(background, 0, 255, 0);
-    SDL_RenderCopy(renderer, background, NULL, &background_rect); // Render the texture
-    SDL_DestroyTexture(background); // Clean up the texture after rendering
+
+    // Render the decorative box
+    SDL_RenderCopy(renderer, background, NULL, &background_rect);
+    SDL_DestroyTexture(background); // Free the texture after rendering
+
+    // Define XP bar dimensions (inside the decorative box)
+    int bar_width = bg_width - 100; // Add padding inside the box
+    int bar_height = 15;           // Height of the XP bar
+    int bar_x = bg_x + 90;         // Padding inside the box
+    int bar_y = bg_y + 10;         // Center vertically inside the box
+
+    // Calculate XP progress
+    float xp_progress = (float)(state->current_xp) / state->xp_for_next_level;
+    if (xp_progress > 1.0f) xp_progress = 1.0f;
+
+    // Draw XP bar background (dark green)
+    SDL_SetRenderDrawColor(renderer, 0, 50, 0, 255);
+    SDL_Rect bar_background_rect = {bar_x, bar_y, bar_width, bar_height};
+    SDL_RenderFillRect(renderer, &bar_background_rect);
+
+    // Draw XP bar fill (bright green)
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_Rect bar_fill_rect = {bar_x, bar_y, (int)(bar_width * xp_progress), bar_height};
+    SDL_RenderFillRect(renderer, &bar_fill_rect);
+
+    // Draw XP bar border
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_RenderDrawRect(renderer, &bar_background_rect);
+
+    // Render LEVEL and XP text around the bar
+    TTF_Font *font = TTF_OpenFont("monofonto.ttf", 20);
+    SDL_Color color = {0, 255, 0, 255}; // Bright green text
+
+    // Render LEVEL text
+    char level_text[20];
+    snprintf(level_text, sizeof(level_text), "LEVEL %d", state->level);
+    SDL_Surface *level_surface = TTF_RenderText_Solid(font, level_text, color);
+    SDL_Texture *level_texture = SDL_CreateTextureFromSurface(renderer, level_surface);
+    SDL_Rect level_rect = {bg_x + 5, bg_y + 5, level_surface->w, level_surface->h}; // Positioned clearly above the XP bar
+    SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
+    SDL_FreeSurface(level_surface);
+    SDL_DestroyTexture(level_texture);
+
+    // Render XP text
+    /* char xp_text[20];
+    snprintf(xp_text, sizeof(xp_text), "XP %d", state->current_xp);
+    SDL_Surface *xp_surface = TTF_RenderText_Solid(font, xp_text, color);
+    SDL_Texture *xp_texture = SDL_CreateTextureFromSurface(renderer, xp_surface);
+    SDL_Rect xp_rect = {bg_x + bg_width + 10, bg_y + 7, xp_surface->w, xp_surface->h}; // Positioned correctly beside the XP bar
+    SDL_RenderCopy(renderer, xp_texture, NULL, &xp_rect);
+    SDL_FreeSurface(xp_surface);
+    SDL_DestroyTexture(xp_texture); */
+
+    TTF_CloseFont(font);
+
+    // Reset render color to default
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
+
 
 
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
@@ -414,18 +492,6 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     TTF_CloseFont(tab_font);
 }
 
-/*void render_static_overlays(SDL_Renderer *renderer) {
-    SDL_Texture *category_line = IMG_LoadTexture(renderer, "STAT/PIPBAR1.jpg");
-     if (!category_line) {
-        // Log an error if the texture fails to load
-        // fprintf(stderr, "Failed to load PIPBAR1.jpg: %s\n", SDL_GetError());
-        return;
-    }
-    SDL_Rect line_rect = {0, 0, SCREEN_WIDTH, 10};  // Adjust dimensions and position
-    SDL_RenderCopy(renderer, category_line, NULL, &line_rect);
-    SDL_DestroyTexture(category_line);
-}*/
-
 void render_attribute_description(SDL_Renderer *renderer, TTF_Font *font, int selector_position) {
     // Manually pre-split descriptions into lines
     const char *descriptions[][5] = {
@@ -478,7 +544,6 @@ void render_attribute_description(SDL_Renderer *renderer, TTF_Font *font, int se
     }
 }
 
-
 void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
@@ -499,45 +564,32 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     }
 
     // Render general stats at the bottom
+    // Create a larger font for HP text
+    TTF_Font *hp_font = TTF_OpenFont("monofonto.ttf", 20); // Adjust size as needed
     char hp_text[20];
     snprintf(hp_text, sizeof(hp_text), "HP %d/%d", state->health, state->max_health);
-    SDL_Surface *hp_surface = TTF_RenderText_Solid(font, hp_text, color);
+    SDL_Surface *hp_surface = TTF_RenderText_Solid(hp_font, hp_text, color);
     SDL_Texture *hp_texture = SDL_CreateTextureFromSurface(renderer, hp_surface);
     SDL_Rect hp_rect = {115, 430, hp_surface->w, hp_surface->h}; // Left aligned
     SDL_RenderCopy(renderer, hp_texture, NULL, &hp_rect);
     SDL_FreeSurface(hp_surface);
     SDL_DestroyTexture(hp_texture);
+    TTF_CloseFont(hp_font); // Clean up the HP font
 
-    char level_text[20];
-    snprintf(level_text, sizeof(level_text), "Level %d XP: %d", state->level, state->experience);
-    SDL_Surface *level_surface = TTF_RenderText_Solid(font, level_text, color);
-    SDL_Texture *level_texture = SDL_CreateTextureFromSurface(renderer, level_surface);
-    SDL_Rect level_rect = {SCREEN_WIDTH / 2 - level_surface->w / 2, 430, level_surface->w, level_surface->h};
-    SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
-    SDL_FreeSurface(level_surface);
-    SDL_DestroyTexture(level_texture);
-
+    TTF_Font *ap_font = TTF_OpenFont("monofonto.ttf", 20); // Adjust size as needed
     char ap_text[20];
     snprintf(ap_text, sizeof(ap_text), "AP %d/%d", state->ap, state->max_ap);
-    SDL_Surface *ap_surface = TTF_RenderText_Solid(font, ap_text, color);
+    SDL_Surface *ap_surface = TTF_RenderText_Solid(ap_font, ap_text, color);
     SDL_Texture *ap_texture = SDL_CreateTextureFromSurface(renderer, ap_surface);
     SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 110, 430, ap_surface->w, ap_surface->h}; // Right aligned
     SDL_RenderCopy(renderer, ap_texture, NULL, &ap_rect);
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
+    TTF_CloseFont(ap_font); // Clean up the AP font
 }
 
 void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
-
-    // Render title
-    /*const char *status_title = "Status";
-    SDL_Surface *title_surface = TTF_RenderText_Solid(font, status_title, color);
-    SDL_Texture *title_texture = SDL_CreateTextureFromSurface(renderer, title_surface);
-    SDL_Rect title_rect = {50, 150, title_surface->w, title_surface->h};
-    SDL_RenderCopy(renderer, title_texture, NULL, &title_rect);
-    SDL_FreeSurface(title_surface);
-    SDL_DestroyTexture(title_texture); */
 
     // Render Vault Boy animation
     render_vaultboy(renderer);
@@ -579,15 +631,6 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
 
 void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
-
-    // Render title
-    /*const char *special_title = "SPECIAL";
-    SDL_Surface *title_surface = TTF_RenderText_Solid(font, special_title, color);
-    SDL_Texture *title_texture = SDL_CreateTextureFromSurface(renderer, title_surface);
-    SDL_Rect title_rect = {50, 50, title_surface->w, title_surface->h}; // Adjusted title position
-    SDL_RenderCopy(renderer, title_texture, NULL, &title_rect);
-    SDL_FreeSurface(title_surface);
-    SDL_DestroyTexture(title_texture); */
 
     // Render SPECIAL attributes list
     const char *attributes[] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
@@ -643,6 +686,7 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
         SDL_FreeSurface(desc_surface);
         SDL_DestroyTexture(desc_texture);
 }
+
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
@@ -709,9 +753,6 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
 
     TTF_CloseFont(subtab_font);
 }
-
-
-
 
 void render_inv_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
@@ -818,6 +859,10 @@ void handle_navigation(SDL_Event *event, PipState *state) {
                     state->selector_position = (state->selector_position + 1) % 7;
                 }
                 break;
+                // Simulate gaining 10 XP when pressing 'x' (for testing)
+            case SDLK_x:
+                add_experience(state, 10);
+                break;
         }
     }
 }
@@ -911,14 +956,14 @@ int main(int argc, char *argv[]) {
         SDL_RenderClear(renderer);
         render_health_background(renderer); // Render HP bar
         render_ap_bar(renderer);           // Render AP bar
-        render_level_xp_background(renderer); // Render Level/XP bar
+        render_level_xp_background(renderer, &pip_state); // Render XP bar
         render_tabs(renderer, font, &pip_state); // Render the tabs with the selector line
         render_current_tab(renderer, font, &pip_state); // Render active tab content
 
         if (pip_state.current_tab == TAB_STAT && pip_state.current_subtab == SUBTAB_SPECIAL) {
             render_special_animation(renderer, &pip_state); // Render SPECIAL animations if applicable
         }
-
+        
         SDL_RenderPresent(renderer);
         SDL_Delay(1000 / FRAME_RATE);
     }
