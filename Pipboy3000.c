@@ -297,7 +297,7 @@ void render_health_background(SDL_Renderer *renderer) {
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOXHP1.jpg");
 
     // Define the position and size of the decorative container
-    SDL_Rect background_rect = {55, 425, 190, 30}; // Adjust based on x, y, width, height
+    SDL_Rect background_rect = {110, 425, 135, 35}; // Adjust based on x, y, width, height
     SDL_SetTextureColorMod(background, 0, 255, 0);
     // Render the texture
     SDL_RenderCopy(renderer, background, NULL, &background_rect);
@@ -312,10 +312,10 @@ void render_ap_bar(SDL_Renderer *renderer) {
 
 
     // Define the position and size of the ap container
-    int bar_width = 195;  // Adjust based on design
-    int bar_x = SCREEN_WIDTH - bar_width - 50; // Align with AP text
+    int bar_width = 145;  // Adjust based on design
+    int bar_x = SCREEN_WIDTH - bar_width - 100; // Align with AP text
     int bar_y = 425; // Same y-coordinate as the AP text
-    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 30};
+    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 35};
     SDL_SetTextureColorMod(bar, 0, 255, 0);
     // Render the texture
     SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
@@ -330,7 +330,7 @@ void render_level_xp_background(SDL_Renderer *renderer) {
 
     // Define the position and size of the ap background
     int bg_width = 300; // Adjust width to fit the Level/XP text
-    int bg_height = 30; // Adjust height as needed
+    int bg_height = 35; // Adjust height as needed
     int bg_x = SCREEN_WIDTH / 2 - bg_width / 2; // Center-align like the Level/XP text
     int bg_y = 425; // Adjust y-coordinate for placement
     SDL_Rect background_rect = {bg_x, bg_y, bg_width, bg_height};
@@ -367,9 +367,9 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     // Render the CATEGORYLINE graphic (background line for all tabs)
     if (categoryline_texture) {
         SDL_Rect categoryline_rect = {
-            tab_x - 150,                // Adjust to extend slightly to the left
-            tab_y - -32,               // Adjust to appear slightly above the tabs
-            total_tab_width + 300,     // Adjust to match the width of tabs
+            tab_x - 90,                // Adjust to extend slightly to the left
+            tab_y - -32,               // Adjust to appear slightly below the tabs
+            total_tab_width + 175,     // Adjust to match the width of tabs
             12                         // Height with padding
         };
         SDL_SetTextureColorMod(categoryline_texture, 0, 255, 0); // Bright green for active tab
@@ -500,10 +500,10 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
 
     // Render general stats at the bottom
     char hp_text[20];
-    snprintf(hp_text, sizeof(hp_text), "HP: %d/%d", state->health, state->max_health);
+    snprintf(hp_text, sizeof(hp_text), "HP %d/%d", state->health, state->max_health);
     SDL_Surface *hp_surface = TTF_RenderText_Solid(font, hp_text, color);
     SDL_Texture *hp_texture = SDL_CreateTextureFromSurface(renderer, hp_surface);
-    SDL_Rect hp_rect = {60, 430, hp_surface->w, hp_surface->h}; // Left aligned
+    SDL_Rect hp_rect = {115, 430, hp_surface->w, hp_surface->h}; // Left aligned
     SDL_RenderCopy(renderer, hp_texture, NULL, &hp_rect);
     SDL_FreeSurface(hp_surface);
     SDL_DestroyTexture(hp_texture);
@@ -518,10 +518,10 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_DestroyTexture(level_texture);
 
     char ap_text[20];
-    snprintf(ap_text, sizeof(ap_text), "AP: %d/%d", state->ap, state->max_ap);
+    snprintf(ap_text, sizeof(ap_text), "AP %d/%d", state->ap, state->max_ap);
     SDL_Surface *ap_surface = TTF_RenderText_Solid(font, ap_text, color);
     SDL_Texture *ap_texture = SDL_CreateTextureFromSurface(renderer, ap_surface);
-    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 70, 430, ap_surface->w, ap_surface->h}; // Right aligned
+    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 110, 430, ap_surface->w, ap_surface->h}; // Right aligned
     SDL_RenderCopy(renderer, ap_texture, NULL, &ap_rect);
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
@@ -531,27 +531,27 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
     SDL_Color color = {0, 255, 0, 255};
 
     // Render title
-    const char *status_title = "Status";
+    /*const char *status_title = "Status";
     SDL_Surface *title_surface = TTF_RenderText_Solid(font, status_title, color);
     SDL_Texture *title_texture = SDL_CreateTextureFromSurface(renderer, title_surface);
     SDL_Rect title_rect = {50, 150, title_surface->w, title_surface->h};
     SDL_RenderCopy(renderer, title_texture, NULL, &title_rect);
     SDL_FreeSurface(title_surface);
-    SDL_DestroyTexture(title_texture);
+    SDL_DestroyTexture(title_texture); */
 
     // Render Vault Boy animation
     render_vaultboy(renderer);
 
      // Render Stimpak Background
     SDL_Texture *stimpak_background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    SDL_Rect stimpak_rect = {55, 390, 100, 30}; // Adjust based on position and size
+    SDL_Rect stimpak_rect = {110, 385, 100, 35}; // Adjust based on position and size
     SDL_SetTextureColorMod(stimpak_background, 100, 255, 100); // Green tint
     SDL_RenderCopy(renderer, stimpak_background, NULL, &stimpak_rect);
     SDL_DestroyTexture(stimpak_background);
 
     // Render RadAway Background
     SDL_Texture *radaway_background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    SDL_Rect radaway_rect = {215, 390, 100, 30}; // Adjust position to the right of Stimpak
+    SDL_Rect radaway_rect = {225, 385, 100, 35}; // Adjust position to the right of Stimpak
     SDL_SetTextureColorMod(radaway_background, 100, 255, 100); // Green tint
     SDL_RenderCopy(renderer, radaway_background, NULL, &radaway_rect);
     SDL_DestroyTexture(radaway_background);
@@ -561,7 +561,7 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
     snprintf(stimpak_text, sizeof(stimpak_text), "Stimpak (%d)", state->stimpaks);
     SDL_Surface *stimpak_surface = TTF_RenderText_Solid(font, stimpak_text, color);
     SDL_Texture *stimpak_texture = SDL_CreateTextureFromSurface(renderer, stimpak_surface);
-    SDL_Rect stimpak_text_rect = {60, 395, stimpak_surface->w, stimpak_surface->h}; // Center inside background
+    SDL_Rect stimpak_text_rect = {115, 390, stimpak_surface->w, stimpak_surface->h}; // Center inside background
     SDL_RenderCopy(renderer, stimpak_texture, NULL, &stimpak_text_rect);
     SDL_FreeSurface(stimpak_surface);
     SDL_DestroyTexture(stimpak_texture);
@@ -571,7 +571,7 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
     snprintf(radaway_text, sizeof(radaway_text), "RadAway (%d)", state->radaways);
     SDL_Surface *radaway_surface = TTF_RenderText_Solid(font, radaway_text, color);
     SDL_Texture *radaway_texture = SDL_CreateTextureFromSurface(renderer, radaway_surface);
-    SDL_Rect radaway_text_rect = {220, 395, radaway_surface->w, radaway_surface->h}; // Center inside background
+    SDL_Rect radaway_text_rect = {230, 390, radaway_surface->w, radaway_surface->h}; // Center inside background
     SDL_RenderCopy(renderer, radaway_texture, NULL, &radaway_text_rect);
     SDL_FreeSurface(radaway_surface);
     SDL_DestroyTexture(radaway_texture);
@@ -581,19 +581,19 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
     SDL_Color color = {0, 255, 0, 255};
 
     // Render title
-    const char *special_title = "SPECIAL";
+    /*const char *special_title = "SPECIAL";
     SDL_Surface *title_surface = TTF_RenderText_Solid(font, special_title, color);
     SDL_Texture *title_texture = SDL_CreateTextureFromSurface(renderer, title_surface);
     SDL_Rect title_rect = {50, 50, title_surface->w, title_surface->h}; // Adjusted title position
     SDL_RenderCopy(renderer, title_texture, NULL, &title_rect);
     SDL_FreeSurface(title_surface);
-    SDL_DestroyTexture(title_texture);
+    SDL_DestroyTexture(title_texture); */
 
     // Render SPECIAL attributes list
     const char *attributes[] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
     char attribute_text[50];
-    int stat_x = 75; // X position for attribute names
-    int value_x = 300; // X position for stat values
+    int stat_x = 130; // X position for attribute names
+    int value_x = 360; // X position for stat values
     int y_start = 100; // Starting Y position
     int y_spacing = 40; // Spacing between rows
 
@@ -624,46 +624,24 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
         }
     }
         // Render attribute description
-        const int description_x = 350; // Adjusted description position
-        const int description_y = 300;
-        const char *descriptions[][3] = {
-            {"Strength is a measure of your raw physical power.",
-            "It affects how much you can carry and",
-            "determines the effectiveness of melee attacks."},
+        const char *descriptions[] = {
+        "Strength is a measure of your raw physical power. It affects how much you can carry and determines the effectiveness of melee attacks.",
+        "Perception is your environmental awareness and 'sixth sense,' and affects weapon accuracy in V.A.T.S.",
+        "Endurance is a measure of your overall physical fitness. It affects your total health, and your resistance to damage and radiation.",
+        "Charisma is your ability to charm and convince. It affects your success in persuasion and prices when you barter.",
+        "Intelligence is a measure of your mental acuity. It affects the number of Experience Points earned.",
+        "Agility is a measure of your finesse and reflexes. It affects the number of action points in V.A.T.S. and your ability to sneak.",
+        "Luck is a measure of your general good fortune. It affects the recharge rate of critical hits."
+    };
 
-            {"Perception is your environmental awareness",
-            "and 'sixth sense,' and affects weapon",
-            "accuracy in V.A.T.S."},
+        SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, descriptions[state->selector_position], color, 300); // 300 = max width
+        SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
 
-            {"Endurance is a measure of your overall",
-            "physical fitness. It affects your total health,",
-            "and your resistance to damage and radiation."},
+        SDL_Rect desc_rect = {410, 300, desc_surface->w, desc_surface->h};
+        SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
 
-            {"Charisma is your ability to charm and convince.",
-            "It affects your success in persuasion and",
-            "prices when you barter."},
-
-            {"Intelligence is a measure of your mental acuity.",
-            "It affects the number of Experience Points",
-            "earned."},
-
-            {"Agility is a measure of your finesse and reflexes.",
-            "It affects the number of action points in V.A.T.S.",
-            "and your ability to sneak."},
-
-            {"Luck is a measure of your general good fortune.",
-            "It affects the recharge rate of critical hits."}
-        };
-        for (int i = 0; i < 3; i++) {
-            if (descriptions[state->selector_position][i] == NULL) break;
-
-            SDL_Surface *desc_surface = TTF_RenderText_Solid(font, descriptions[state->selector_position][i], color);
-            SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
-            SDL_Rect desc_rect = {description_x, description_y + i * 25, desc_surface->w, desc_surface->h};
-            SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
-            SDL_FreeSurface(desc_surface);
-            SDL_DestroyTexture(desc_texture);
-        }
+        SDL_FreeSurface(desc_surface);
+        SDL_DestroyTexture(desc_texture);
 }
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
