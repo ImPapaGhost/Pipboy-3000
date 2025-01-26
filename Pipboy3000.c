@@ -89,6 +89,18 @@ void play_sound(const char *file) {
     Mix_FreeChunk(sound);
 }
 
+typedef struct {
+    int head;
+    int left_arm;
+    int right_arm;
+    int torso;
+    int left_leg;
+    int right_leg;
+} DamageBars;
+
+// Initialize damage bars with full health
+DamageBars damage_bars = {100, 100, 100, 100, 100, 100};
+
 void play_animation(SDL_Renderer *renderer, SDL_Texture *frames[], int frame_count, int frame_delay) {
     for (int i = 0; i < frame_count; i++) {
         if (frames[i]) {
@@ -131,7 +143,7 @@ void show_boot_animation(SDL_Renderer *renderer) {
     }
 
     // Play bootup animation with a slower frame delay (e.g., 150ms)
-    play_animation(renderer, bootup_frames, NUM_BOOTUP_FRAMES, 125);
+    play_animation(renderer, bootup_frames, NUM_BOOTUP_FRAMES, 90);
 
     // Play bootboy animation with a slower frame delay (e.g., 200ms)
     play_animation(renderer, bootboy_frames, NUM_BOOTBOY_FRAMES, 140);
@@ -190,11 +202,45 @@ void free_vaultboy_frames() {
     }
 }
 
+void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int height, int health) {
+    // Draw the background (gray bar)
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Dark gray
+    SDL_Rect background_rect = {x, y, width, height};
+    SDL_RenderFillRect(renderer, &background_rect);
+
+    // Draw the health portion (green to red based on health percentage)
+    SDL_Color bar_color = {255 - (2.55 * health), 2.55 * health, 0, 255}; // Gradient
+    SDL_SetRenderDrawColor(renderer, bar_color.r, bar_color.g, bar_color.b, bar_color.a);
+    SDL_Rect health_rect = {x, y, (width * health) / 100, height};
+    SDL_RenderFillRect(renderer, &health_rect);
+
+    // Draw the border (bright green)
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    SDL_RenderDrawRect(renderer, &background_rect);
+
+    // Reset render color to black for safety
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+}
+
+
 void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
-        SDL_Rect dest_rect = {325, 125, 150, 250};
-        SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // SDL texture used to turn vault boy greeen
+        SDL_Rect dest_rect = {325, 120, 130, 230};
+
+        // Render the Vault Boy with green tint
+        SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // Green tint
         SDL_RenderCopy(renderer, vaultboy_frames[vaultboy_frame_index], NULL, &dest_rect);
+
+        // Reset the texture color mod to default
+        SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 255, 255, 255);
+
+        // Render damage bars
+        render_damage_bar(renderer, 360, 110, 40, 5, damage_bars.head);       // Head
+        render_damage_bar(renderer, 450, 200, 40, 5, damage_bars.left_arm);   // Left Arm
+        render_damage_bar(renderer, 280, 200, 40, 5, damage_bars.right_arm);  // Right Arm
+        render_damage_bar(renderer, 360, 350, 40, 5, damage_bars.torso);      // Torso
+        render_damage_bar(renderer, 450, 280, 40, 5, damage_bars.left_leg);   // Left Leg
+        render_damage_bar(renderer, 280, 280, 40, 5, damage_bars.right_leg);  // Right Leg
     }
 }
 
@@ -240,6 +286,15 @@ void add_experience(PipState *state, int xp) {
         state->xp_for_next_level += 50;               // Increase XP threshold
         printf("Level up! Current level: %d\n", state->level);
     }
+}
+
+void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int torso, int left_leg, int right_leg) {
+    bars->head = head;
+    bars->left_arm = left_arm;
+    bars->right_arm = right_arm;
+    bars->torso = torso;
+    bars->left_leg = left_leg;
+    bars->right_leg = right_leg;
 }
 
 void load_special_animations(SDL_Renderer *renderer, PipState *state) {
@@ -399,16 +454,6 @@ void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
     SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
     SDL_FreeSurface(level_surface);
     SDL_DestroyTexture(level_texture);
-
-    // Render XP text
-    /* char xp_text[20];
-    snprintf(xp_text, sizeof(xp_text), "XP %d", state->current_xp);
-    SDL_Surface *xp_surface = TTF_RenderText_Solid(font, xp_text, color);
-    SDL_Texture *xp_texture = SDL_CreateTextureFromSurface(renderer, xp_surface);
-    SDL_Rect xp_rect = {bg_x + bg_width + 10, bg_y + 7, xp_surface->w, xp_surface->h}; // Positioned correctly beside the XP bar
-    SDL_RenderCopy(renderer, xp_texture, NULL, &xp_rect);
-    SDL_FreeSurface(xp_surface);
-    SDL_DestroyTexture(xp_texture); */
 
     TTF_CloseFont(font);
 
@@ -951,7 +996,7 @@ int main(int argc, char *argv[]) {
             vaultboy_frame_index = (vaultboy_frame_index + 1) % NUM_VAULTBOY_FRAMES;
             last_frame_time = current_time;
         }
-
+        
         // Render
         SDL_RenderClear(renderer);
         render_health_background(renderer); // Render HP bar
@@ -963,7 +1008,7 @@ int main(int argc, char *argv[]) {
         if (pip_state.current_tab == TAB_STAT && pip_state.current_subtab == SUBTAB_SPECIAL) {
             render_special_animation(renderer, &pip_state); // Render SPECIAL animations if applicable
         }
-        
+
         SDL_RenderPresent(renderer);
         SDL_Delay(1000 / FRAME_RATE);
     }
