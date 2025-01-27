@@ -751,7 +751,7 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
 
     SDL_Rect desc_rect = {
         410,
-        300 + vertical_offset, // Move description with the animation
+        300, // Move description with the animation
         desc_surface->w,
         desc_surface->h
     };
