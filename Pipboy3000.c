@@ -702,16 +702,10 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
     int y_spacing = 40; // Spacing between rows
 
     for (int i = 0; i < 7; i++) {
-        // Calculate adjusted Y position for selected stat
-        int adjusted_y = y_start + i * y_spacing;
-        if (i == state->selector_position) {
-            adjusted_y += vertical_offset; // Apply animation offset to the selected stat
-        }
-
         // Render attribute name
         SDL_Surface *attr_surface = TTF_RenderText_Solid(font, attributes[i], color);
         SDL_Texture *attr_texture = SDL_CreateTextureFromSurface(renderer, attr_surface);
-        SDL_Rect attr_rect = {stat_x, adjusted_y, attr_surface->w, attr_surface->h};
+        SDL_Rect attr_rect = {stat_x, y_start + i * y_spacing, attr_surface->w, attr_surface->h};
         SDL_RenderCopy(renderer, attr_texture, NULL, &attr_rect);
         SDL_FreeSurface(attr_surface);
         SDL_DestroyTexture(attr_texture);
@@ -720,21 +714,20 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
         snprintf(attribute_text, sizeof(attribute_text), "%d", state->special_stats[i]);
         SDL_Surface *value_surface = TTF_RenderText_Solid(font, attribute_text, color);
         SDL_Texture *value_texture = SDL_CreateTextureFromSurface(renderer, value_surface);
-        SDL_Rect value_rect = {value_x, adjusted_y, value_surface->w, value_surface->h};
+        SDL_Rect value_rect = {value_x, y_start + i * y_spacing, value_surface->w, value_surface->h};
         SDL_RenderCopy(renderer, value_texture, NULL, &value_rect);
         SDL_FreeSurface(value_surface);
         SDL_DestroyTexture(value_texture);
-
-        // Highlight the selected attribute
-        if (i == state->selector_position) {
-            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            SDL_Rect highlight_rect = {stat_x - 10, adjusted_y - 5, value_x - stat_x + 50, y_spacing - 5};
-            SDL_RenderDrawRect(renderer, &highlight_rect);
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        }
     }
 
-    // Render attribute description with animation
+    // Render moving highlight box
+    int highlight_y = y_start + state->selector_position * y_spacing + vertical_offset; // Calculate the highlight's Y position
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // Green color for the highlight
+    SDL_Rect highlight_rect = {stat_x - 10, highlight_y - 5, value_x - stat_x + 50, y_spacing - 5};
+    SDL_RenderDrawRect(renderer, &highlight_rect);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Reset color
+
+    // Render description (stays static)
     const char *descriptions[] = {
         "Strength is a measure of your raw physical power. It affects how much you can carry and determines the effectiveness of melee attacks.",
         "Perception is your environmental awareness and 'sixth sense,' and affects weapon accuracy in V.A.T.S.",
@@ -745,21 +738,16 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
         "Luck is a measure of your general good fortune. It affects the recharge rate of critical hits."
     };
 
-    // Apply the vertical offset to the description
     SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, descriptions[state->selector_position], color, 300); // 300 = max width
     SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
 
-    SDL_Rect desc_rect = {
-        410,
-        300,
-        desc_surface->w,
-        desc_surface->h
-    };
+    SDL_Rect desc_rect = {410, 300, desc_surface->w, desc_surface->h}; // Description stays fixed
     SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
 
     SDL_FreeSurface(desc_surface);
     SDL_DestroyTexture(desc_texture);
 }
+
 
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
@@ -925,7 +913,7 @@ void handle_navigation(SDL_Event *event, PipState *state) {
             // SPECIAL Attributes Navigation (W for up, S for down)
             case SDLK_w:
                 if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
-                    state->special_stat_animation_offset = -40; // Move upwards
+                    state->special_stat_animation_offset = -30; // Move upwards
                     state->is_special_stat_animating = true;
                     state->special_stat_animation_start = SDL_GetTicks();
                     state->selector_position = (state->selector_position - 1 + 7) % 7; // Wrap around SPECIAL stats
@@ -934,7 +922,7 @@ void handle_navigation(SDL_Event *event, PipState *state) {
 
             case SDLK_s:
                 if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
-                    state->special_stat_animation_offset = 40; // Move downwards
+                    state->special_stat_animation_offset = 30; // Move downwards
                     state->is_special_stat_animating = true;
                     state->special_stat_animation_start = SDL_GetTicks();
                     state->selector_position = (state->selector_position + 1) % 7; // Wrap around SPECIAL stats
