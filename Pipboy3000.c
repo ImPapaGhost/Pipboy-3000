@@ -225,7 +225,7 @@ void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int heig
 
 void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
-        SDL_Rect dest_rect = {325, 120, 130, 230};
+        SDL_Rect dest_rect = {325, 130, 110, 200};
 
         // Render the Vault Boy with green tint
         SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 0, 255, 0); // Green tint
@@ -235,12 +235,12 @@ void render_vaultboy(SDL_Renderer *renderer) {
         SDL_SetTextureColorMod(vaultboy_frames[vaultboy_frame_index], 255, 255, 255);
 
         // Render damage bars
-        render_damage_bar(renderer, 360, 110, 40, 5, damage_bars.head);       // Head
-        render_damage_bar(renderer, 450, 200, 40, 5, damage_bars.left_arm);   // Left Arm
-        render_damage_bar(renderer, 280, 200, 40, 5, damage_bars.right_arm);  // Right Arm
-        render_damage_bar(renderer, 360, 350, 40, 5, damage_bars.torso);      // Torso
-        render_damage_bar(renderer, 450, 280, 40, 5, damage_bars.left_leg);   // Left Leg
-        render_damage_bar(renderer, 280, 280, 40, 5, damage_bars.right_leg);  // Right Leg
+        render_damage_bar(renderer, 370, 120, 25, 5, damage_bars.head);       // Head
+        render_damage_bar(renderer, 470, 200, 25, 5, damage_bars.left_arm);   // Left Arm
+        render_damage_bar(renderer, 260, 200, 25, 5, damage_bars.right_arm);  // Right Arm
+        render_damage_bar(renderer, 370, 330, 25, 5, damage_bars.torso);      // Torso
+        render_damage_bar(renderer, 470, 280, 25, 5, damage_bars.left_leg);   // Left Leg
+        render_damage_bar(renderer, 260, 280, 25, 5, damage_bars.right_leg);  // Right Leg
     }
 }
 
@@ -373,7 +373,7 @@ void render_health_background(SDL_Renderer *renderer) {
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOXHP1.jpg");
 
     // Define the position and size of the decorative container
-    SDL_Rect background_rect = {110, 425, 135, 35}; // Adjust based on x, y, width, height
+    SDL_Rect background_rect = {110, 430, 135, 30}; // Adjust based on x, y, width, height
     SDL_SetTextureColorMod(background, 0, 255, 0);
     // Render the texture
     SDL_RenderCopy(renderer, background, NULL, &background_rect);
@@ -389,8 +389,8 @@ void render_ap_bar(SDL_Renderer *renderer) {
     // Define the position and size of the ap container
     int bar_width = 145;  // Adjust based on design
     int bar_x = SCREEN_WIDTH - bar_width - 100; // Align with AP text
-    int bar_y = 425; // Same y-coordinate as the AP text
-    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 35};
+    int bar_y = 430; // Same y-coordinate as the AP text
+    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 30};
     SDL_SetTextureColorMod(bar, 0, 255, 0);
     // Render the texture
     SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
@@ -405,9 +405,9 @@ void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
 
     // Define the position and size of the decorative box
     int bg_width = 300;  // Width of the decorative box
-    int bg_height = 35;  // Height of the decorative box
+    int bg_height = 30;  // Height of the decorative box
     int bg_x = (SCREEN_WIDTH / 2) - (bg_width / 2); // Center horizontally
-    int bg_y = 425;       // Position above AP box but below HP text
+    int bg_y = 430;       // Position above AP box but below HP text
     SDL_Rect background_rect = {bg_x, bg_y, bg_width, bg_height};
 
     // Tint the decorative box green
@@ -419,7 +419,7 @@ void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
 
     // Define XP bar dimensions (inside the decorative box)
     int bar_width = bg_width - 100; // Add padding inside the box
-    int bar_height = 15;           // Height of the XP bar
+    int bar_height = 10;           // Height of the XP bar
     int bar_x = bg_x + 90;         // Padding inside the box
     int bar_y = bg_y + 10;         // Center vertically inside the box
 
@@ -450,7 +450,7 @@ void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
     snprintf(level_text, sizeof(level_text), "LEVEL %d", state->level);
     SDL_Surface *level_surface = TTF_RenderText_Solid(font, level_text, color);
     SDL_Texture *level_texture = SDL_CreateTextureFromSurface(renderer, level_surface);
-    SDL_Rect level_rect = {bg_x + 5, bg_y + 5, level_surface->w, level_surface->h}; // Positioned clearly above the XP bar
+    SDL_Rect level_rect = {bg_x + 5, bg_y + 3, level_surface->w, level_surface->h}; // Positioned clearly above the XP bar
     SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
     SDL_FreeSurface(level_surface);
     SDL_DestroyTexture(level_texture);
@@ -615,7 +615,7 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     snprintf(hp_text, sizeof(hp_text), "HP %d/%d", state->health, state->max_health);
     SDL_Surface *hp_surface = TTF_RenderText_Solid(hp_font, hp_text, color);
     SDL_Texture *hp_texture = SDL_CreateTextureFromSurface(renderer, hp_surface);
-    SDL_Rect hp_rect = {115, 430, hp_surface->w, hp_surface->h}; // Left aligned
+    SDL_Rect hp_rect = {115, 432, hp_surface->w, hp_surface->h}; // Left aligned
     SDL_RenderCopy(renderer, hp_texture, NULL, &hp_rect);
     SDL_FreeSurface(hp_surface);
     SDL_DestroyTexture(hp_texture);
@@ -626,7 +626,7 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     snprintf(ap_text, sizeof(ap_text), "AP %d/%d", state->ap, state->max_ap);
     SDL_Surface *ap_surface = TTF_RenderText_Solid(ap_font, ap_text, color);
     SDL_Texture *ap_texture = SDL_CreateTextureFromSurface(renderer, ap_surface);
-    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 110, 430, ap_surface->w, ap_surface->h}; // Right aligned
+    SDL_Rect ap_rect = {SCREEN_WIDTH - ap_surface->w - 110, 432, ap_surface->w, ap_surface->h}; // Right aligned
     SDL_RenderCopy(renderer, ap_texture, NULL, &ap_rect);
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
@@ -641,14 +641,14 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
 
      // Render Stimpak Background
     SDL_Texture *stimpak_background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    SDL_Rect stimpak_rect = {110, 385, 100, 35}; // Adjust based on position and size
+    SDL_Rect stimpak_rect = {110, 395, 100, 30}; // Adjust based on position and size
     SDL_SetTextureColorMod(stimpak_background, 100, 255, 100); // Green tint
     SDL_RenderCopy(renderer, stimpak_background, NULL, &stimpak_rect);
     SDL_DestroyTexture(stimpak_background);
 
     // Render RadAway Background
     SDL_Texture *radaway_background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    SDL_Rect radaway_rect = {225, 385, 100, 35}; // Adjust position to the right of Stimpak
+    SDL_Rect radaway_rect = {225, 395, 100, 30}; // Adjust position to the right of Stimpak
     SDL_SetTextureColorMod(radaway_background, 100, 255, 100); // Green tint
     SDL_RenderCopy(renderer, radaway_background, NULL, &radaway_rect);
     SDL_DestroyTexture(radaway_background);
@@ -658,7 +658,7 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
     snprintf(stimpak_text, sizeof(stimpak_text), "Stimpak (%d)", state->stimpaks);
     SDL_Surface *stimpak_surface = TTF_RenderText_Solid(font, stimpak_text, color);
     SDL_Texture *stimpak_texture = SDL_CreateTextureFromSurface(renderer, stimpak_surface);
-    SDL_Rect stimpak_text_rect = {115, 390, stimpak_surface->w, stimpak_surface->h}; // Center inside background
+    SDL_Rect stimpak_text_rect = {115, 400, stimpak_surface->w, stimpak_surface->h}; // Center inside background
     SDL_RenderCopy(renderer, stimpak_texture, NULL, &stimpak_text_rect);
     SDL_FreeSurface(stimpak_surface);
     SDL_DestroyTexture(stimpak_texture);
@@ -668,7 +668,7 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
     snprintf(radaway_text, sizeof(radaway_text), "RadAway (%d)", state->radaways);
     SDL_Surface *radaway_surface = TTF_RenderText_Solid(font, radaway_text, color);
     SDL_Texture *radaway_texture = SDL_CreateTextureFromSurface(renderer, radaway_surface);
-    SDL_Rect radaway_text_rect = {230, 390, radaway_surface->w, radaway_surface->h}; // Center inside background
+    SDL_Rect radaway_text_rect = {230, 400, radaway_surface->w, radaway_surface->h}; // Center inside background
     SDL_RenderCopy(renderer, radaway_texture, NULL, &radaway_text_rect);
     SDL_FreeSurface(radaway_surface);
     SDL_DestroyTexture(radaway_texture);
@@ -762,7 +762,7 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 18); // Font size for subtabs
+    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 20); // Font size for subtabs
 
     int base_x = 205; // Base x-coordinate for the centered subtab
     int base_y = 65;  // Y-coordinate for subtabs
