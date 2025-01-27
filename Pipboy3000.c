@@ -14,7 +14,7 @@
 #define SCREEN_HEIGHT 480
 #define FRAME_RATE 60
 #define NUM_VAULTBOY_FRAMES 8 // Total frames for VaultBoy animation
-#define SUBTAB_SPACING 75
+#define SUBTAB_SPACING 80
 
 // Utility functions
 SDL_Texture *vaultboy_frames[NUM_VAULTBOY_FRAMES];
@@ -70,9 +70,12 @@ typedef struct {
     int radaways;
     char perks[10][50];
     SDL_Texture *special_animations[7][10]; // 10 frames per SPECIAL animation
-    Uint32 animation_start_time; // Track the start of subtab animation
+    Uint32 subtab_animation_start_time; // Track the start of subtab animation
     int subtab_animation_offset; // Offset for animation during transition
     bool is_animating;           // Whether an animation is in progress
+    Uint32 special_stat_animation_start; // Start time for SPECIAL stat animation
+    int special_stat_animation_offset;   // Vertical offset for animating stat transitions
+    bool is_special_stat_animating;      // Whether a SPECIAL stat animation is active
 } PipState;
 
 PipState pip_state;
@@ -236,8 +239,8 @@ void render_vaultboy(SDL_Renderer *renderer) {
 
         // Render damage bars
         render_damage_bar(renderer, 370, 120, 25, 5, damage_bars.head);       // Head
-        render_damage_bar(renderer, 470, 200, 25, 5, damage_bars.left_arm);   // Left Arm
-        render_damage_bar(renderer, 260, 200, 25, 5, damage_bars.right_arm);  // Right Arm
+        render_damage_bar(renderer, 470, 190, 25, 5, damage_bars.left_arm);   // Left Arm
+        render_damage_bar(renderer, 260, 190, 25, 5, damage_bars.right_arm);  // Right Arm
         render_damage_bar(renderer, 370, 330, 25, 5, damage_bars.torso);      // Torso
         render_damage_bar(renderer, 470, 280, 25, 5, damage_bars.left_leg);   // Left Leg
         render_damage_bar(renderer, 260, 280, 25, 5, damage_bars.right_leg);  // Right Leg
@@ -676,6 +679,19 @@ void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *sta
 
 void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
+    Uint32 current_time = SDL_GetTicks();
+    float animation_progress = 1.0f; // Default to fully completed animation
+
+    if (state->is_special_stat_animating) {
+        animation_progress = (float)(current_time - state->special_stat_animation_start) / 300; // 300ms duration
+        if (animation_progress >= 1.0f) {
+            animation_progress = 1.0f;
+            state->is_special_stat_animating = false; // Mark animation as complete
+        }
+    }
+
+    // Use cubic easing for smoother transitions
+    float vertical_offset = state->special_stat_animation_offset * (-1 + ease_out_cubic(animation_progress));
 
     // Render SPECIAL attributes list
     const char *attributes[] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
@@ -686,10 +702,16 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
     int y_spacing = 40; // Spacing between rows
 
     for (int i = 0; i < 7; i++) {
+        // Calculate adjusted Y position for selected stat
+        int adjusted_y = y_start + i * y_spacing;
+        if (i == state->selector_position) {
+            adjusted_y += vertical_offset; // Apply animation offset to the selected stat
+        }
+
         // Render attribute name
         SDL_Surface *attr_surface = TTF_RenderText_Solid(font, attributes[i], color);
         SDL_Texture *attr_texture = SDL_CreateTextureFromSurface(renderer, attr_surface);
-        SDL_Rect attr_rect = {stat_x, y_start + i * y_spacing, attr_surface->w, attr_surface->h};
+        SDL_Rect attr_rect = {stat_x, adjusted_y, attr_surface->w, attr_surface->h};
         SDL_RenderCopy(renderer, attr_texture, NULL, &attr_rect);
         SDL_FreeSurface(attr_surface);
         SDL_DestroyTexture(attr_texture);
@@ -698,7 +720,7 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
         snprintf(attribute_text, sizeof(attribute_text), "%d", state->special_stats[i]);
         SDL_Surface *value_surface = TTF_RenderText_Solid(font, attribute_text, color);
         SDL_Texture *value_texture = SDL_CreateTextureFromSurface(renderer, value_surface);
-        SDL_Rect value_rect = {value_x, y_start + i * y_spacing, value_surface->w, value_surface->h};
+        SDL_Rect value_rect = {value_x, adjusted_y, value_surface->w, value_surface->h};
         SDL_RenderCopy(renderer, value_texture, NULL, &value_rect);
         SDL_FreeSurface(value_surface);
         SDL_DestroyTexture(value_texture);
@@ -706,13 +728,14 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
         // Highlight the selected attribute
         if (i == state->selector_position) {
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            SDL_Rect highlight_rect = {stat_x - 10, y_start + i * y_spacing - 5, value_x - stat_x + 50, y_spacing - 5};
+            SDL_Rect highlight_rect = {stat_x - 10, adjusted_y - 5, value_x - stat_x + 50, y_spacing - 5};
             SDL_RenderDrawRect(renderer, &highlight_rect);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         }
     }
-        // Render attribute description
-        const char *descriptions[] = {
+
+    // Render attribute description with animation
+    const char *descriptions[] = {
         "Strength is a measure of your raw physical power. It affects how much you can carry and determines the effectiveness of melee attacks.",
         "Perception is your environmental awareness and 'sixth sense,' and affects weapon accuracy in V.A.T.S.",
         "Endurance is a measure of your overall physical fitness. It affects your total health, and your resistance to damage and radiation.",
@@ -722,14 +745,20 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
         "Luck is a measure of your general good fortune. It affects the recharge rate of critical hits."
     };
 
-        SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, descriptions[state->selector_position], color, 300); // 300 = max width
-        SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
+    // Apply the vertical offset to the description
+    SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, descriptions[state->selector_position], color, 300); // 300 = max width
+    SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
 
-        SDL_Rect desc_rect = {410, 300, desc_surface->w, desc_surface->h};
-        SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
+    SDL_Rect desc_rect = {
+        410,
+        300 + vertical_offset, // Move description with the animation
+        desc_surface->w,
+        desc_surface->h
+    };
+    SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
 
-        SDL_FreeSurface(desc_surface);
-        SDL_DestroyTexture(desc_texture);
+    SDL_FreeSurface(desc_surface);
+    SDL_DestroyTexture(desc_texture);
 }
 
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
@@ -762,7 +791,7 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 20); // Font size for subtabs
+    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
 
     int base_x = 205; // Base x-coordinate for the centered subtab
     int base_y = 65;  // Y-coordinate for subtabs
@@ -771,14 +800,14 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     Uint32 current_time = SDL_GetTicks();
     float progress = 1.0f; // Default to fully completed animation
     if (state->is_animating) {
-        progress = (float)(current_time - state->animation_start_time) / 300; // 300ms animation duration
+        progress = (float)(current_time - state->subtab_animation_start_time) / 300; // 300ms animation duration
         if (progress >= 1.0f) {
             progress = 1.0f;
             state->is_animating = false; // End animation
         }
     }
 
-        float offset = (-1.0f + progress) * state->subtab_animation_offset; // Control direction of animation by linear interpolation
+    float offset = (-1.0f + progress) * state->subtab_animation_offset; // Control direction of animation by linear interpolation
 
     // Render each subtab
     for (int i = 0; i < NUM_SUBTABS; i++) {
@@ -879,7 +908,7 @@ void handle_navigation(SDL_Event *event, PipState *state) {
                 if (state->current_tab == TAB_STAT && !state->is_animating) {
                     state->subtab_animation_offset = SUBTAB_SPACING; // Move all subtabs right
                     state->is_animating = true;
-                    state->animation_start_time = SDL_GetTicks();
+                    state->subtab_animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
                 }
                 break;
@@ -888,20 +917,27 @@ void handle_navigation(SDL_Event *event, PipState *state) {
                 if (state->current_tab == TAB_STAT && !state->is_animating) {
                     state->subtab_animation_offset = -SUBTAB_SPACING; // Move all subtabs left
                     state->is_animating = true;
-                    state->animation_start_time = SDL_GetTicks();
+                    state->subtab_animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
                 }
                 break;
 
             // SPECIAL Attributes Navigation (W for up, S for down)
             case SDLK_w:
-                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL) {
-                    state->selector_position = (state->selector_position - 1 + 7) % 7; // 7 attributes
+                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
+                    state->special_stat_animation_offset = -40; // Move upwards
+                    state->is_special_stat_animating = true;
+                    state->special_stat_animation_start = SDL_GetTicks();
+                    state->selector_position = (state->selector_position - 1 + 7) % 7; // Wrap around SPECIAL stats
                 }
                 break;
+
             case SDLK_s:
-                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL) {
-                    state->selector_position = (state->selector_position + 1) % 7;
+                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
+                    state->special_stat_animation_offset = 40; // Move downwards
+                    state->is_special_stat_animating = true;
+                    state->special_stat_animation_start = SDL_GetTicks();
+                    state->selector_position = (state->selector_position + 1) % 7; // Wrap around SPECIAL stats
                 }
                 break;
                 // Simulate gaining 10 XP when pressing 'x' (for testing)
@@ -996,7 +1032,7 @@ int main(int argc, char *argv[]) {
             vaultboy_frame_index = (vaultboy_frame_index + 1) % NUM_VAULTBOY_FRAMES;
             last_frame_time = current_time;
         }
-        
+
         // Render
         SDL_RenderClear(renderer);
         render_health_background(renderer); // Render HP bar
