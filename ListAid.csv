@@ -1,0 +1,6 @@
+Buffout,+Strength,0.2,35,2,INV/Aid/buffout.png
+Cigarette,+CHA +PER -AGI -END,0.1,1,20,INV/Aid/cigarette.png
+Rad Away,-Rads,0.5,40,1,INV/Aid/RadAway.png
+Rad X,+Rad Resist,0.5,40,4,
+Stealth Boy,+Stealth,1,100,1,INV/Aid/stealth_boy.png
+Stimpak,+HP,0.2,50,7,INV/Aid/stimpak.png

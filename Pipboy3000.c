@@ -53,6 +53,20 @@ typedef enum {
     NUM_SUBTABS
 } StatSubTab;
 
+typedef enum {
+    SUBTAB_WEAPONS,
+    SUBTAB_APPAREL,
+    SUBTAB_AID,
+    NUM_INV_SUBTABS
+} InvSubTab;
+
+
+typedef struct {
+    char name[50];   // Item name
+    int quantity;    // Item quantity
+    float weight;    // Item weight
+} invItem;
+
 typedef struct {
     PipboyTab current_tab;
     StatSubTab current_subtab; // STAT subtabs
@@ -76,6 +90,21 @@ typedef struct {
     Uint32 special_stat_animation_start; // Start time for SPECIAL stat animation
     int special_stat_animation_offset;   // Vertical offset for animating stat transitions
     bool is_special_stat_animating;      // Whether a SPECIAL stat animation is active
+    // invItem inv[100];   // Max inv items changed to line below. Changed to pointer for dynamic array of items
+    invItem *weapons;
+    int weapons_count;
+    int weapons_capacity;
+    invItem *apparel;
+    int apparel_count;
+    int apparel_capacity;
+    invItem *aid;
+    int aid_count;
+    int aid_capacity;
+    int inv_scroll_index; // Scroll index for navigation
+    InvSubTab current_inv_subtab;       // Current inv subtab
+    int inv_subtab_animation_offset;   // Animation offset for subtabs
+    bool is_inv_animating;             // Animation flag
+    Uint32 inv_subtab_animation_start_time; // Animation start time
 } PipState;
 
 PipState pip_state;
@@ -145,11 +174,11 @@ void show_boot_animation(SDL_Renderer *renderer) {
         SDL_FreeSurface(surface);
     }
 
-    // Play bootup animation with a slower frame delay (e.g., 150ms)
-    play_animation(renderer, bootup_frames, NUM_BOOTUP_FRAMES, 90);
+    // Play bootup animation with a slower frame delay (80ms)
+    play_animation(renderer, bootup_frames, NUM_BOOTUP_FRAMES, 80);
 
-    // Play bootboy animation with a slower frame delay (e.g., 200ms)
-    play_animation(renderer, bootboy_frames, NUM_BOOTBOY_FRAMES, 140);
+    // Play bootboy animation with a slower frame delay (120ms)
+    play_animation(renderer, bootboy_frames, NUM_BOOTBOY_FRAMES, 120);
 
     // Free bootup textures
     for (int i = 0; i < NUM_BOOTUP_FRAMES; i++) {
@@ -247,26 +276,111 @@ void render_vaultboy(SDL_Renderer *renderer) {
     }
 }
 
+int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity) {
+    FILE *file = fopen(file_path, "r");
+    if (!file) {
+        printf("Failed to open file: %s\n", file_path);
+        return 0;
+    }
+
+    char line[256];
+    int count = 0;
+
+    // Ensure initial memory allocation
+    if (*inv_capacity == 0) {
+        *inv_capacity = 10;
+        *inv_list = malloc(*inv_capacity * sizeof(invItem));
+    }
+
+    while (fgets(line, sizeof(line), file)) {
+        if (count >= *inv_capacity) {
+            *inv_capacity *= 2;
+            *inv_list = realloc(*inv_list, *inv_capacity * sizeof(invItem));
+        }
+
+        sscanf(line, "%[^,],%d,%f", (*inv_list)[count].name, &(*inv_list)[count].quantity, &(*inv_list)[count].weight);
+        count++;
+    }
+
+    fclose(file);
+    *inv_count = count;
+    return count;
+}
+
+void reset_inventory_navigation(PipState *state) {
+    invItem *current_list = NULL;
+    int current_count = 0;
+
+    // Determine the current list and count based on the active subtab
+    switch (state->current_inv_subtab) {
+        case SUBTAB_WEAPONS:
+            current_list = state->weapons;
+            current_count = state->weapons_count;
+            break;
+        case SUBTAB_APPAREL:
+            current_list = state->apparel;
+            current_count = state->apparel_count;
+            break;
+        case SUBTAB_AID:
+            current_list = state->aid;
+            current_count = state->aid_count;
+            break;
+    }
+
+    // Clamp selector_position and inv_scroll_index
+    if (current_list) {
+        if (state->selector_position >= current_count) {
+            state->selector_position = (current_count > 0) ? current_count - 1 : 0;
+        }
+        if (state->inv_scroll_index > state->selector_position) {
+            state->inv_scroll_index = state->selector_position;
+        }
+    } else {
+        state->selector_position = 0;
+        state->inv_scroll_index = 0;
+    }
+}
+
+
 void initialize_pip_state(PipState *state) {
+    // Initialize general state values
     state->current_tab = TAB_STAT;
     state->current_subtab = SUBTAB_STATUS;
     state->selector_position = 0;
 
     // Set default SPECIAL stats
     for (int i = 0; i < 7; i++) {
-        state->special_stats[i] = 5; // Default value for SPECIAL stats
+        state->special_stats[i] = 5; // Default SPECIAL stats
     }
 
     state->health = 115;       // Full health
-    state->max_health = 115;   // Full max health
-    state->ap = 90;            // Full action points
-    state->max_ap = 90;        // Full max action points
+    state->max_health = 115;   // Max health
+    state->ap = 90;            // Action points
+    state->max_ap = 90;        // Max action points
     state->level = 1;          // Starting level
     state->experience = 0;     // Starting experience
-    state->stimpaks = 0; // Starting value
-    state->radaways = 0; // Starting value
-    state->current_xp = 50;         // Start with 50 XP
+    state->stimpaks = 0;       // Starting number of Stimpaks
+    state->radaways = 0;       // Starting number of RadAways
+    state->current_xp = 50;    // Start with 50 XP
     state->xp_for_next_level = 100; // XP needed for level 2
+
+    // Allocate initial space for Weapons, Apparel, and Aid
+    state->weapons_capacity = 10;
+    state->weapons = malloc(state->weapons_capacity * sizeof(invItem));
+    state->weapons_count = 0;
+
+    state->apparel_capacity = 10;
+    state->apparel = malloc(state->apparel_capacity * sizeof(invItem));
+    state->apparel_count = 0;
+
+    state->aid_capacity = 10;
+    state->aid = malloc(state->aid_capacity * sizeof(invItem));
+    state->aid_count = 0;
+
+    // Load inv items into respective lists
+    load_inv("WeaponsList.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity);
+    load_inv("ListApparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity);
+    load_inv("ListAid.csv", &state->aid, &state->aid_count, &state->aid_capacity);
 
     // Initialize perks to empty
     for (int i = 0; i < 10; i++) {
@@ -280,6 +394,7 @@ void initialize_pip_state(PipState *state) {
         }
     }
 }
+
 
 void add_experience(PipState *state, int xp) {
     state->current_xp += xp;
@@ -463,6 +578,125 @@ void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
     // Reset render color to default
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
+void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
+
+void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+    SDL_Color color = {0, 255, 0, 255};
+    int x = 100, y = 120;
+    int spacing = 30;
+
+    render_inv_subtabs(renderer, font, state);
+
+    invItem *current_list = NULL;
+    int current_count = 0;
+
+    // Determine which list to display
+    switch (state->current_inv_subtab) {
+        case SUBTAB_WEAPONS:
+            current_list = state->weapons;
+            current_count = state->weapons_count;
+            break;
+        case SUBTAB_APPAREL:
+            current_list = state->apparel;
+            current_count = state->apparel_count;
+            break;
+        case SUBTAB_AID:
+            current_list = state->aid;
+            current_count = state->aid_count;
+            break;
+    }
+
+    if (current_count == 0) {
+        SDL_Surface *surface = TTF_RenderText_Solid(font, "No items in this category.", color);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_Rect rect = {x, y, surface->w, surface->h};
+        SDL_RenderCopy(renderer, texture, NULL, &rect);
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+        return;
+    }
+
+    for (int i = state->inv_scroll_index; i < current_count && i < state->inv_scroll_index + 10; i++) {
+        SDL_Surface *name_surface = TTF_RenderText_Solid(font, current_list[i].name, color);
+        SDL_Texture *name_texture = SDL_CreateTextureFromSurface(renderer, name_surface);
+        SDL_Rect name_rect = {x, y, name_surface->w, name_surface->h};
+        SDL_RenderCopy(renderer, name_texture, NULL, &name_rect);
+        SDL_FreeSurface(name_surface);
+        SDL_DestroyTexture(name_texture);
+
+        char quantity_text[20];
+        snprintf(quantity_text, sizeof(quantity_text), "x%d", current_list[i].quantity);
+        SDL_Surface *quantity_surface = TTF_RenderText_Solid(font, quantity_text, color);
+        SDL_Texture *quantity_texture = SDL_CreateTextureFromSurface(renderer, quantity_surface);
+        SDL_Rect quantity_rect = {x + 200, y, quantity_surface->w, quantity_surface->h};
+        SDL_RenderCopy(renderer, quantity_texture, NULL, &quantity_rect);
+        SDL_FreeSurface(quantity_surface);
+        SDL_DestroyTexture(quantity_texture);
+
+        char weight_text[20];
+        snprintf(weight_text, sizeof(weight_text), "%.2f lbs", current_list[i].weight);
+        SDL_Surface *weight_surface = TTF_RenderText_Solid(font, weight_text, color);
+        SDL_Texture *weight_texture = SDL_CreateTextureFromSurface(renderer, weight_surface);
+        SDL_Rect weight_rect = {x + 300, y, weight_surface->w, weight_surface->h};
+        SDL_RenderCopy(renderer, weight_texture, NULL, &weight_rect);
+        SDL_FreeSurface(weight_surface);
+        SDL_DestroyTexture(weight_texture);
+
+        if (i == state->selector_position) {
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            SDL_Rect highlight_rect = {x - 10, y - 5, 400, spacing};
+            SDL_RenderDrawRect(renderer, &highlight_rect);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        }
+
+        y += spacing;
+    }
+}
+
+
+
+void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+    const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID"};
+    SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
+    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
+
+    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
+
+    int base_x = 205; // Base x-coordinate for the centered subtab
+    int base_y = 65;  // Y-coordinate for subtabs
+
+    // Calculate animation progress
+    Uint32 current_time = SDL_GetTicks();
+    float progress = 1.0f; // Default to fully completed animation
+    if (state->is_inv_animating) {
+        progress = (float)(current_time - state->inv_subtab_animation_start_time) / 300; // 300ms animation duration
+        if (progress >= 1.0f) {
+            progress = 1.0f;
+            state->is_inv_animating = false; // End animation
+        }
+    }
+
+    float offset = (-1.0f + progress) * state->inv_subtab_animation_offset; // Control direction of animation by linear interpolation
+
+    // Render each subtab
+    for (int i = 0; i < NUM_INV_SUBTABS; i++) {
+        int x_position = base_x + (i - state->current_inv_subtab) * SUBTAB_SPACING + offset;
+
+        SDL_Color current_color = (i == state->current_inv_subtab) ? color_active : color_inactive;
+
+        SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+        SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h};
+        SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+    }
+
+    TTF_CloseFont(subtab_font);
+}
+
 
 
 
@@ -816,16 +1050,18 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     TTF_CloseFont(subtab_font);
 }
 
-void render_inv_tab(SDL_Renderer *renderer, TTF_Font *font) {
+/*void render_inv_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
-    const char *placeholder = "Inventory Tab Placeholder";
+    const char *placeholder = "inv Tab Placeholder";
     SDL_Surface *surface = TTF_RenderText_Solid(font, placeholder, color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect rect = {75, 140, surface->w, surface->h};
     SDL_RenderCopy(renderer, texture, NULL, &rect);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
-}
+}*/
+
+
 
 void render_data_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
@@ -866,7 +1102,7 @@ void render_current_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
             render_stat_tab(renderer, font, state);
             break;
         case TAB_INV:
-            render_inv_tab(renderer, font);
+            render_inv(renderer, font, state);
             break;
         case TAB_DATA:
             render_data_tab(renderer, font);
@@ -891,32 +1127,60 @@ void handle_navigation(SDL_Event *event, PipState *state) {
                 state->current_tab = (state->current_tab + 1) % NUM_TABS;
                 break;
 
-            // Sub-tabs Navigation within STAT (A for left, D for right)
-            case SDLK_a: // Navigate left
+            // Sub-tabs Navigation
+            case SDLK_a: // Navigate left in sub-tabs
                 if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    state->subtab_animation_offset = SUBTAB_SPACING; // Move all subtabs right
+                    // Handle STAT sub-tabs
+                    state->subtab_animation_offset = SUBTAB_SPACING;
                     state->is_animating = true;
                     state->subtab_animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
+                } else if (state->current_tab == TAB_INV && !state->is_inv_animating) {
+                    // Handle INV sub-tabs
+                    state->inv_subtab_animation_offset = SUBTAB_SPACING;
+                    state->is_inv_animating = true;
+                    state->inv_subtab_animation_start_time = SDL_GetTicks();
+                    state->current_inv_subtab = (state->current_inv_subtab - 1 + NUM_INV_SUBTABS) % NUM_INV_SUBTABS;
+
+                    // Reset inventory navigation when changing subtabs
+                    reset_inventory_navigation(state);
                 }
                 break;
 
-            case SDLK_d: // Navigate right
+            case SDLK_d: // Navigate right in sub-tabs
                 if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    state->subtab_animation_offset = -SUBTAB_SPACING; // Move all subtabs left
+                    // Handle STAT sub-tabs
+                    state->subtab_animation_offset = -SUBTAB_SPACING;
                     state->is_animating = true;
                     state->subtab_animation_start_time = SDL_GetTicks();
                     state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
+                } else if (state->current_tab == TAB_INV && !state->is_inv_animating) {
+                    // Handle INV sub-tabs
+                    state->inv_subtab_animation_offset = -SUBTAB_SPACING;
+                    state->is_inv_animating = true;
+                    state->inv_subtab_animation_start_time = SDL_GetTicks();
+                    state->current_inv_subtab = (state->current_inv_subtab + 1) % NUM_INV_SUBTABS;
+
+                    // Reset inventory navigation when changing subtabs
+                    reset_inventory_navigation(state);
                 }
                 break;
 
-            // SPECIAL Attributes Navigation (W for up, S for down)
+            // SPECIAL Attributes Navigation (W and S for up/down)
             case SDLK_w:
                 if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
                     state->special_stat_animation_offset = -30; // Move upwards
                     state->is_special_stat_animating = true;
                     state->special_stat_animation_start = SDL_GetTicks();
                     state->selector_position = (state->selector_position - 1 + 7) % 7; // Wrap around SPECIAL stats
+                } else if (state->current_tab == TAB_INV) {
+                    // Inventory scrolling up
+                    if (state->selector_position > 0) {
+                        state->selector_position--;
+                        if (state->selector_position < state->inv_scroll_index) {
+                            state->inv_scroll_index--;
+                        }
+                    }
                 }
                 break;
 
@@ -926,9 +1190,38 @@ void handle_navigation(SDL_Event *event, PipState *state) {
                     state->is_special_stat_animating = true;
                     state->special_stat_animation_start = SDL_GetTicks();
                     state->selector_position = (state->selector_position + 1) % 7; // Wrap around SPECIAL stats
+                } else if (state->current_tab == TAB_INV) {
+                    // Inventory scrolling down
+                    invItem *current_list = NULL;
+                    int current_count = 0;
+
+                    // Determine the active inventory subtab list
+                    switch (state->current_inv_subtab) {
+                        case SUBTAB_WEAPONS:
+                            current_list = state->weapons;
+                            current_count = state->weapons_count;
+                            break;
+                        case SUBTAB_APPAREL:
+                            current_list = state->apparel;
+                            current_count = state->apparel_count;
+                            break;
+                        case SUBTAB_AID:
+                            current_list = state->aid;
+                            current_count = state->aid_count;
+                            break;
+                    }
+
+                    // Scroll down within the current inventory subtab
+                    if (current_list && state->selector_position < current_count - 1) {
+                        state->selector_position++;
+                        if (state->selector_position >= state->inv_scroll_index + 10) {
+                            state->inv_scroll_index++;
+                        }
+                    }
                 }
                 break;
-                // Simulate gaining 10 XP when pressing 'x' (for testing)
+
+            // Simulate gaining XP (testing)
             case SDLK_x:
                 add_experience(state, 10);
                 break;
@@ -1038,6 +1331,18 @@ int main(int argc, char *argv[]) {
     }
 
     // Cleanup resources
+    if (pip_state.weapons) {
+    free(pip_state.weapons);
+    }
+
+    if (pip_state.apparel) {
+        free(pip_state.apparel);
+    }
+
+    if (pip_state.aid) {
+        free(pip_state.aid);
+    }
+
     free_vaultboy_frames();
     TTF_CloseFont(font);
     TTF_Quit();
