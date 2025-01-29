@@ -378,9 +378,9 @@ void initialize_pip_state(PipState *state) {
     state->aid_count = 0;
 
     // Load inv items into respective lists
-    load_inv("WeaponsList.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity);
-    load_inv("ListApparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity);
-    load_inv("ListAid.csv", &state->aid, &state->aid_count, &state->aid_capacity);
+    load_inv("weapons.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity);
+    load_inv("apparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity);
+    load_inv("aid.csv", &state->aid, &state->aid_count, &state->aid_capacity);
 
     // Initialize perks to empty
     for (int i = 0; i < 10; i++) {

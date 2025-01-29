@@ -1,0 +1,660 @@
+0,1,2,Name,Value,Weight,V:W,QI,Components,Related quest,Component for,Form ID,CC content,Rarity,Scrap scalar,Craftable Source,Value per unit in Shipment,Shipment of ... - 25,Shipment of ... - 25.1,Shipment of ... - 50,Shipment of ... - 50.1,Shipment of ... - 100,Shipment of ... - 100.1,Source items,Component Weight,Weight Efficiency,S:I
+V:W,=,Value to weight ratio,,,,,,,,,,,,,,,,,,,,,,,,
+,,,Angler gunk,0,0.5,0,,Adhesive x3,,,xx0540FE,,,,,,,,,,,,,,,
+,,,Black Ice,0,0.0,0,,Black Ice,,,xx0035C5,,,,,,,,,,,,,,,
+,,,Bond,1,0.1,10,,Cloth,,,xx045E25,,,,,,,,,,,,,,,
+,,,Cat remains,1,3.0,0.33,,Ceramic x2 Bone x2,,,xx045E97 xx045E99 xx045E9B xx045E9D xx045EA6 xx045EA8 xx045EAA,,,,,,,,,,,,,,,
+,,,Code,0,0.0,0,,Code,,,xx0035C4,,,,,,,,,,,,,,,
+,,,Coffee cup,1,0.5,2,,Ceramic,,,xx010135,,,,,,,,,,,,,,,
+,,,Condensed fog,10,3.0,3.33,,Oil Steel x3,,,xx03A2D1,,,,,,,,,,,,,,,
+,,,Condenser power module,30,2.0,15,,Steel Copper x2 Circuitry x5,,,xx023B23,,,,,,,,,,,,,,,
+,,,Drinking glass,1,0.5,2,,Glass,,,xx01012D,,,,,,,,,,,,,,,
+,,,Garden gnome,3,2.0,1.5,,Ceramic x2,,,xx019E16 xx019E17 xx019E18,,,,,,,,,,,,,,,
+,,,Hide bundle,35,0.5,70,,Leather x4,,,xx040DF0,,,,,,,,,,,,,,,
+,,,Jug,10,8.0,1.25,,Steel x3,,,xx03A2D4,,,,,,,,,,,,,,,
+,,,Land grant,1,0.1,10,,Cloth,,,xx045E6D,,,,,,,,,,,,,,,
+,,,Lumberjack saw,3,2.0,1.5,,Wood Steel x3,,,xx0365EE,,,,,,,,,,,,,,,
+,,,Manuscript,1,0.1,10,,Cloth,,,xx045E6B,,,,,,,,,,,,,,,
+,,,Modified bowling ball schematic,0,0.0,,,Cloth,,,xx03171B,,,,,,,,,,,,,,,
+,,,Plastic bowl,2,0.5,4,,Plastic x2,,,xx010129,,,,,,,,,,,,,,,
+,,,Plastic plate,1,0.25,4,,Plastic x2,,,xx010130,,,,,,,,,,,,,,,
+,,,Plastic skull,1,1.0,1,,Plastic x3,,,xx045CF7,,,,,,,,,,,,,,,
+,,,Plastic upper skull,1,0.1,10,,Plastic x2,,,xx045CF8,,,,,,,,,,,,,,,
+,,,Red paint can,10,5.0,2,,Oil x2 Steel x2,,,xx044BDB,,,,,,,,,,,,,,,
+,,,Property deed,1,0.1,10,,Cloth,,,xx045E20,,,,,,,,,,,,,,,
+,,,Synth component,20,0.0,∞,,Plastic,,,xx0180D9,,,,,,,,,,,,,,,
+V:W,=,Value to weight ratio,,,,,,,,,,,,,,,,,,,,,,,,
+,,,Typewriter,11,5,2.2,,Gears x3 Screw x2 Spring x3,,,xx001BE5,,,,,,,,,,,,,,,
+V:W,=,Value to weight ratio,,,,,,,,,,,,,,,,,,,,,,,,
+,,,Basketball,2,1.0,2.0,,Rubber x3,,,xx0503B2,,,,,,,,,,,,,,,
+,,,Burger tray,1,1.0,1.0,,Cloth,,,xx02A188,,,,,,,,,,,,,,,
+,,,Gatorclaw hand,150,5.0,30.0,,Bone x2 Leather x2,,,xx04AA19,,,,,,,,,,,,,,,
+,,,Gatorclaw hide,100,8.0,12.5,,Leather x5,,,xx04AA16,,,,,,,,,,,,,,,
+,,,Gazelle hide,75,1.0,75.0,,Leather x4,,,xx04B41A,,,,,,,,,,,,,,,
+,,,Hot dog tray,1,1.0,1.0,,Cloth,,,xx02A189,,,,,,,,,,,,,,,
+,,,Nuka-Cola cup,1,1.0,1.0,,Cloth,,,xx02A186,,,,,,,,,,,,,,,
+,,,Nuka-Cola cup and straw,1,1.0,1.0,,Cloth Plastic,,,xx02B60C,,,,,,,,,,,,,,,
+,,,Nuka-Cola cup pack,1,1.0,1.0,,Cloth Plastic,,,xx02B60F,,,,,,,,,,,,,,,
+,,,Pizza tray,1,1.0,1.0,,Cloth,,,xx02A187,,,,,,,,,,,,,,,
+,,,Red paint,10,5.0,2.0,,Oil x2 Steel x2,,,xx056C69,,,,,,,,,,,,,,,
+,,,Souvenir coffee cup,1,0.5,2.0,,Ceramic,,,xx02689D,,,,,,,,,,,,,,,
+,,,Souvenir drinking glass,1,0.5,2.0,,Glass,,,xx02689E,,,,,,,,,,,,,,,
+,,,Souvenir magnet badge,3,0.25,12.0,,Ceramic Copper,,,xx02A181,,,,,,,,,,,,,,,
+,,,Souvenir magnet cat,3,0.2,15.0,,Ceramic Copper,,,xx02A184,,,,,,,,,,,,,,,
+,,,Souvenir magnet cow,3,0.25,12.0,,Ceramic Copper,,,xx0268A1,,,,,,,,,,,,,,,
+,,,Souvenir magnet flower,3,0.25,12.0,,Ceramic Copper,,,xx02A182,,,,,,,,,,,,,,,
+,,,Souvenir magnet frog,3,0.2,15.0,,Ceramic Copper,,,xx02A183,,,,,,,,,,,,,,,
+,,,Souvenir plastic bowl,2,0.5,4.0,,Plastic x2,,,xx0268A0,,,,,,,,,,,,,,,
+,,,Souvenir plate,1,1.0,1.0,,Ceramic x2,,,xx02689F,,,,,,,,,,,,,,,
+,,,Souvenir sloth toy,3,1.0,3.0,,Cloth x3 Leather,,,xx02A185,,,,,,,,,,,,,,,
+,,,Souvenir teddy bear,3,1.0,3.0,,Cloth x3 Leather,,,xx02689C xx02A180,,,,,,,,,,,,,,,
+,,,Souvenir toy car,5,1.0,5.0,,Screw Wood x2,,,xx02BFEF,,,,,,,,,,,,,,,
+V:W,=,Value to weight ratio,,,,,,,,,,,,,,,,,,,,,,,,
+,,,Betty Buttercup,36,3.0,12.0,,Steel x2 Springs x2,,,FEXXX90B,Horse Power Armor,,,,,,,,,,,,,,
+,,,Blast Radius board game,21,1.0,21.0,,Wood x2 Nuclear material,,,xx000835,Neon Flats,,,,,,,,,,,,,,
+,,,Captain Cosmos poster,15,0.1,150.0,,Cloth x4,,,xx000B00 xx000DD2 xx000879 xx000996 xx000DCE,Captain Cosmos,,,,,,,,,,,,,,
+,,,Captain Cosmos power armor figurine,50,2.0,25.0,,Aluminum x2 Screws x2 Plastic x4,,,xx000A7A,Captain Cosmos,,,,,,,,,,,,,,
+,,,CC-00 helmet prop,75,5.0,15.0,,Steel x3 Aluminum x3 Screws x2 Circuitry x2,,,xx000845,Captain Cosmos,,,,,,,,,,,,,,
+,,,CC-00 module prop,50,3.0,16.67,,Aluminum x2 Screws x2 Circuitry x2 Cloth x3 Steel x5,,,xx000844,Captain Cosmos,,,,,,,,,,,,,,
+,,,CC-00 piece prop,50,3.0,16.67,,Steel x5 Aluminum x2 Cloth x3 Screws x2,,,xx000846,Captain Cosmos,,,,,,,,,,,,,,
+,,,Check table lamp,5,3.0,1.67,,Copper Glass x2,,,xx00081A,Shroud Manor,,,,,,,,,,,,,,
+,,,Desktop picture frame,2,1.0,2.0,,Wood x2,,,xx000B6C,Noir Penthouse,,,,,,,,,,,,,,
+,,,Enclave military dog tags,1,0.1,10.0,,Steel,,,FEXXXA00,Sentinel Control System Companion,,,,,,,,,,,,,,
+,,,Enclave tags,1,0.1,10.0,,Steel,,,FEXXX00A,Enclave Remnants,,,,,,,,,,,,,,
+,,,Grey striped table lamp,5,3.0,1.67,,Copper Glass x2,,,xx000817,Shroud Manor,,,,,,,,,,,,,,
+,,,Light blue table lamp,5,3.0,1.67,,Copper Glass x2,,,xx000812,Charlestown Condo,,,,,,,,,,,,,,
+,,,Music table lamp,5,3.0,1.67,,Copper Glass x2,,,xx000819,Shroud Manor,,,,,,,,,,,,,,
+,,,Outcast distress pulser,5,1.0,5.0,,Aluminum x2 Circuitry Nuclear material,,,FEXXX835,Sentinel Control System Companion,,,,,,,,,,,,,,
+,,,Quantum radstag head,36,4.0,9.0,,Bone x3 Leather x3,,Mounted Quantum Radstag Heads,FEXXX998,Manwell Rifle Set,,,,,,,,,,,,,,
+,,,Picture frame,4,1.0,4.0,,Wood x2,,,xx000F15,Neon Flats,,,,,,,,,,,,,,
+,,,Red paint,10,5.0,2.0,,Oil x2 Steel x2,,,FEXXX801,Halloween Workshop,,,,,,,,,,,,,,
+,,,Slocum's Joe coffee cup,1,0.5,0.5,,Ceramic,,,FEXXX80E,Coffee and Donuts Workshop Pack,,,,,,,,,,,,,,
+,,,Slocum's Joe espresso tin,10,1.0,10.0,,Aluminum x2,,Cappuccino Double espresso Espresso Quantum Caffinator - Coffee Station,FEXXX80F,Coffee and Donuts Workshop Pack,,,,,,,,,,,,,,
+,,,Striped table lamp,5,3.0,1.67,,Copper Glass x2,,,xx000818,Shroud Manor,,,,,,,,,,,,,,
+,,,Telephone,5,3.0,1.67,,Circuitry x2 Copper Fiberglass x2,,,FEXXXD71,Nuka-Cola Collector Workshop,,,,,,,,,,,,,,
+,,,Wood basket,1,1.0,1.0,,Wood x2,,,xx000FE3,Noir Penthouse,,,,,,,,,,,,,,
+,,,Name,Value,Weight,,,,,,Form ID,,Rarity,Scrap scalar,Craftable Source,Value per unit in Shipment,Value,Form ID,Value,Form ID,Value,Form ID,,,,
+,,,Acid,2,0.1,,,,,,001BF72D,,Rare,0.25,,10.0,250.0,001EC133,,,,,,,,
+,,,Adhesive,8,0.1,,,,,,001BF72E,,Zero yield,0.0,Vegetable starch,40.0,1000.0,001EC135,2000.0,001EC134,,,,,,
+,,,Aluminum,3,0.1,,,,,,0006907A,,Uncommon,0.25,,15.0,375.0,001EC137,750.0,001EC136,,,,,,
+,,,Antiseptic,3,0.1,,,,,,001BF72F,,Rare,0.25,,15.0,375.0,001EC139,,,,,,,,
+,,,Asbestos,6,0.1,,,,,,000AEC5C,,Rare,0.25,,30.0,750.0,001EC13A,,,,,,,,
+,,,Ballistic fiber,5,0.1,,,,,,000AEC5B,,Rare,0.25,,25.0,625.0,001EC138,,,,,,,,
+,,,Bone,1,1.0,,,,,,000AEC5D,,Common,0.5,,,,,,,,,,,,
+,,,Ceramic,1,0.1,,,,,,000AEC5E,,Common,0.25,,7.0,175.0,001EC13B,,,,,,,,
+,,,Circuitry,5,0.3,,,,,,0006907B,,Rare,0.25,,25.0,625.0,001EC13C,1250.0,001EC13D,,,,,,
+,,,Cloth,1,0.1,,,,,,000AEC5F,,Common,0.5,,4.0,100.0,001EC13E,,,,,,,,
+,,,Concrete,1,3.0,,,,,,00106D99,,Common,0.25,,3.0,,,150.0,001EC13F,300.0,xx000E7F*,,,,
+,,,Copper,4,0.1,,,,,,0006907C,,Uncommon,0.25,,20.0,500.0,001EC140,1000.0,0024A06C,,,,,,
+,,,Cork,1,0.1,,,,,,000AEC60,,Uncommon,0.25,,5.0,125.0,001EC141,,,,,,,,
+,,,Crystal,4,0.2,,,,,,0006907D,,Rare,0.25,,23.0,575.0,001EC142,,,,,,,,
+,,,Fertilizer,1,0.1,,,,,,001BF730,,Uncommon,0.25,,12.0,300.0,001EC143,,,,,,,,
+,,,Fiber optics,6,0.1,,,,,,00069087,,Rare,0.25,,34.0,850.0,001EC145,,,,,,,,
+,,,Fiberglass,5,0.1,,,,,,000AEC61,,Uncommon,0.25,,28.0,700.0,001EC144,,,,,,,,
+,,,Gears,3,0.2,,,,,,0006907E,,Uncommon,0.25,,18.0,450.0,001EC146,,,,,,,,
+,,,Glass,2,0.1,,,,,,00069085,,Uncommon,0.25,,13.0,325.0,001EC147,,,,,,,,
+,,,Gold,9,0.1,,,,,,000AEC62,,Rare,0.25,,45.0,1125.0,001EC148,,,,,,,,
+,,,Lead,1,0.3,,,,,,000AEC63,,Uncommon,0.25,,8.0,200.0,001EC149,,,,,,,,
+,,,Leather,2,0.1,,,,,,000AEC64,,Common,0.25,,10.0,250.0,001EC14A,,,,,,,,
+,,,Nuclear material,10,0.1,,,,,,00069086,,Rare,0.25,,50.0,1250.0,001EC14B,,,,,,,,
+,,,Oil,4,0.1,,,,,,001BF732,,Zero yield,0.0,Cutting fluid,20.0,500.0,001EC14C,,,,,,,,
+,,,Plastic,1,0.1,,,,,,0006907F,,Common,0.25,,3.0,75.0,001EC14D,,,,,,,,
+,,,Rubber,2,0.1,,,,,,00106D98,,Common,0.5,,10.0,250.0,001EC14E,,,,,,,,
+,,,Screw,2,0.1,,,,,,00069081,,Uncommon,0.25,,16.0,400.0,001EC14F,,,,,,,,
+,,,Silver,6,0.1,,,,,,000AEC66,,Uncommon,0.25,,30.0,750.0,001EC150,,,,,,,,
+,,,Spring,3,0.1,,,,,,00069082,,Uncommon,0.25,,15.0,375.0,001EC151,,,,,,,,
+,,,Steel,1,0.2,,,,,,000731A4,,Common,0.5,,3.0,,,150.0,001EC132,300.0,001EC131,,,,
+,,,Wood,1,0.2,,,,,,000731A3,,Common,0.5,,2.0,,,100.0,001EC152,200.0,001EC153,,,,
+,,,Acid,,,,,,,,,,,,,,,,,,,,"Abraxo cleaner, Abraxo cleaner industrial grade, anti freeze bottle, bag of fertilizer, bloodbug proboscis, bloatfly gland, coolant, cracked deathclaw egg, ichor sac, makeshift battery, Suprathaw antifreeze, undamaged Abraxo cleaner",,,
+,,,Adhesive,,,,,,,,,,,,,,,,,,,,"duct tape, economy wonderglue, military grade duct tape, pack of duct tape, sealed wonderglue, vegetable starch, wonderglue",,,
+,,,Aluminum,,,,,,,,,,,,,,,,,,,,"alarm clock, aluminum can, aluminum canister, applicator, cake pan, Carlisle typewriter, cauterizer, coffee tin, coolant cap, distress pulser, ear examiner, hubcap, inactive distress pulser, industrial oil canister, injector, recorder, sensor, spanner, surgical tray, sweeper, toy rocketship, tray, tri tool, TV dinner tray, tweezers, Wakemaster alarm clock",,,
+,,,Antiseptic,,,,,,,,,,,,,,,,,,,,"Abraxo cleaner, Abraxo cleaner industrial grade, blood sac, empty blood sac, industrial solvent, toothpaste, turpentine, undamaged Abraxo cleaner",,,
+,,,Asbestos,,,,,,,,,,,,,,,,,,,,"biometric scanner, chalk, cigarette carton, coffee pot, extinguisher, Luxobrew coffee pot, oven mitt, pack of cigarettes, rat poison, teapot",,,
+,,,Ballistic fiber,,,,,,,,,,,,,,,,,,,,"military ammo bag, military grade duct tape",,,
+,,,Bone,,,,,,,,,,,,,,,,,,,,"brahmin skull, capless skull, cat remains, cracked deathclaw egg, deathclaw hand, femur, human jaw, jawless brahmin skull, left arm bones, left foot bones, left hand bones, left leg bones, mole rat teeth, pelvis bones, rib cage and pelvis, rib cage and spine, right arm bones, right hand bones, right leg bones, skull cap bone, skull faceplate, skull fragment, skull, tibia, upper skull",,,
+,,,Ceramic,,,,,,,,,,,,,,,,,,,,"ashtray, bowl, cat remains, ceramic bowl, clean red plate, clean white plate, coffee cup, cracked bowl, dirty ashtray, empty floral barrel vase, empty floral flared vase, empty teal bud vase, empty teal flared vase, empty teal rounded vase, empty teal vaulted vase, empty willow flared vase, empty willow rounded vase, empty willow vaulted vase, floral rounded vase, garden gnome, high-powered magnet, red plate, teal barrel vase, teapot, umbrella stand, vase, willow barrel vase, yellow plate, yellow-trimmed plate",,,
+,,,Circuitry,,,,,,,,,,,,,,,,,,,,"assaultron circuit board, distress pulser, enhanced targeting card, hot plate, inactive distress pulser, military-grade circuit board, recorder, sweeper, telephone",,,
+,,,Cloth,,,,,,,,,,,,,,,,,,,,"baseball base, Boston Bugle, cigar box, cigar, cigarette, cigarette carton, comfy pillow, cotton yarn, dishrag, duct tape, feather duster, Jangles the Moon Monkey, late edition newspaper, lit cigarette, mop, oven mitt, pack of cigarettes, pack of duct tape, paintbrush, pre-War money, rolled Boston Bugle, straw pillow, teddy bear, trifold American flag",,,
+,,,Concrete,,,,,,,,,,,,,,,,,,,,"bag of cement, cinder block",,,
+,,,Copper,,,,,,,,,,,,,,,,,,,,"beaker stand, blue table lamp, broken lamp, broken light bulb, bunsen burner, cooking pot, copper bar, fuse, high-powered magnet, hot plate, light bulb, magnifying glass, power relay coil, shadeless lamp, shadeless table lamp, telephone, vacuum tube, yellow table lamp",,,
+,,,Cork,,,,,,,,,,,,,,,,,,,,"antique globe, baseball, crystal liquor decanter",,,
+,,,Crystal,,,,,,,,,,,,,,,,,,,,"camera, crystal liquor decanter, laser trip wire, magnifying glass, microscope, ProSnap camera",,,
+,,,Fertilizer,,,,,,,,,,,,,,,,,,,,bag of fertilizer,,,
+,,,Fiber optics,,,,,,,,,,,,,,,,,,,,"applicator, biometric scanner, ear examiner, microscope",,,
+,,,Fiberglass,,,,,,,,,,,,,,,,,,,,"Abraxo cleaner, Abraxo cleaner industrial grade, aluminum canister, blood sac, cigar box, Jangles the Moon Monkey, rat poison, swan boat fragments, telephone",,,
+,,,Gears,,,,,,,,,,,,,,,,,,,,"adjustable wrench, camera, desk fan, fishing rod, Giddyup Buttercup, Giddyup Buttercup front leg, gold watch, microscope, office desk fan, restored desk fan, silver pocket watch, typewriter",,,
+,,,Glass,,,,,,,,,,,,,,,,,,,,"alarm clock, baby bottle, beer bottle, blue table lamp, broken lamp, brown bottle, burgundy bottle, chemistry jar, cracked glass bowl, desk lamp, drinking glass, ear examiner, empty milk bottle, flask, fuse, glass pitcher, graduated cylinder, Gwinnett ale bottle, Gwinnett brew bottle, Gwinnett lager bottle, Gwinnett pale ale bottle, Gwinnett pilsner bottle, Gwinnett stout bottle, lab bottle, lantern, large baby bottle, large beaker, light bulb, liquor bottle, magnifying glass, microscope, Nuka-Cola bottle, pint glass, recorder, research test tube, rum bottle, shadeless lamp, shadeless table lamp, shot glass, small baby bottle, thin beaker, vacuum tube, Wakemaster alarm clock, white bottle, yellow table lamp",,,
+,,,Gold,,,,,,,,,,,,,,,,,,,,"gold bar, gold plated flip lighter, gold watch",,,
+,,,Lead,,,,,,,,,,,,,,,,,,,,"5lb weight, 10lb weight, 25lb weight, 40lb barbell, 80lb barbell, 80lb curlbar, 160lb dumbbell, makeshift battery, pencil",,,
+,,,Leather,,,,,,,,,,,,,,,,,,,,"baseball, baseball glove, brahmin hide, deathclaw hand, deathclaw hide, hide bundle, mole rat hide, radstag hide, teddy bear, yao guai hide",,,
+,,,Nuclear material,,,,,,,,,,,,,,,,,,,,"alarm clock, biometric scanner, Blast Radius board game, cauterizer, distress pulser, high-powered magnet, inactive distress pulser, recorder, sweeper, Wakemaster alarm clock",,,
+,,,Oil,,,,,,,,,,,,,,,,,,,,"aluminum canister, blowtorch, blue paint, condensed fog, cooking oil, cutting fluid, flip lighter, gas canister, gold plated flip lighter, industrial oil canister, industrial size shortening, lantern, Mr. Handy fuel, paint can, soap, tri tool, unused flip lighter, used oil can, yellow paint",,,
+,,,Plastic,,,,,,,,,,,,,,,,,,,,"anti freeze bottle, antique globe, baby rattle, baseball base, bowling ball, bowling pin, bread box, broom, cafeteria tray, cigarette carton, clean broom, clothing iron, coffee pot, cooking oil, coolant, cue ball, dog bowl, eight ball, eleven ball, empty coolant, enhanced targeting card, fancy hairbrush, feather duster, fifteen ball, fourteen ball, hairbrush, Jangles the Moon Monkey, league bowling pin, life preserver, Luxobrew coffee pot, pack of cigarettes, pen, pepper mill, plastic bowl, plastic knife, plastic plate, plastic pumpkin, plastic spoon, salt shaker, scissors, shopping basket, six ball, Suprathaw antifreeze, synth component, ten ball, toothbrush, toothpaste, toy alien, toy rocketship, twelve ball, two ball, umbrella",,,
+,,,Rubber,,,,,,,,,,,,,,,,,,,,"basketball, bonesaw, extinguisher, kickball, large baby bottle, plunger, small baby bottle, spatula, toy alien, unfilled kickball",,,
+,,,Screws,,,,,,,,,,,,,,,,,,,,"antique globe, Carlisle typewriter, desk fan, Giddyup Buttercup, globe, handcuffs, hot plate, hubcap, office desk fan, pepper mill, restored desk fan, tongs, toy car, toy truck, typewriter",,,
+,,,Silver,,,,,,,,,,,,,,,,,,,,"assaultron circuit board, enhanced targeting card, fancy hairbrush, silver bar, silver fork, silver locket, silver pocket watch, silver table knife, silver table spoon",,,
+,,,Spring,,,,,,,,,,,,,,,,,,,,"alarm clock, battered clipboard, camera, cauterizer, fishing rod, flip lighter, Giddyup Buttercup, Giddyup Buttercup front leg, handcuffs, kitchen scale, life preserver, silver pocket watch, typewriter, umbrella, unused flip lighter, Wakemaster alarm clock",,,
+,,,Steel,,,,,,,,,,,,,,,,,,,,"adjustable wrench, antique table knife, ball-peen hammer, bandage scissors, blowtorch, blue paint, bonesaw, Brotherhood of Steel holotag, bunsen burner, can, clothes hanger, clothing iron, coffee pot, collander, combination wrench, condensed fog, connecting rod, cooking pan, cooking pot, covered sauce pan, cutting fluid, desk fan, dinner fork, dinner plate, dog tags, empty paint can, enamel bucket, extinguisher, flip lighter, frying pan, gas canister, gear, Giddyup Buttercup, Giddyup Buttercup front leg, gold plated flip lighter, handcuffs, industrial solvent, jug, kitchen scale, ladle, lantern, lumberjack saw, Luxobrew coffee pot, medical liquid nitrogen dispenser, metal bucket, Mr. Handy fuel, office desk fan, paint can, power relay coil, rat poison, restored desk fan, sauce pan lid, sauce pan, scalpel, scissors, screwdriver, shopping basket, shovel, small covered sauce pan, small sauce pan, spatula, surgical scalpel, table knife, table spoon, tea kettle, tin can, toaster, tongs, torque rod end, toy truck, tube flange, untarnished metal bucket, unused flip lighter, used oil can, wrench, yellow paint",,,
+,,,Wood,,,,,,,,,,,,,,,,,,,,"ball-peen hammer, battered clipboard, bowling pin, broom, chessboard, cigar box, clean broom, cutting board, desktop picture frame, fishing rod, league bowling pin, lumberjack saw, mop, paintbrush, pencil, plunger, rack, screwdriver, shovel, small picture frame, tabletop picture frame, test tube rack, toy car, trifold American flag, wooden block - B & Y, wooden block - I & D, wooden block - N & S, wooden block - V & F, yardstick",,,
+V:W = Value to weight ratio (Higher number is more money per pound),,,,,,,,,,,,,,,,,,,,,,,,,,
+Component Weight: Combined weight of components in item,,,,,,,,,,,,,,,,,,,,,,,,,,
+Weight efficiency: Ratio of component weight to item weight (Weightless items have been normalized to 0.01 lbs),,,,,,,,,,,,,,,,,,,,,,,,,,
+S:I = Ratio of value as scrap to value as item (Numbers above 1 means scrapping is worth more than selling),,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,5lb weight,1,5.0,0.2,,Lead x2,,,001CC0F0,,,,,,,,,,,,,0.04,12.0,2
+,,,10lb weight,2,10.0,0.2,,Lead x3,,,001CC0F1,,,,,,,,,,,,,0.06,9.0,1.5
+,,,25lb weight,4,25.0,0.16,,Lead x5,,,001CC0F3,,,,,,,,,,,,,0.08,6.0,1.25
+,,,40lb barbell,7,40.0,0.175,,Lead x10,,,0023C85F,,,,,,,,,,,,,0.13,7.5,1.43
+,,,80lb barbell,15,80.0,0.1875,,Lead x20,,,0023C85D,,,,,,,,,,,,,0.25,7.5,1.33
+,,,80lb curlbar,15,80.0,0.1875,,Lead x20,,,0023C860,,,,,,,,,,,,,0.25,7.5,1.33
+,,,20lb dumbbell,5,20.0,0.25,,Lead x9,,,0023C85C,,,,,,,,,,,,,0.13,13.5,1.8
+,,,160lb dumbbell,30,160.0,0.1875,,Lead x40,,,0023C85E,,,,,,,,,,,,,0.5,7.5,1.33
+,,,Abraxo cleaner,5,1.0,5,,Acid Antiseptic x2 Fiberglass,,Mind Cloud syringe Mentats - Chemistry Station,00059A71,,,,,,,,,,,,,0.03,40.0,2.6
+,,,Abraxo cleaner industrial grade,15,1.0,15,,Acid x2 Antiseptic x4 Fiberglass x2,,,001C9E96,,,,,,,,,,,,,0.06,80.0,1.73
+,,,Adjustable wrench,1,1.0,1,,Gears Steel x2,Maintenance Man,,0004D1F5,,,,,,,,,,,,,0.04,60.0,5
+,,,Alarm clock,10,1.0,10,,Aluminum x 2 Glass Nuclear material Spring,,,00059B27,,,,,,,,,,,,,0.03,50.0,2.1
+,,,Aluminum can,1,0.1,10,,Aluminum x2,,,0001F908,,,,,,,,,,,,,0.01,200.0,6
+,,,Aluminum canister,12,3.0,4,,Aluminum x2 Fiberglass x2 Oil,,,00176054,,,,,,,,,,,,,0.03,16.67,1.67
+,,,Aluminum oil can,12,0.5,24,,Oil x2 Steel,,,000FCE33,,,,,,,,,,,,,0.03,80.0,0.75
+,,,Aluminum tray,1,0.5,2,,Steel,,,0016D8CA,,,,,,,,,,,,,0.01,40.0,1
+,,,Amontillado bottle,2,1.0,2,,Glass x4,,Bottling Water - Survival Mode,001BEAEE,,,,,,,,,,,,,0.03,40.0,4
+,,,Anchorage veteran's flag,20,3.0,2.86,,Cloth x4 Wood x2,Find the Treasures of Jamaica Plain,,0014DD36,,,,,,,,,,,,,0.06,26.67,0.3
+,,,Annika's locket,24,0.1,240,,Silver x2,,,00101048,,,,,,,,,,,,,0.01,200.0,0.5
+,,,Anti freeze bottle,4,2.0,2,,Acid x2 Plastic x2,,Berserk syringe Yellow Belly syringe Berry Mentats Reactor coolant - Chemistry Station,00060E73,,,,,,,,,,,,,0.03,20.0,1.5
+,,,Antique globe,3,3.0,1,,Cork x2 Plastic x2 Screw,,,0001D975,,,,,,,,,,,,,0.03,16.67,2
+,,,Antique pocket watch,111,0.5,222,,Gears x2 Silver x2 Spring,Find the Treasures of Jamaica Plain,,0014DDFC,,,,,,,,,,,,,0.05,140.0,0.19
+,,,Antique silver locket,60,0.1,600,,Silver x2,Find the Treasures of Jamaica Plain,,0014DE00,,,,,,,,,,,,,0.01,200.0,0.2
+,,,Antique table knife,3,0.1,30,,Steel,,,00140B2F,,,,,,,,,,,,,0.01,200.0,0.33
+,,,Applicator,12,0.5,6,,Aluminum Fiber optics,,,00166B2C,,,,,,,,,,,,,0.02,40.0,1.08
+,,,Ashtray,1,0.5,2,,Ceramic,,,0008E370,,,,,,,,,,,,,0.01,20.0,1
+,,,Assaultron circuit board,100,2.0,50,,Circuitry x5 Silver x2,,,0022D0F6,,,,,,,,,,,,,0.09,85.0,0.37
+,,,Baby bottle,1,0.5,2,,Glass,,Bottling Water - Survival Mode,0009B4BA,,,,,,,,,,,,,0.01,20.0,2
+,,,Baby rattle,2,0.5,4,,Plastic x2,,,00059A75,,,,,,,,,,,,,0.01,40.0,1
+,,,Bag of cement,15,8.0,1.875,,Concrete x5,,,00098148,,,,,,,,,,,,,0.63,187.5,0.33
+,,,Bag of fertilizer,25,4.0,6.25,,Acid Fertilizer x4,Fertilizer Woman,,0005A0D9,,,,,,,,,,,,,0.03,12.5,0.24
+,,,Ball-peen hammer,3,1.5,2,,Wood Steel x2,Maintenance Man,,0004D1F3,,,,,,,,,,,,,0.04,40.0,1
+,,,Bandage scissors,3,0.2,15,,Steel,,,000C9AD7,,,,,,,,,,,,,0.01,100.0,0.33
+,,,Baseball,4,0.5,8,,Cork x2 Leather,,Baseball grenade - Chemistry Station,00059A76,,,,,,,,,,,,,0.02,60.0,1
+,,,Baseball base,4,3.0,1.33,,Cloth x2 Plastic x2,,,00059A78,,,,,,,,,,,,,0.03,13.33,1
+,,,Baseball glove,4,1.0,4,,Leather x3,,,00059A77,,,,,,,,,,,,,0.02,30.0,1.5
+,,,Basketball,2,1.0,2,,Rubber x3,,,000DF264,,,,,,,,,,,,,0.02,30.0,3
+,,,Battered clipboard,1,0.2,5,,Spring Wood,,,0001F92F,,,,,,,,,,,,,0.02,150.0,4
+,,,Beaker,1,0.5,2,,Glass,,,00059B17,,,,,,,,,,,,,0.01,20.0,2
+,,,Beaker stand,4,0.5,8,,Copper,,,000EC8B6,,,,,,,,,,,,,0.01,20.0,1
+,,,Beer bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,000211DD,,,,,,,,,,,,,0.01,40.0,2
+,,,Biometric scanner,20,3.0,6.66,,Asbestos Fiber optics Nuclear material x2,The Molecular Level,,00154AD3,,,,,,,,,,,,,0.03,13.33,1.6
+,,,Blacksmith hammer,3,3.0,1,,Steel x2 Wood,,,001A0B13,,,,,,,,,,,,,0.04,20.0,1
+,,,Blast Radius board game,21,1.0,21,,Wood x2 Nuclear material,,,0006B165,,,,,,,,,,,,,0.03,50.0,0.57
+,,,Bloatfly gland,2,0.5,4,,Acid x2,,"Bloatfly larva - Chemistry Station, Mounted Bloatfly - Workshop",0002C59E,,,,,,,,,,,,,0.01,40.0,2
+,,,Bloodbug proboscis,10,0.2,50,,Acid,,Mounted Bloodbug Head - Workshop,00028668,,,,,,,,,,,,,0.01,50.0,0.2
+,,,Blood can,10,5.0,2,,Oil x2 Steel x2,,,0022750C,,,,,,,,,,,,,0.04,12.0,1
+,,,Blood sac,4,0.5,8,,Antiseptic x2 Fiberglass,,Skeeto Spit - Chemistry station,00028A63,,,,,,,,,,,,,0.02,60.0,2.75
+,,,Blowtorch,15,3.0,5,,Steel x2 Oil,,,0011DA0F,,,,,,,,,,,,,0.03,16.67,0.4
+,,,Blue paint,10,5.0,2,,Oil x2 Steel x2,Painting the Town Only 1 needed for quest.,,0001D95A,,,,,,,,,,,,,0.04,12.0,1
+,,,Blue table lamp,5,3.0,2.67,,Copper x2 Glass,,,0003F8C0,,,,,,,,,,,,,0.02,10.0,2
+,,,Bone cutter,8,3.0,2.67,,Plastic Gears x2 Copper,,,000C9ADE,,,,,,,,,,,,,0.04,20.0,1.38
+,,,Bonesaw,5,1.5,3.33,,Rubber Steel x2,,,00059B40,,,,,,,,,,,,,0.03,33.33,0.8
+,,,Boston Bugle,2,0.1,20,,Cloth,,,0001A4B9,,,,,,,,,,,,,0.01,100.0,0.5
+,,,Bourbon,4,1.0,4,,Glass x4,,Bottling Water - Survival Mode,000DEDD9,,,,,,,,,,,,,0.03,40.0,2
+,,,Bourbon bottle,2,1.0,2,,Glass x4,,Bottling Water - Survival Mode,000DEDDF,,,,,,,,,,,,,0.03,40.0,4
+,,,Bowl,2,0.5,4,,Ceramic x2,,,00140B1A,,,,,,,,,,,,,0.01,40.0,1
+,,,Bowling ball,5,8.0,0.63,,Plastic x7,,Modified bowling ball - Chemistry station,000DF265,,,,,,,,,,,,,0.05,8.75,1.4
+,,,Bowling pin,3,3.0,1,,Plastic x2 Wood x2,,,000DF266,,,,,,,,,,,,,0.04,20.0,1.33
+,,,Box of San Francisco Sunlights,40,0.5,80,,Cloth x3 Wood x2,,,00159F0D,,,,,,,,,,,,,0.05,140.0,0.13
+,,,Brahmin hide,8,2.0,4,,Leather x4,,,0022B623,,,,,,,,,,,,,0.03,20.0,1
+,,,Brahmin skull,2,3.0,0.67,,Bone x5,,Mounted Brahmin Heads - Workshop,00059B0C,,,,,,,,,,,,,0.21,166.67,2.5
+,,,Bread box,2,1.0,2,,Plastic x3,,,00046A86,,,,,,,,,,,,,0.02,30.0,1.5
+,,,Broken femur,1,0.5,2,,Bone x2,,,00188C9A,,,,,,,,,,,,,0.08,400.0,2
+,,,Broken lamp,5,3.0,1.67,,Copper Glass x2,,,0007830A,,,,,,,,,,,,,0.02,10.0,1.6
+,,,Broken light bulb,1,0.5,2,,Copper,,,000342BA,,,,,,,,,,,,,0.01,20.0,4
+,,,Broken tibia,1,0.5,2,,Bone x2,,,00188C9B,,,,,,,,,,,,,0.08,400.0,2
+,,,Broom,2,3.0,0.67,,Plastic Wood x2,,,0005238F,,,,,,,,,,,,,0.03,16.67,1.5
+,,,Brotherhood of Steel holotag,1,0.1,10,,Steel,,,000BDA4F,,,,,,,,,,,,,0.01,200.0,1
+,,,Brown bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,000DF222,,,,,,,,,,,,,0.01,40.0,2
+,,,Bunsen burner,10,1.0,10,,Copper Steel x2,,,000EC8B8,,,,,,,,,,,,,0.03,50.0,0.6
+,,,Burgundy bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,000DF24D,,,,,,,,,,,,,0.01,40.0,2
+,,,Cafeteria tray,2,1.0,2,,Plastic x2,,,00059A82,,,,,,,,,,,,,0.01,20.0,1
+,,,Cake pan,5,0.5,10,,Aluminum x3,,,0001A333,,,,,,,,,,,,,0.02,60.0,1.8
+,,,Camera,12,3.0,4,,Gears x2 Spring x2 Crystal x2,,,00059A83,,,,,,,,,,,,,0.04,33.33,1.67
+,,,Can,1,0.1,10,,Steel x2,,,0001F909,,,,,,,,,,,,,0.03,400.0,2
+,,,Capless skull,1,0.1,10,,Bone,,,00188CA3,,,,,,,,,,,,,0.04,1000.0,1
+,,,Carlisle typewriter,20,5.0,4,,Gears x6 Screw x4 Spring x5 Aluminum x2,,,001C88E7,,,,,,,,,,,,,0.1,46.0,2.35
+,,,Cat bowl,2,0.5,4,,Plastic x2,,,00101CB9,,,,,,,,,,,,,0.01,40.0,1
+,,,Cauterizer,19,0.5,38,,Aluminum Nuclear material Spring,,,00166B2D,,,,,,,,,,,,,0.02,60.0,0.84
+,,,Ceramic bowl,2,1.0,2,,Ceramic x2,,,00023C32,,,,,,,,,,,,,0.01,20.0,1
+,,,Chalk,2,0.0,∞,,Asbestos x2,,,00140D98,,,,,,,,,,,,,0.01,20000.0,6
+,,,Championship bowling ball,21,8.0,2.63,,Plastic x7,Find the Treasures of Jamaica Plain,,0014DD34,,,,,,,,,,,,,0.05,8.75,0.33
+,,,Championship bowling pin,10,3.0,3.33,,Plastic x2 Wood x2,Find the Treasures of Jamaica Plain,,0014DD32,,,,,,,,,,,,,0.04,20.0,0.4
+,,,Charge card,1,0.0,∞,,Plastic,,,00084AAC,,,,,,,,,,,,,0.01,10000.0,1
+,,,Chemistry jar,1,0.5,2,,Glass,,,00176052,,,,,,,,,,,,,0.01,20.0,2
+,,,Chessboard,2,1.0,2,,Wood x2,,,00059AB4,,,,,,,,,,,,,0.03,40.0,1
+,,,Cigar,1,0.0,∞,,Cloth,,,0008E36F,,,,,,,,,,,,,0.01,10000.0,1
+,,,Cigar box,40,0.5,80,,Cloth x3 Fiberglass Wood x2,,,0005821E,,,,,,,,,,,,,0.06,160.0,0.25
+,,,Cigarette,1,0.0,∞,,Cloth,,,00059AB5,,,,,,,,,,,,,0.01,10000.0,1
+,,,Cigarette carton,50,1.0,50,,Plastic x2 Cloth x4 Asbestos x2,,,0005821C,,,,,,,,,,,,,0.06,80.0,0.36
+,,,Classroom globe,28,3.0,9.33,,Cork x2 Plastic x2 Screw,Find the Treasures of Jamaica Plain,,0014DD40,,,,,,,,,,,,,0.03,16.67,0.21
+,,,Claw hammer,3,3.0,1,,Steel x2 Wood,,,001A0B14,,,,,,,,,,,,,0.04,20.0,1
+,,,Clean bowl,3,0.5,6,,Ceramic x2,,,00140B31,,,,,,,,,,,,,0.01,40.0,0.67
+,,,Clean broom,3,3.0,1,,Wood x2 Plastic,,,000E376A,,,,,,,,,,,,,0.03,16.67,1
+,,,Clean cake pan,7,0.5,14,,Aluminum x2,,,0001A32F,,,,,,,,,,,,,0.01,40.0,0.86
+,,,Clean coffee cup,1,0.5,2,,Ceramic,,,00171947,,,,,,,,,,,,,0.01,20.0,1
+,,,Clean coffee tin,6,1.0,6,,Aluminum x2,,Fresh coffee - Coffee Station,00020191,,,,,,,,,,,,,0.01,20.0,1
+,,,Clean dog bowl,2,0.5,4,,Plastic x2,,,000E3772,,,,,,,,,,,,,0.01,40.0,1
+,,,Clean drinking glass,1,0.5,2,,Glass,,,00140B24,,,,,,,,,,,,,0.01,20.0,2
+,,,Clean globe,5,3.0,1.67,,Cork x2 Plastic x2 Screw,,,001A7DA5,,,,,,,,,,,,,0.03,16.67,1.2
+,,,Clean pepper mill,4,0.5,8,,Plastic Screw,,,00020184,,,,,,,,,,,,,0.01,40.0,0.75
+,,,Clean red plate,1,1.0,1,,Ceramic x2,,,0015CDF6,,,,,,,,,,,,,0.01,20.0,2
+,,,Clean salt shaker,1,0.5,2,,Plastic,,,00020183,,,,,,,,,,,,,0.01,20.0,1
+,,,Clean umbrella,5,1.5,3.33,,Plastic x2 Spring x2,,,000BA2FD,,,,,,,,,,,,,0.03,26.67,1.6
+,,,Clean umbrella stand,14,2.0,7,,Ceramic x2,,,000BA3F8,,,,,,,,,,,,,0.01,10.0,0.14
+,,,Clean white plate,1,1.0,1,,Ceramic x2,,,0015CDF5,,,,,,,,,,,,,0.01,20.0,2
+,,,Clipboard,3,0.2,15,,Spring x2 Wood,,,0022579F,,,,,,,,,,,,,0.03,200.0,2.33
+,,,Clothes hanger,1,0.5,2,,Spring x2 Wood,,,001BE890,,,,,,,,,,,,,0.03,80.0,7
+,,,Clothing iron,3,3.0,1,,Plastic Steel x2,,,00059ADE,,,,,,,,,,,,,0.03,16.67,1
+,,,Coffee cup,1,0.5,2,,Ceramic,,,000211C4,,,,,,,,,,,,,0.01,20.0,1
+,,,Coffee pot,1,1.0,1,,Plastic Steel x2 Asbestos,,,000211CC,,,,,,,,,,,,,0.04,60.0,9
+,,,Coffee tin,3,1.0,3,,Aluminum x2,,Slocum's Buzzbites - Cooking Station Coffee recipes - Coffee station,00020194,,,,,,,,,,,,,0.01,20.0,2
+,,,Collander,1,0.5,2,,Steel,,,0011DA11,,,,,,,,,,,,,0.01,40.0,1
+,,,Collectible baseball,8,0.5,16,,Cork x2 Leather,,,000E3764,,,,,,,,,,,,,0.02,60.0,0.5
+,,,Colonial vase,14,3.0,4.67,,Ceramic x2,Find the Treasures of Jamaica Plain,,0014DDFB,,,,,,,,,,,,,0.01,6.67,0.14
+,,,Combination wrench,1,1.0,1,,Steel x2,Maintenance Man,,0004D1F6,,,,,,,,,,,,,0.03,40.0,2
+,,,Comfy pillow,3,1.0,3,,Cloth x3,,,00060EC8,,,,,,,,,,,,,0.02,30.0,1
+,,,Connecting rod,2,5.0,0.4,,Steel x2,,,000E1FF7,,,,,,,,,,,,,0.03,8.0,1
+,,,Cooking oil,4,0.5,8,,Plastic Oil x3,,Donut fryer - Workshop,00061FA7,,,,,,,,,,,,,0.03,80.0,3.25
+,,,Cooking pan,2,0.5,4,,Steel x2,,,00059AEC,,,,,,,,,,,,,0.03,80.0,1
+,,,Cooking pot,4,0.5,8,,Copper Steel x2,,,00059ABA,,,,,,,,,,,,,0.03,100.0,1.5
+,,,Coolant,7,1.0,7,,Acid x2 Plastic,,,000C437F,,,,,,,,,,,,,0.02,30.0,0.71
+,,,Coolant cap,5,1.0,5,,Aluminum x2,,,000E1FF0,,,,,,,,,,,,,0.01,20.0,1.2
+,,,Copper bar,200,0.5,400,,Copper x10,,,00100E19,,,,,,,,,,,,,0.04,200.0,0.2
+,,,Cotton yarn,1,0.5,2,,Cloth,,,00060EC0,,,,,,,,,,,,,0.01,20.0,1
+,,,Covered sauce pan,2,1.5,1.33,,Steel x2,,,0003D3A8,,,,,,,,,,,,,0.03,26.67,1
+,,,Cracked bowl,1,1.0,1,,Ceramic x2,,,00023C34,,,,,,,,,,,,,0.01,20.0,2
+,,,Cracked deathclaw egg,5,0.1,50,,Bone x2 Acid,,,0014F6AC,,,,,,,,,,,,,0.09,2100.0,0.8
+,,,Cracked glass bowl,1,1.0,1,,Glass x2,,,00023C38,,,,,,,,,,,,,0.01,20.0,4
+,,,Crystal liquor decanter,18,3.0,6,,Cork Crystal x4,,,00060E82,,,,,,,,,,,,,0.06,30.0,0.94
+,,,Cue ball,3,0.5,6,,Plastic x2,,,00059AFC,,,,,,,,,,,,,0.01,40.0,0.67
+,,,Cutting board,2,0.5,4,,Wood x2,,,00059ABC,,,,,,,,,,,,,0.03,80.0,1
+,,,Cutting fluid,7,1.0,7,,Oil x3 Steel,,,000657FB,,,,,,,,,,,,,0.03,50.0,1.86
+,,,Danse's holotags,1,0.1,10,,Steel,Blind Betrayal,,000D10AB,,,,,,,,,,,,,0.01,200.0,1
+,,,Dawnshire vase,14,3.0,4.67,,Ceramic x2,Find the Treasures of Jamaica Plain,,0014DDF7,,,,,,,,,,,,,0.01,6.67,0.14
+,,,Deathclaw hand,25,5.0,5,,Bone x2 Leather x2,,,0002EF67,,,,,,,,,,,,,0.1,44.0,0.24
+,,,Deathclaw hide,15,8.0,1.88,,Leather x5,,Mounted Deathclaw Head - workshop,00034604,,,,,,,,,,,,,0.03,6.25,0.67
+,,,Deflated kickball,1,0.5,2,,Rubber x3,,,0002D9AC,,,,,,,,,,,,,0.02,60.0,6
+,,,Derby-winning toy car,16,1.0,16,,Screw Wood x2,Find the Treasures of Jamaica Plain,,0014DD23,,,,,,,,,,,,,0.03,50.0,0.25
+,,,Desk fan,4,3.0,1.33,,Gears x2 Screw x2 Steel x2,,,0001F905,,,,,,,,,,,,,0.04,33.33,3
+,,,Desktop picture frame,2,1.0,2,,Wood x2,,,001A89A2,,,,,,,,,,,,,0.03,40.0,1
+,,,Dinner fork,1,0.1,10,,Steel,,,00060E93,,,,,,,,,,,,,0.01,200.0,1
+,,,Dinner plate,1,1.0,1,,Steel,,,00060E90,,,,,,,,,,,,,0.01,20.0,1
+,,,Dirty ashtray,1,0.5,2,,Ceramic,,,0008E371,,,,,,,,,,,,,0.01,20.0,1
+,,,Dishrag,1,0.1,10,,Cloth,,,000A4920,,,,,,,,,,,,,0.01,100.0,1
+,,,Distress pulser,5,1.0,5,,Aluminum x2 Circuitry Nuclear material,"The Lost Patrol, Liberty Reprimed",,000BA073,,,,,,,,,,,,,0.04,60.0,4.2
+,,,Dog bowl,1,0.5,2,,Plastic x2,,,00059A7E,,,,,,,,,,,,,0.01,40.0,2
+,,,Dog tags,1,0.1,10,,Steel,,,00060EBF,,,,,,,,,,,,,0.01,200.0,1
+,,,Drinking glass,1,0.5,2,,Glass,,,00140B22,,,,,,,,,,,,,0.01,20.0,2
+,,,Duct tape,12,0.1,120,,Adhesive Cloth,,,0004D1F2,,,,,,,,,,,,,0.01,200.0,0.75
+,,,Ear examiner,15,0.7,21.43,,Aluminum Fiber optics Glass,,,0013FF44,,,,,,,,,,,,,0.02,42.86,0.73
+,,,Economy wonderglue,40,0.7,57.14,,Adhesive x5,,,0006C5AE,,,,,,,,,,,,,0.03,71.43,1
+,,,Eight ball,2,0.5,4,,Plastic x2,,,00059AFE,,,,,,,,,,,,,0.01,40.0,1
+,,,Eleven ball,2,0.5,4,,Plastic x2,,,0018E4E9,,,,,,,,,,,,,0.01,40.0,1
+,,,Empty blood pack,1,0.5,2,,Plastic,,,0014242A,,,,,,,,,,,,,0.01,20.0,1
+,,,Empty blood sac,1,0.1,10,,Antiseptic,,Mounted Bloodbug - Workshop,00028A64,,,,,,,,,,,,,0.01,100.0,3
+,,,Empty can,1,0.5,2,,Steel,,,0016D8C9,,,,,,,,,,,,,0.01,40.0,1
+,,,Empty coolant,1,0.5,2,,Plastic,,,000C4380,,,,,,,,,,,,,0.01,20.0,1
+,,,Empty floral barrel vase,1,1.0,1,,Ceramic x2,,,00061AFE,,,,,,,,,,,,,0.01,20.0,2
+,,,Empty floral bud vase,1,1.0,1,,Ceramic x2,,,00061AFD,,,,,,,,,,,,,0.01,20.0,2
+,,,Empty floral flared vase,1,2.0,0.5,,Ceramic x2,,,00061AF3,,,,,,,,,,,,,0.01,10.0,2
+,,,Empty floral rounded vase,1,3.0,0.33,,Ceramic x2,,,00061AF0,,,,,,,,,,,,,0.01,6.67,2
+,,,Empty floral vaulted vase,1,3.0,0.33,,Ceramic x2,,,00061AFB,,,,,,,,,,,,,0.01,6.67,2
+,,,Empty milk bottle,1,1.0,1,,Glass x2,,Bottling Water - Survival Mode,0003B55B,,,,,,,,,,,,,0.01,20.0,4
+,,,Empty paint can,5,0.5,10,,Steel x2,,,00059B3A,,,,,,,,,,,,,0.03,80.0,0.4
+,,,Empty teal barrel vase,1,1.0,1,,Ceramic x2,,,00061ABC,,,,,,,,,,,,,0.01,20.0,2
+,,,Empty teal bud vase,1,1.0,1,,Ceramic x2,,,00061ABB,,,,,,,,,,,,,0.01,20.0,2
+,,,Empty teal flared vase,1,2.0,0.5,,Ceramic x2,,,00061AB5,,,,,,,,,,,,,0.01,10.0,2
+,,,Empty teal rounded vase,1,3.0,0.33,,Ceramic x2,,,00061AB1,,,,,,,,,,,,,0.01,6.67,2
+,,,Empty teal vaulted vase,1,3.0,0.33,,Ceramic x2,,,00061AB6,,,,,,,,,,,,,0.01,6.67,2
+,,,Empty willow barrel vase,1,1.0,1,,Ceramic x2,,,00061AE1,,,,,,,,,,,,,0.01,20.0,2
+,,,Empty willow bud vase,1,1.0,1,,Ceramic x2,,,00061AE0,,,,,,,,,,,,,0.01,20.0,2
+,,,Empty willow flared vase,1,2.0,0.5,,Ceramic x2,,,00061ADE,,,,,,,,,,,,,0.01,10.0,2
+,,,Empty willow rounded vase,1,3.0,0.33,,Ceramic x2,,,00061AD0,,,,,,,,,,,,,0.01,6.67,2
+,,,Empty willow vaulted vase,1,3.0,0.33,,Ceramic x2,,,00061ADF,,,,,,,,,,,,,0.01,6.67,2
+,,,Enamel bucket,2,3.0,0.67,,Steel x2,,,0006D140,,,,,,,,,,,,,0.03,13.33,1
+,,,Enhanced targeting card,9,0.2,45,,Plastic Silver Circuitry x2,,,000E7E71,,,,,,,,,,,,,0.06,400.0,1.89
+,,,Extinguisher,6,6.0,1,,Asbestos x2 Rubber x2 Steel x4,,,0001F8F9,,,,,,,,,,,,,0.06,20.0,3.33
+,,,Fancy hairbrush,9,0.5,18,,Plastic Silver x2,,,00060ECD,,,,,,,,,,,,,0.02,60.0,1.44
+,,,Feather duster,1,1.0,1,,Plastic x2 Cloth,,,00196AB9,,,,,,,,,,,,,0.02,30.0,3
+,,,Femur,1,1.0,1,,Bone,,,00188C99,,,,,,,,,,,,,0.04,100.0,1
+,,,Fifteen ball,2,0.5,4,,Plastic x2,,,0018E4F1,,,,,,,,,,,,,0.01,40.0,1
+,,,Fishing rod,4,3.0,1.33,,Gears x2 Spring Wood,,,00059B36,,,,,,,,,,,,,0.05,23.33,2.5
+,,,Five ball,2,0.5,4,,Plastic x2,,,0018E4DE,,,,,,,,,,,,,0.01,40.0,1
+,,,Flask,1,0.5,2,,Glass,,,000EC8AD,,,,,,,,,,,,,0.01,20.0,2
+,,,Flight data recorder,17,3.0,5.66,,Circuitry Fiber optics x2 Copper,,,0013A3E0,,,,,,,,,,,,,0.04,20.0,1.24
+,,,Flip lighter,12,0.5,24,,Oil Spring Steel,,,00058224,,,,,,,,,,,,,0.03,80.0,0.67
+,,,Floral barrel vase,1,1.0,1,,Ceramic x2,,,000AC8E3,,,,,,,,,,,,,0.01,20.0,2
+,,,Floral bud vase,1,1.0,1,,Ceramic x2,,,000AC8E1,,,,,,,,,,,,,0.01,20.0,2
+,,,Floral flared vase,1,2.0,0.5,,Ceramic x2,,,000AC8D9,,,,,,,,,,,,,0.01,10.0,2
+,,,Floral rounded vase,1,3.0,0.33,,Ceramic x2,,,000AC8CF,,,,,,,,,,,,,0.01,6.67,2
+,,,Floral vaulted vase,1,3.0,0.33,,Ceramic x2,,,000AC8E0,,,,,,,,,,,,,0.01,6.67,2
+,,,Fork,1,0.1,10,,Steel,,,00140B29,,,,,,,,,,,,,0.01,200.0,1
+,,,Four ball,2,0.5,4,,Plastic x2,,,0018E4D5,,,,,,,,,,,,,0.01,40.0,1
+,,,Fourteen ball,2,0.5,4,,Plastic x2,,,0018E4EF,,,,,,,,,,,,,0.01,40.0,1
+,,,Frying pan,2,1.0,2,,Steel x2,,,0003D3A5,,,,,,,,,,,,,0.03,40.0,1
+,,,Fumigus blowtorch,25,3.0,8.33,,Steel x3 Oil x3,,,001C7F2B,,,,,,,,,,,,,0.06,30.0,0.6
+,,,Fuse,5,0.1,50,,Copper Glass,,,00059ACC,,,,,,,,,,,,,0.01,200.0,1.2
+,,,Gas canister,10,3.0,3.33,,Steel x3 Oil,,Reactor coolant,00059B33,,,,,,,,,,,,,0.05,23.33,0.7
+,,,Gear,1,1.0,1,,Steel,,,000E1FF9,,,,,,,,,,,,,0.01,20.0,1
+,,,Giddyup Buttercup,177,8.0,22.13,,Gears x3 Steel x5 Spring x4 Screw x4,,,00163A12,,,,,,,,,,,,,0.11,30.0,0.19
+,,,Giddyup Buttercup back leg,69,1.0,69,,Spring x2 Steel Gears x2,,,00163A15,,,,,,,,,,,,,0.06,80.0,0.19
+,,,Giddyup Buttercup body,60,3.0,20,,Steel x2 Spring x2 Screw x2,,,00163A16,,,,,,,,,,,,,0.06,26.67,0.2
+,,,Giddyup Buttercup front leg,69,1.0,69,,Gears x2 Steel Spring x2,,,00163A14,,,,,,,,,,,,,0.06,80.0,0.19
+,,,Giddyup Buttercup head,36,3.0,12,,Steel x2 Spring x2,,,00163A13,,,,,,,,,,,,,0.04,20.0,0.22
+,,,Giddyup Buttercup toy parts,45,1.0,45,,Plastic Spring,Giddyup 'n Go,,00031AAF,,,,,,,,,,,,,0.01,20.0,0.09
+,,,Gilded grasshopper,451,2.0,225.5,,Copper x10 Glass x2 Gold x5,The Gilded Grasshopper,,00147D5E,,,,,,,,,,,,,0.09,85.0,0.19
+,,,Glass barrel red vase,26,3.0,8.67,,Glass x2,,,0005E1B1,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass barrel teal vase,26,3.0,8.67,,Glass x2,,,0005E1B6,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass barrel vase,26,3.0,8.67,,Glass x2,,,000488B8,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass bowl,2,1.0,2,,Glass x2,,,00023C36,,,,,,,,,,,,,0.01,20.0,2
+,,,Glass bud red vase,26,3.0,8.67,,Glass x2,,,0005E1B0,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass bud teal vase,26,3.0,8.67,,Glass x2,,,0005E1B5,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass bud vase,26,3.0,8.67,,Glass x2,,,000488BC,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass flared red vase,26,3.0,8.67,,Glass x2,,,0005E1AE,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass flared teal vase,26,3.0,8.67,,Glass x2,,,0005E1B3,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass flared vase,26,3.0,8.67,,Glass x2,,,000488B9,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass pitcher,1,1.0,1,,Glass x3,,,00059AD1,,,,,,,,,,,,,0.02,30.0,6
+,,,Glass rounded red vase,26,3.0,8.67,,Glass x2,,,0005E1AD,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass rounded teal vase,26,3.0,8.67,,Glass x2,,,0005E1B2,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass rounded vase,26,3.0,8.67,,Glass x2,,,000488CC,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass vaulted red vase,26,3.0,8.67,,Glass x2,,,0005E1AF,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass vaulted teal vase,26,3.0,8.67,,Glass x2,,,0005E1B4,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Glass vaulted vase,26,3.0,8.67,,Glass x2,,,000488BA,,,,,,,,,,,,,0.01,6.67,0.15
+,,,Globe,2,3.0,0.67,,Screw Cork x2 Plastic x2,,,001A7DA6,,,,,,,,,,,,,0.03,16.67,3
+,,,Gold bar,450,0.5,900,,Gold x10,,,00100E1E,,,,,,,,,,,,,0.04,200.0,0.2
+,,,Gold plated flip lighter,26,0.5,52,,Gold Oil Steel,,,00060E88,,,,,,,,,,,,,0.03,80.0,0.54
+,,,Gold watch,40,0.5,80,,Gears x2 Gold x2 Spring,,,00060E7C,,,,,,,,,,,,,0.05,140.0,0.68
+,,,Graduated cylinder,1,0.5,2,,Glass,,,00176050,,,,,,,,,,,,,0.01,20.0,2
+,,,Gwinnett ale bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,0011EA9E,,,,,,,,,,,,,0.01,40.0,2
+,,,Gwinnett brew bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,0011EA9B,,,,,,,,,,,,,0.01,40.0,2
+,,,Gwinnett lager bottle,3,0.5,6,,Glass x2,,Bottling Water - Survival Mode,0011EA9C,,,,,,,,,,,,,0.01,40.0,1.33
+,,,Gwinnett pale ale bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,0011EA9D,,,,,,,,,,,,,0.01,40.0,2
+,,,Gwinnett pilsner bottle,3,0.5,6,,Glass x2,,Bottling Water - Survival Mode,0011EAA0,,,,,,,,,,,,,0.01,40.0,1.33
+,,,Gwinnett stout bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,0011EA9F,,,,,,,,,,,,,0.01,40.0,2
+,,,Hack saw,3,2.0,1.5,,Steel x2 Wood,,,00173F01,,,,,,,,,,,,,0.04,30.0,1
+,,,Hairbrush,2,0.5,4,,Plastic x2,,,00060ECC,,,,,,,,,,,,,0.01,40.0,1
+,,,HalluciGen gas canister,35,3.0,11.66,,Steel,Hazardous Material,HalluciGen gas grenade - Chemistry Station,000E69AF,,,,,,,,,,,,,0.01,6.67,0.03
+,,,Hammer,5,1.5,3.33,,Wood Steel x2,Maintenance Man,,001A4AB0,,,,,,,,,,,,,0.04,40.0,0.6
+,,,Handcuffs,6,0.5,12,,Screw Spring Steel x2,,,00059B3F,,,,,,,,,,,,,0.04,120.0,1.17
+,,,High-powered magnet,13,5.0,2.6,,Copper x3 Ceramic Nuclear material,Liberty Reprimed,,001AB88D,,,,,,,,,,,,,0.03,10.0,1.77
+,,,High-powered microscope,22,5.0,4.4,,Crystal x2 Fiber optics Gears x2 Glass x2,,,001C61C3,,,,,,,,,,,,,0.05,22.0,1.09
+,,,Hoe,3,5.0,0.6,,Steel x3 Wood x3,,,000AF88F,,,,,,,,,,,,,0.06,24.0,2
+,,,Home plate,4,3.0,1.33,,Plastic x2 Cloth x2,,,0001A4BA,,,,,,,,,,,,,0.03,13.33,1
+,,,Hot plate,7,3.0,2.33,,Circuitry x2 Copper Screw,,,00059ADB,,,,,,,,,,,,,0.06,26.67,2.29
+,,,Hubcap,5,3.0,1.67,,Screw x2 Aluminum x2,,,0007E941,,,,,,,,,,,,,0.03,13.33,2
+,,,Human jaw,1,0.1,10,,Bone x2,,,00188CA0,,,,,,,,,,,,,0.08,2000.0,2
+,,,Ichor sac,15,0.5,30,,Acid x2 Nuclear material,,,00028A62,,,,,,,,,,,,,0.02,60.0,0.93
+,,,Inactive distress pulser,5,1.0,5,,Circuitry Nuclear material Aluminum x2,,,00140C3B,,,,,,,,,,,,,0.04,60.0,4.2
+,,,Industrial oil canister,14,3.0,4.67,,Aluminum x2 Oil x2,,,001AB5EE,,,,,,,,,,,,,0.03,13.33,1
+,,,Industrial size shortening,20,4.0,5,,Oil x5,,,001C9E8E,,,,,,,,,,,,,0.03,12.5,1
+,,,Industrial solvent,15,1.0,15,,Steel x3 Antiseptic x4,,,001C7F26,,,,,,,,,,,,,0.04,100.0,1
+,,,Injector,8,0.5,16,,Aluminum,,,00166B2E,,,,,,,,,,,,,0.01,20.0,0.38
+,,,IV bag,3,0.2,15,,Plastic,,,00142428,,,,,,,,,,,,,0.01,50.0,0.33
+,,,Jangles the Moon Monkey,12,2.0,6,,Cloth x3 Plastic Fiberglass,,,00147B03,,,,,,,,,,,,,0.03,25.0,0.75
+,,,Jawless brahmin skull,1,3.0,0.33,,Bone x4,,,00188B3E,,,,,,,,,,,,,0.17,133.33,4
+,,,Kickball,1,0.5,2,,Rubber x3,,,000822D3,,,,,,,,,,,,,0.02,60.0,6
+,,,Kitchen scale,6,2.0,3,,Steel x3 Spring x3,,,000AF8EF,,,,,,,,,,,,,0.06,45.0,2
+,,,Knight Rylan's holotag,1,0.1,10,,Steel,Duty or Dishonor,,000BDCDD,,,,,,,,,,,,,0.01,200.0,1
+,,,Lab bottle,1,0.5,2,,Glass,,Bottling Water - Survival Mode,0017604F,,,,,,,,,,,,,0.01,20.0,2
+,,,Ladle,2,0.5,4,,Steel x2,,,00059B11,,,,,,,,,,,,,0.03,80.0,1
+,,,Lantern,15,3.0,5,,Glass x2 Oil x2 Steel x3,,,00096A21,,,,,,,,,,,,,0.04,33.33,1
+,,,Large baby bottle,4,1.0,4,,Glass x2 Rubber,,Bottling Water - Survival Mode,001A899B,,,,,,,,,,,,,0.02,30.0,1.5
+,,,Large beaker,1,0.5,2,,Glass,,,00176053,,,,,,,,,,,,,0.01,20.0,2
+,,,Large dinner plate,1,1.0,1,,Ceramic x3,,,000488DA,,,,,,,,,,,,,0.02,30.0,3
+,,,Large plate,1,1.0,1,,Ceramic x3,,,000488DC,,,,,,,,,,,,,0.02,30.0,3
+,,,Large serving plate,1,1.0,1,,Ceramic x3,,,000488DB,,,,,,,,,,,,,0.02,30.0,3
+,,,Late edition newspaper,2,0.1,20,,Cloth x2,,,000FCDC8,,,,,,,,,,,,,0.01,200.0,1
+,,,League bowling pin,3,3.0,1,,Plastic x2 Wood x2,,,000DF267,,,,,,,,,,,,,0.04,20.0,1.33
+,,,Left arm bones,1,1.0,1,,Bone x3,,,000347E9,,,,,,,,,,,,,0.13,300.0,3
+,,,Left foot bones,1,1.0,1,,Bone x2,,,000347EB,,,,,,,,,,,,,0.08,200.0,2
+,,,Left hand bones,1,1.0,1,,Bone x2,,,000347E3,,,,,,,,,,,,,0.08,200.0,2
+,,,Left leg bones,1,1.0,1,,Bone x3,,,000347E5,,,,,,,,,,,,,0.13,300.0,3
+,,,Life preserver,6,3.0,2,,Plastic x3 Spring,,,00141DF2,,,,,,,,,,,,,0.03,13.33,1
+,,,Light bulb,3,0.5,6,,Copper Glass,,,0005A0D3,,,,,,,,,,,,,0.01,40.0,2
+,,,Liquor bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,000DF221,,,,,,,,,,,,,0.01,40.0,2
+,,,Lit cigar,1,0.0,∞,,Cloth,,,0008E36E,,,,,,,,,,,,,0.01,10000.0,1
+,,,Lit cigarette,1,0.0,∞,,Cloth,,,0008E36D,,,,,,,,,,,,,0.01,10000.0,1
+,,,Lit stogie,1,0.0,∞,,Cloth,Long Time Coming,,00159F09,,,,,,,,,,,,,0.01,10000.0,1
+,,,Locket,50,0.0,∞,,Silver x2,Returning the Favor,,00199043,,,,,,,,,,,,,0.01,20000.0,0.24
+,,,Luxobrew coffee pot,5,1.0,5,,Plastic x2 Steel x3 Asbestos x2,,,001C7F1B,,,,,,,,,,,,,0.04,100.0,3.4
+,,,Magnifying glass,8,0.5,16,,Glass x2 Copper Crystal x2,,,0011DA13,,,,,,,,,,,,,0.05,140.0,2
+,,,Makeshift battery,17,6.0,2.83,,Lead x3 Wood Acid x3,,,001AAD69,,,,,,,,,,,,,0.07,23.33,0.59
+,,,Masonry hammer,3,3.0,1,,Steel x2 Wood,,,001A0B12,,,,,,,,,,,,,0.04,20.0,1
+,,,Medical liquid nitrogen dispenser,12,5.0,2.4,,Steel x2,,,00060EA2,,,,,,,,,,,,,0.03,8.0,0.17
+,,,Metal bucket,2,3.0,0.67,,Steel x2,,,00059A80,,,,,,,,,,,,,0.03,13.33,1
+,,,Microscope,22,5.0,4.4,,Gears x2 Glass x2 Crystal x2 Fiber optics,,,00059AEB,,,,,,,,,,,,,0.05,22.0,1.09
+,,,Military ammo bag,4,3.0,1.33,,Ballistic fiber x2,,,00060E77,,,,,,,,,,,,,0.01,6.67,2.5
+,,,Military-grade circuit board,25,2.0,12.5,,Circuitry x5,The Molecular Level,,00154AD2,,,,,,,,,,,,,0.08,75.0,1
+,,,Military grade duct tape,30,0.1,300,,Ballistic fiber x2 Adhesive x4,,,00060E78,,,,,,,,,,,,,0.04,600.0,1.4
+,,,Mini nuke beryllium cap,0,0.0,,,Nuclear material Steel x2,,,0017A778,,,,,,,,,,,,,0.03,50000.0,∞
+,,,Mini nuke detonator shell,0,0.0,,,Nuclear material x2 Steel x3,,,0017A776,,,,,,,,,,,,,0.06,80000.0,∞
+,,,Mini nuke hemisphere core,0,0.0,,,Nuclear material Steel x2,,,0017A772,,,,,,,,,,,,,0.03,50000.0,∞
+,,,Mini nuke stabilizer fins,0,0.0,,,Screw x2 Steel x3,,,0017A774,,,,,,,,,,,,,0.06,80000.0,∞
+,,,Mole rat teeth,1,0.5,2,,Bone,,Mounted molerat head - Workshop,00034603,,,,,,,,,,,,,0.04,200.0,1
+,,,Mole rat hide,8,0.5,16,,Leather,,,0022B628,,,,,,,,,,,,,0.01,20.0,0.25
+,,,Mop,1,2.0,0.5,,Wood x2 Cloth x2,,,00059AEE,,,,,,,,,,,,,0.04,30.0,4
+,,,Mr. Handy fuel,14,3.0,4.67,,Steel x3 Oil x2,,,000B91FF,,,,,,,,,,,,,0.06,26.67,0.79
+,,,New floral barrel vase,1,1.0,1,,Ceramic x2,,,000AC91B,,,,,,,,,,,,,0.01,20.0,2
+,,,New floral bud vase,1,1.0,1,,Ceramic x2,,,000AC917,,,,,,,,,,,,,0.01,20.0,2
+,,,New floral flared vase,1,2.0,0.5,,Ceramic x2,,,000AC8EE,,,,,,,,,,,,,0.01,10.0,2
+,,,New floral rounded vase,1,3.0,0.33,,Ceramic x2,,,000AC8EA,,,,,,,,,,,,,0.01,6.67,2
+,,,New floral vaulted vase,1,3.0,0.33,,Ceramic x2,,,000AC914,,,,,,,,,,,,,0.01,6.67,2
+,,,New power cables,15,1.0,15,,Copper x2 Steel x3,Last Voyage of the U.S.S. Constitution,,00091FD2,,,,,,,,,,,,,0.06,80.0,0.73
+,,,New teal barrel vase,1,1.0,1,,Ceramic x2,,,000AC918,,,,,,,,,,,,,0.01,20.0,2
+,,,New teal bud vase,1,1.0,1,,Ceramic x2,,,000AC915,,,,,,,,,,,,,0.01,20.0,2
+,,,New teal flared vase,1,2.0,0.5,,Ceramic x2,,,000AC8EC,,,,,,,,,,,,,0.01,10.0,2
+,,,New teal rounded vase,1,3.0,0.33,,Ceramic x2,,,000AC8E6,,,,,,,,,,,,,0.01,6.67,2
+,,,New teal vaulted vase,1,3.0,0.33,,Ceramic x2,,,000AC909,,,,,,,,,,,,,0.01,6.67,2
+,,,New toy car,10,1.0,10,,Screw Wood x2,,,000FCE2F,,,,,,,,,,,,,0.03,50.0,0.4
+,,,New toy truck,15,1.0,15,,Steel x2 Screw x2,,,0015E8F7,,,,,,,,,,,,,0.04,60.0,0.4
+,,,New willow barrel vase,1,1.0,1,,Ceramic x2,,,000AC91A,,,,,,,,,,,,,0.01,20.0,2
+,,,New willow bud vase,1,1.0,1,,Ceramic x2,,,000AC916,,,,,,,,,,,,,0.01,20.0,2
+,,,New willow flared vase,1,2.0,0.5,,Ceramic x2,,,000AC8ED,,,,,,,,,,,,,0.01,10.0,2
+,,,New willow rounded vase,1,3.0,0.33,,Ceramic x2,,,000AC8E8,,,,,,,,,,,,,0.01,6.67,2
+,,,New willow vaulted vase,1,3.0,0.33,,Ceramic x2,,,000AC913,,,,,,,,,,,,,0.01,6.67,2
+,,,Nine ball,2,0.5,4,,Plastic x2,,,0018E4E5,,,,,,,,,,,,,0.01,40.0,1
+,,,Nuka-Cola bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,0004835A,,,,,,,,,,,,,0.01,40.0,2
+,,,Office desk fan,4,3.0,1.33,,Gears x2 Screw x2 Steel x2,,,00192D5D,,,,,,,,,,,,,0.04,33.33,3
+,,,Oil can,15,0.5,30,,Oil x4 Aluminum,,,001C7F23,,,,,,,,,,,,,0.03,100.0,1.26
+,,,Oil canister,12,3.0,4,,Steel x2 Oil x2,,,001AB5ED,,,,,,,,,,,,,0.04,20.0,0.83
+,,,One ball,2,0.5,4,,Plastic x2,,,0018E4DA,,,,,,,,,,,,,0.01,40.0,1
+,,,Oven mitt,1,1.0,1,,Asbestos Cloth x2,,,00060E7B,,,,,,,,,,,,,0.02,30.0,8
+,,,Pack of cigarettes,12,0.1,120,,Plastic Cloth x2 Asbestos,,,0005821A,,,,,,,,,,,,,0.03,400.0,0.75
+,,,Pack of duct tape,20,0.1,200,,Adhesive x4 Cloth x2,,,001C7F1F,,,,,,,,,,,,,0.04,600.0,1.7
+,,,Paint can,10,5.0,2,,Oil x2 Steel x2,,,00059B3B,,,,,,,,,,,,,0.04,12.0,1
+,,,Paintbrush,2,0.5,4,,Wood Cloth,,,00060ECF,,,,,,,,,,,,,0.02,60.0,1
+,,,Pelvis bones,1,1.0,1,,Bone x3,,,00188C9D,,,,,,,,,,,,,0.13,300.0,3
+,,,Pen,1,0.0,∞,,Plastic,,,00140D99,,,,,,,,,,,,,0.01,10000.0,1
+,,,Pencil,1,0.0,∞,,Lead Wood,,Endangerol syringe - Chemistry Station,00059AF8,,,,,,,,,,,,,0.03,50000.0,2
+,,,Pepper mill,2,0.5,4,,Screw Plastic,,,00020189,,,,,,,,,,,,,0.01,40.0,1.5
+,,,Picture frame,4,1.0,4,,Wood x2,,,0014DE02,,,,,,,,,,,,,0.03,40.0,0.5
+,,,Pint glass,3,0.5,6,,Glass x2,,,0011EB44,,,,,,,,,,,,,0.01,40.0,1.33
+,,,Plastic bowl,2,0.5,4,,Plastic x2,,,00060ED9,,,,,,,,,,,,,0.01,40.0,1
+,,,Plastic fork,1,0.1,10,,Plastic,,,00059ACB,,,,,,,,,,,,,0.01,100.0,1
+,,,Plastic knife,1,0.1,10,,Plastic,,,00060E94,,,,,,,,,,,,,0.01,100.0,1
+,,,Plastic plate,1,0.2,5,,Plastic x2,,,00059AFA,,,,,,,,,,,,,0.01,100.0,2
+,,,Plastic pumpkin,2,1.0,2,,Plastic x2,,,000A8AB1,,,,,,,,,,,,,0.01,20.0,1
+,,,Plastic spoon,1,0.1,10,,Plastic,,,00059B10,,,,,,,,,,,,,0.01,100.0,1
+,,,Plate,2,1.0,2,,Steel,,,00140B27,,,,,,,,,,,,,0.01,20.0,0.5
+,,,Plunger,1,1.0,1,,Rubber x2 Wood,,,00059AFB,,,,,,,,,,,,,0.03,40.0,5
+,,,Power relay coil,15,0.5,30,,Copper x2 Steel x2,Last Voyage of the U.S.S. Constitution,,00091FDE,,,,,,,,,,,,,0.04,120.0,0.67
+,,,Pre-War lamp,15,3.0,5,,Copper x4 Glass x2,,,00078309,,,,,,,,,,,,,0.04,20.0,1.33
+,,,Pre-War Money,8,0.0,∞,,Cloth,,Nuka-Cade token - Nuka-Cade token Exchange,00059B02,,,,,,,,,,,,,0.01,10000.0,0.13
+,,,Preserved cigarette pack,12,0.1,120,,Plastic Cloth x2 Asbestos,,,000E3770,,,,,,,,,,,,,0.03,400.0,0.75
+,,,ProSnap camera,30,3.0,10,,Gears x4 Spring x4 Crystal x4,,,001C7F28,,,,,,,,,,,,,0.08,66.67,1.33
+,,,Prototype biometric scanner,164,3.0,54.67,,Fiber optics Asbestos Nuclear material x2,Find the Treasures of Jamaica Plain,,0014DDFA,,,,,,,,,,,,,0.03,13.33,0.2
+,,,Rack,2,0.5,4,,Wood x2,,,00059AFF,,,,,,,,,,,,,0.03,80.0,1
+,,,Radioactive gland,30,0.5,60,,Nuclear material x2,,,0021C00B,,,,,,,,,,,,,0.01,40.0,0.67
+,,,Radscorpion stinger,30,0.5,60,,Nuclear material x2,,"Radscorpion venom syringe - Chemistry Station, Mounted Radscorpion - Workshop",000628ED,,,,,,,,,,,,,0.01,40.0,0.67
+,,,Radstag hide,8,2.0,4,,Leather x4,,,0022B626,,,,,,,,,,,,,0.03,20.0,1
+,,,Rat poison,6,0.5,12,,Steel Asbestos Fiberglass x2,,,00060ED8,,,,,,,,,,,,,0.03,100.0,2.83
+,,,Recorder,23,0.7,32.86,,Aluminum Nuclear material Circuitry Glass,,,0013FF87,,,,,,,,,,,,,0.04,85.71,0.87
+,,,Red plate,1,1.0,1,,Ceramic x2,,,00165327,,,,,,,,,,,,,0.01,20.0,2
+,,,Reporter's camera,112,3.0,37.33,,Gears x2 Spring x2 Crystal x2,Find the Treasures of Jamaica Plain,,0014DD48,,,,,,,,,,,,,0.04,33.33,0.18
+,,,Reporter's pen,3,0.0,∞,,Plastic,Find the Treasures of Jamaica Plain,,0014DDAF,,,,,,,,,,,,,0.01,10000.0,0.33
+,,,Reporter's pencil,10,0.0,∞,,Lead Wood,Find the Treasures of Jamaica Plain,,0014DDBD,,,,,,,,,,,,,0.03,50000.0,0.2
+,,,Research test tube,1,0.1,10,,Glass,,,00059B16,,,,,,,,,,,,,0.01,100.0,2
+,,,Restored desk fan,8,3.0,2.67,,Steel x2 Screw x2 Gears x2,,,000F15BF,,,,,,,,,,,,,0.04,33.33,1.5
+,,,Rib cage,1,1.0,1,,Bone x5,,,00188C98,,,,,,,,,,,,,0.21,500.0,5
+,,,Rib cage and pelvis,1,1.0,1,,Bone x3,,,000347E7,,,,,,,,,,,,,0.13,300.0,3
+,,,Rib cage and spine,1,1.0,1,,Bone x5,,,000347E6,,,,,,,,,,,,,0.21,500.0,5
+,,,Right arm bones,1,1.0,1,,Bone x3,,,000347E8,,,,,,,,,,,,,0.13,300.0,3
+,,,Right foot bones,1,1.0,1,,Bone x2,,,000347EA,,,,,,,,,,,,,0.08,200.0,2
+,,,Right hand bones,1,1.0,1,,Bone x2,,,000347E2,,,,,,,,,,,,,0.08,200.0,2
+,,,Right leg bones,1,1.0,1,,Bone x3,,,000347E4,,,,,,,,,,,,,0.13,300.0,3
+,,,Ring stand,2,3.0,0.67,,Steel Aluminum,,,000EC8B3,,,,,,,,,,,,,0.02,10.0,2
+,,,Rolled Boston Bugle,2,0.1,20,,Cloth,,,000286F5,,,,,,,,,,,,,0.01,100.0,0.5
+,,,Rum bottle,2,1.0,2,,Glass x4,,Bottling Water - Survival Mode,0014A138,,,,,,,,,,,,,0.03,40.0,4
+,,,Ruptured HalluciGen gas canister,10,3.0,3.33,,Steel,,,0016D041,,,,,,,,,,,,,0.01,6.67,0.1
+,,,Salt shaker,1,0.5,2,,Plastic,,,0002018A,,,,,,,,,,,,,0.01,20.0,1
+,,,Sauce pan,2,1.0,2,,Steel x2,,,0003D3A6,,,,,,,,,,,,,0.03,40.0,1
+,,,Sauce pan lid,1,0.5,2,,Steel,,,0003D3A7,,,,,,,,,,,,,0.01,40.0,1
+,,,Saucer,1,0.5,2,,Ceramic,,,0019269B,,,,,,,,,,,,,0.01,20.0,1
+,,,Saw,3,3.0,1,,Steel x3 Rubber,,,00173F02,,,,,,,,,,,,,0.05,23.33,1.67
+,,,Scalpel,5,0.2,25,,Steel,,,00059B43,,,,,,,,,,,,,0.01,100.0,0.2
+,,,Scissors,3,0.2,15,,Plastic Steel x2,,,00059B44,,,,,,,,,,,,,0.03,250.0,1
+,,,Screwdriver,3,0.5,6,,Steel x2 Wood,Maintenance Man,,0004D1F4,,,,,,,,,,,,,0.04,120.0,1
+,,,Sealed Boston Bugle,1,0.0,∞,,Cloth,,,00140D84,,,,,,,,,,,,,0.01,10000.0,1
+,,,Sealed wonderglue,25,0.1,250,,Adhesive x4,,,000E3784,,,,,,,,,,,,,0.03,400.0,1.28
+,,,Sensor,20,0.5,40,,Aluminum Nuclear material,,,00166B31,,,,,,,,,,,,,0.01,40.0,0.65
+,,,Sensor module,30,2.0,15,,Steel Circuitry x5 Copper x2,The Molecular Level,,001ACC8E,,,,,,,,,,,,,0.1,95.0,1.13
+,,,Seven ball,2,0.5,4,,Plastic x2,,,0018E4E2,,,,,,,,,,,,,0.01,40.0,1
+,,,Shadeless lamp,5,3.0,1.67,,Copper Glass x2,,,0003F8C2,,,,,,,,,,,,,0.02,10.0,1.6
+,,,Shadeless table lamp,5,3.0,1.67,,Copper Glass x2,,,0007830B,,,,,,,,,,,,,0.02,10.0,1.6
+,,,Shem Drowne's skull,10,0.1,100,,Bone x2,The Gilded Grasshopper,,00147D5D,,,,,,,,,,,,,0.08,2000.0,0.2
+,,,Shopping basket,1,1.0,1,,Plastic Steel x3,,,00090E5E,,,,,,,,,,,,,0.05,70.0,4
+,,,Shot glass,1,0.1,10,,Glass,,,00059B0A,,,,,,,,,,,,,0.01,100.0,2
+,,,Shovel,3,5.0,0.6,,Steel x3 Wood x3,,,000822CB,,,,,,,,,,,,,0.06,24.0,2
+,,,Silver bar,300,0.5,600,,Silver x10,,,00100E1C,,,,,,,,,,,,,0.04,200.0,0.2
+,,,Silver bowl,15,1.0,15,,Silver x2,,,00060EDB,,,,,,,,,,,,,0.01,20.0,0.8
+,,,Silver fork,4,0.1,40,,Silver,,,00060E8B,,,,,,,,,,,,,0.01,100.0,1.5
+,,,Silver hairbrush,63,0.5,126,,Plastic Silver x2,Find the Treasures of Jamaica Plain,,0014DDFF,,,,,,,,,,,,,0.02,60.0,0.21
+,,,Silver locket,10,0.1,100,,Silver x2,,,00059B34,,,,,,,,,,,,,0.01,200.0,1.2
+,,,Silver plate,7,1.0,7,,Silver,,,00060E91,,,,,,,,,,,,,0.01,10.0,0.86
+,,,Silver pocket watch,25,0.5,50,,Gears x2 Silver x2 Spring,,,00060E7D,,,,,,,,,,,,,0.05,140.0,0.84
+,,,Silver table knife,4,0.1,40,,Silver,,,00060E8D,,,,,,,,,,,,,0.01,100.0,1.5
+,,,Silver table spoon,4,0.1,40,,Silver,,,00060E95,,,,,,,,,,,,,0.01,100.0,1.5
+,,,Six ball,2,0.5,4,,Plastic x2,,,0018E4E0,,,,,,,,,,,,,0.01,40.0,1
+,,,Skull,1,1.0,1,,Bone x3,,"Mounted Feral Ghoul Head - Workshop, Mounted Glowing One Head - Workshop, Raider Pike - Workshop (Nuka-World), Spiked Pole - Workshop (Nuka-World, Tent - Workshop (Nuka-World)",000347E1,,,,,,,,,,,,,0.13,300.0,3
+,,,Skull cap bone,1,0.1,10,,Bone x2,,,00188CA2,,,,,,,,,,,,,0.08,2000.0,2
+,,,Skull eye socket,1,0.1,10,,Bone x2,,,00188C9F,,,,,,,,,,,,,0.08,2000.0,2
+,,,Skull faceplate,1,0.1,10,,Bone x2,,,00188C9E,,,,,,,,,,,,,0.08,2000.0,2
+,,,Skull fragment,1,0.1,10,,Bone x2,,,00188CA1,,,,,,,,,,,,,0.08,2000.0,2
+,,,Small baby bottle,4,1.0,4,,Glass x2 Rubber,,Bottling Water - Survival Mode,001A89A0,,,,,,,,,,,,,0.02,30.0,1.5
+,,,Small covered sauce pan,1,1.2,0.83,,Steel,,,0003D3AB,,,,,,,,,,,,,0.01,16.67,1
+,,,Small dinner plate,1,0.5,2,,Ceramic x2,,,000488DD,,,,,,,,,,,,,0.01,40.0,2
+,,,Small picture frame,2,1.0,1,,Wood x2,,,001A89A3,,,,,,,,,,,,,0.03,40.0,1
+,,,Small plate,1,0.5,2,,Ceramic x2,,,000488DF,,,,,,,,,,,,,0.01,40.0,2
+,,,Small sauce pan,1,1.0,1,,Steel,,,0003D3A9,,,,,,,,,,,,,0.01,20.0,1
+,,,Small sauce pan lid,1,0.2,5,,Steel,,,0003D3AA,,,,,,,,,,,,,0.01,100.0,1
+,,,Small serving plate,1,0.5,2,,Ceramic x2,,,000488DE,,,,,,,,,,,,,0.01,40.0,2
+,,,Soap,4,0.5,8,,Oil,,,0019945F,,,,,,,,,,,,,0.01,20.0,1
+,,,Spanner,8,0.5,16,,Aluminum,,,00166B32,,,,,,,,,,,,,0.01,20.0,0.38
+,,,Spatula,1,0.5,2,,Rubber Steel,,,00059B0F,,,,,,,,,,,,,0.02,60.0,3
+,,,Spine,5,1.0,5,,Bone x5,,,000347ED,,,,,,,,,,,,,0.21,500.0,1
+,,,Stew pot,8,3.0,2.67,,Steel x3 Copper,,,00059A7A,,,,,,,,,,,,,0.05,23.33,0.88
+,,,Stogie,1,0.0,∞,,Cloth,,,00159F0A,,,,,,,,,,,,,0.01,10000.0,1
+,,,Straw pillow,1,1.0,1,,Cloth x2,,,00060EC7,,,,,,,,,,,,,0.01,20.0,2
+,,,Suprathaw antifreeze,8,2.0,4,,Acid x4 Plastic x3,,,001C7F31,,,,,,,,,,,,,0.05,35.0,1.38
+,,,Surgical scalpel,5,0.2,25,,Steel,,,000C9ADA,,,,,,,,,,,,,0.01,100.0,0.2
+,,,Surgical tray,2,0.5,4,,Aluminum x3,,,00059AD8,,,,,,,,,,,,,0.02,60.0,4.5
+,,,Swan boat fragments,12,0.0,∞,,Fiberglass x5 Plastic Steel,,,001CC26F,,,,,,,,,,,,,0.06,80000.0,2.25
+,,,Sweeper,100,4.0,25,,Aluminum x3 Circuitry x2 Nuclear material x2,,,001C9A67,,,,,,,,,,,,,0.05,27.5,0.39
+,,,Synth component,20,0.0,∞,,Plastic,,,000CFF74,,,,,,,,,,,,,0.01,10000.0,0.05
+,,,Table knife,1,0.1,10,,Steel,,,00059AE1,,,,,,,,,,,,,0.01,200.0,1
+,,,Table spoon,1,0.1,10,,Steel,,,00060E96,,,,,,,,,,,,,0.01,200.0,1
+,,,Tabletop picture frame,2,1.0,2,,Wood x2,,,001A8E0B,,,,,,,,,,,,,0.03,40.0,1
+,,,Tack hammer,2,1.5,1.33,,Steel Wood,,,001A0B11,,,,,,,,,,,,,0.03,26.67,1
+,,,Tall flask,1,0.5,2,,Glass,,,000EC8AB,,,,,,,,,,,,,0.01,20.0,2
+,,,Teacup,1,0.5,2,,Ceramic x2,,,00192699,,,,,,,,,,,,,0.01,40.0,2
+,,,Tea kettle,2,1.5,1.33,,Steel x2,,,00020199,,,,,,,,,,,,,0.03,26.67,1
+,,,Teal barrel vase,1,1.0,1,,Ceramic x2,,,000AC8CD,,,,,,,,,,,,,0.01,20.0,2
+,,,Teal bud vase,1,1.0,1,,Ceramic x2,,,000AC8CC,,,,,,,,,,,,,0.01,20.0,2
+,,,Teal flared vase,1,2.0,0.5,,Ceramic x2,,,000AC8C8,,,,,,,,,,,,,0.01,10.0,2
+,,,Teal rounded vase,1,3.0,0.33,,Ceramic x2,,,000AC8C6,,,,,,,,,,,,,0.01,6.67,2
+,,,Teal vaulted vase,1,3.0,0.33,,Ceramic x2,,,000AC8CA,,,,,,,,,,,,,0.01,6.67,2
+,,,Teapot,2,1.0,2,,Ceramic x5 Asbestos,,,00192697,,,,,,,,,,,,,0.04,60.0,5.5
+,,,Teddy bear,3,1.0,3,,Leather Cloth x3,,,00059B14 0022C1F0,,,,,,,,,,,,,0.03,40.0,1.67
+,,,Telephone,5,3.0,1.67,,Circuitry x2 Copper Fiberglass x2,,,00059B15,,,,,,,,,,,,,0.06,30.0,4.8
+,,,Ten ball,2,0.5,4,,Plastic x2,,,0018E4E7,,,,,,,,,,,,,0.01,40.0,1
+,,,Test tube,1,0.5,2,,Glass,,,000EAFC1,,,,,,,,,,,,,0.01,20.0,2
+,,,Test tube rack,1,1.0,1,,Wood x2,,,000EAFBE,,,,,,,,,,,,,0.03,40.0,2
+,,,Thin beaker,1,0.5,2,,Glass,,,00176051,,,,,,,,,,,,,0.01,20.0,2
+,,,Thirteen ball,2,0.5,4,,Plastic x2,,,0018E4ED,,,,,,,,,,,,,0.01,40.0,1
+,,,Three ball,2,0.5,4,,Plastic x2,,,0018E4DC,,,,,,,,,,,,,0.01,40.0,1
+,,,Tibia,1,1.0,1,,Bone x2,,,00188C9C,,,,,,,,,,,,,0.08,200.0,2
+,,,Tin can,1,0.1,10,,Steel x2,,,0001F90A,,,,,,,,,,,,,0.03,400.0,2
+,,,Toaster,3,3.0,1,,Spring x2 Steel x2,,,00059B19 00059B1A,,,,,,,,,,,,,0.04,20.0,2.67
+,,,Tongs,18,3.0,6,,Steel x2 Screw,,,001A0B15,,,,,,,,,,,,,0.03,16.67,0.22
+,,,Toothbrush,1,0.1,10,,Plastic,,,00060ECE,,,,,,,,,,,,,0.01,100.0,1
+,,,Toothpaste,3,0.2,15,,Plastic Antiseptic x2,,,00199A88,,,,,,,,,,,,,0.02,150.0,2.33
+,,,Torque rod end,1,3.0,0.33,,Steel,,,000E1FF8,,,,,,,,,,,,,0.01,6.67,1
+,,,Toy alien,5,0.5,10,,Plastic x2 Rubber,,,00059B2B,,,,,,,,,,,,,0.02,60.0,0.8
+,,,Toy car,5,1.0,5,,Screw Wood x2,,,00059B1C,,,,,,,,,,,,,0.03,50.0,0.8
+,,,Toy rocketship,7,0.5,14,,Aluminum Plastic x2,,,00059B2A,,,,,,,,,,,,,0.02,60.0,0.71
+,,,Toy truck,8,1.0,8,,Steel x2 Screw,,,0015E8F6,,,,,,,,,,,,,0.03,50.0,0.5
+,,,Tray,12,1.0,12,,Aluminum,,,0019DFF3,,,,,,,,,,,,,0.01,10.0,0.25
+,,,Tri tool,15,0.5,30,,Aluminum Nuclear material,,,00166B34,,,,,,,,,,,,,0.01,40.0,0.87
+,,,Trifold American flag,3,3.0,1,,Wood x2 Cloth x4,,,00059B2E,,,,,,,,,,,,,0.06,26.67,2
+,,,Tube flange,2,5.0,0.4,,Steel x2,,,000E1FF6,,,,,,,,,,,,,0.03,8.0,1
+,,,Turpentine,10,1.0,10,,Steel x2 Antiseptic x2,,,00059B1E,,,,,,,,,,,,,0.04,60.0,0.8
+,,,TV dinner tray,1,0.5,2,,Aluminum x3,,,00059B2C,,,,,,,,,,,,,0.02,60.0,9
+,,,Tweezers,8,0.2,40,,Aluminum,,,0013FF41,,,,,,,,,,,,,0.01,50.0,0.38
+,,,Twelve ball,2,0.5,4,,Plastic x2,,,0018E4EB,,,,,,,,,,,,,0.01,40.0,1
+,,,Two ball,2,0.5,4,,Plastic x2,,,00059AFD,,,,,,,,,,,,,0.01,40.0,1
+,,,Typewriter,11,5.0,2.2,,Gears x3 Screw x2 Spring x3,,,00059B20,,,,,,,,,,,,,0.05,22.0,2
+,,,Umbrella,3,1.5,2,,Spring x2 Plastic x2,,,000BA2F8,,,,,,,,,,,,,0.03,26.67,2.67
+,,,Umbrella stand,2,2.0,1,,Ceramic x2,,,000BA3F7,,,,,,,,,,,,,0.01,10.0,1
+,,,Undamaged Abraxo cleaner,10,1.0,10,,Acid Antiseptic x2 Fiberglass,,,000E3760,,,,,,,,,,,,,0.03,40.0,1.3
+,,,Undamaged American flag,9,3.0,3,,Wood x2 Cloth x2,,,000FCE31,,,,,,,,,,,,,0.04,20.0,0.44
+,,,Undamaged baseball glove,6,1.0,6,,Leather x3,,,000E3766,,,,,,,,,,,,,0.02,30.0,1
+,,,Undamaged camera,18,3.0,6,,Gears x2 Spring x2 Crystal x2,,,000E376C,,,,,,,,,,,,,0.04,33.33,1.11
+,,,Undamaged cigarettes,50,1.0,50,,Plastic Cloth x4 Asbestos x2,,,000E376E,,,,,,,,,,,,,0.05,70.0,0.34
+,,,Unfilled kickball,1,0.5,2,,Rubber x3,,,0002D9AB,,,,,,,,,,,,,0.02,60.0,6
+,,,Unrusted tin can,1,0.1,10,,Steel Aluminum,,,000F15BB,,,,,,,,,,,,,0.02,300.0,4
+,,,Unscorched oven mitt,1,1.0,1,,Asbestos Cloth x2,,,000FE270,,,,,,,,,,,,,0.02,30.0,8
+,,,Untarnished coffee pot,3,1.0,3,,Plastic Steel x2 Asbestos,,,0019930E,,,,,,,,,,,,,0.04,60.0,3
+,,,Untarnished metal bucket,3,3.0,1,,Steel x2,,,000E377E,,,,,,,,,,,,,0.03,13.33,0.67
+,,,Unused ashtray,3,0.5,6,,Ceramic x2,,,000E3762,,,,,,,,,,,,,0.01,40.0,0.67
+,,,Unused enamel bucket,3,3.0,1,,Steel x2,,,000E3776,,,,,,,,,,,,,0.03,13.33,0.67
+,,,Unused flip lighter,21,0.5,42,,Oil Spring Steel,,,000E377C,,,,,,,,,,,,,0.03,80.0,0.38
+,,,Upper skull,1,0.1,10,,Bone,,,000347EC,,,,,,,,,,,,,0.04,1000.0,1
+,,,Used oil can,2,0.5,4,,Steel Oil,,,0004B273,,,,,,,,,,,,,0.02,60.0,2.5
+,,,Vacuum tube,3,0.2,15,,Copper Glass x2,,,00060AA3,,,,,,,,,,,,,0.02,150.0,2.67
+,,,Vase,1,3.0,0.33,,Ceramic x3,,,000B1647,,,,,,,,,,,,,0.02,10.0,3
+,,,Vegetable starch,6,0.5,12,,Adhesive x5,,,000657FE,,,,,,,,,,,,,0.03,100.0,6.67
+,,,Vodka,4,1.0,4,,Glass x4,,,000DF031,,,,,,,,,,,,,0.03,40.0,2
+,,,Vodka bottle,2,1.0,2,,Glass x4,,Bottling Water - Survival Mode,000DEDE0,,,,,,,,,,,,,0.03,40.0,4
+,,,Wakemaster alarm clock,15,1.0,15,,Aluminum x2 Glass x2 Spring x2 Nuclear material x2,,,001C9E92,,,,,,,,,,,,,0.06,80.0,2.4
+,,,Whiskey,2,1.0,2,,Glass x4,,,000DF032,,,,,,,,,,,,,0.03,40.0,4
+,,,Whiskey bottle,2,1.0,2,,Glass x4,,Bottling Water - Survival Mode,000DEDE1,,,,,,,,,,,,,0.03,40.0,4
+,,,White bottle,2,0.5,4,,Glass x2,,Bottling Water - Survival Mode,000DF223,,,,,,,,,,,,,0.01,40.0,2
+,,,White plate,1,1.0,1,,Ceramic x2,,,00165326,,,,,,,,,,,,,0.01,20.0,2
+,,,Willow barrel vase,1,1.0,1,,Ceramic x2,,,000AC8C2,,,,,,,,,,,,,0.01,20.0,2
+,,,Willow bud vase,1,1.0,1,,Ceramic x2,,,000AC8C1,,,,,,,,,,,,,0.01,20.0,2
+,,,Willow flared vase,1,2.0,0.5,,Ceramic x2,,,000AC8BF,,,,,,,,,,,,,0.01,10.0,2
+,,,Willow rounded vase,1,3.0,0.33,,Ceramic x2,,,000AC8BE,,,,,,,,,,,,,0.01,6.67,2
+,,,Willow vaulted vase,1,3.0,0.33,,Ceramic x2,,,000AC8C0,,,,,,,,,,,,,0.01,6.67,2
+,,,Wine bottle,2,1.0,2,,Glass x4,,Bottling Water - Survival Mode,000DEDED,,,,,,,,,,,,,0.03,40.0,4
+,,,Wonderglue,20,0.1,200,,Adhesive x2,,,00059B25,,,,,,,,,,,,,0.01,200.0,0.8
+,,,Wooden block - B & Y,1,0.1,10,,Wood,,,00197502,,,,,,,,,,,,,0.01,200.0,1
+,,,Wooden block - I & D,1,0.1,10,,Wood,,,00059B1D,,,,,,,,,,,,,0.01,200.0,1
+,,,Wooden block - N & S,1,0.1,10,,Wood,,,00197503,,,,,,,,,,,,,0.01,200.0,1
+,,,Wooden block - V & F,1,0.1,10,,Wood,,,00197501,,,,,,,,,,,,,0.01,200.0,1
+,,,Wooden picture frame,4,1.0,4,,Wood x2,Find the Treasures of Jamaica Plain,,0014DE01,,,,,,,,,,,,,0.03,40.0,0.5
+,,,Wooden soldier toy,1,1.0,1,,Ceramic,,,00191E93,,,,,,,,,,,,,0.01,10.0,1
+,,,Wooden spoon,1,0.1,10,,Wood x2,,,000FFE09,,,,,,,,,,,,,0.03,400.0,2
+,,,Wrench,1,1.0,1,,Steel x2,Maintenance Man,,0004D1F7,,,,,,,,,,,,,0.03,40.0,2
+,,,Yao guai hide,10,2.5,4,,Leather x4,,Yao Guai Mounted Head - Workshop,0022B62A,,,,,,,,,,,,,0.03,16.0,0.8
+,,,Yardstick,1,0.7,1.43,,Wood x2,,,00059B3E,,,,,,,,,,,,,0.03,57.14,2
+,,,Yellow paint,10,5.0,2,,Oil x2 Steel x2,Painting the Town Only 1 needed for quest.,,0001D95B,,,,,,,,,,,,,0.04,12.0,1
+,,,Yellow plate,1,1.0,1,,Ceramic x2,,,00165328,,,,,,,,,,,,,0.01,20.0,2
+,,,Yellow table lamp,5,3.0,1.67,,Copper Glass x2,,,0003F8C1,,,,,,,,,,,,,0.02,10.0,1.6
+,,,Yellow-trimmed plate,2,1.0,2,,Ceramic x2,,,0015CDF7,,,,,,,,,,,,,0.01,20.0,1
+,,,Youth League baseball,20,1.0,20,,Cork x2 Leather,Find the Treasures of Jamaica Plain,,0014DD17,,,,,,,,,,,,,0.02,30.0,0.2
+,,,Youth League glove,30,1.0,30,,Leather x3,Find the Treasures of Jamaica Plain,,0014DD1A,,,,,,,,,,,,,0.02,30.0,0.2

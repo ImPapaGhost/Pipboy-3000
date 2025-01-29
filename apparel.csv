@@ -1,0 +1,870 @@
+Name,Quantity,Weight
+Leather chest piece,1,0.0
+Leather left arm,1,0.0
+Leather right arm,1,0.0
+Leather left leg,1,0.0
+Leather right leg,1,0.0
+Leather chest piece,1,0.0
+Leather chest piece,1,5.0
+Sturdy leather chest piece,1,9.9
+Heavy leather chest piece,1,14.8
+Leather arms,1,0.0
+Leather arm,1,2.0
+Sturdy leather arm,1,4.6
+Heavy leather arm,1,7.2
+Leather legs,1,0.0
+Leather leg,1,2.0
+Sturdy leather leg,1,4.6
+Heavy leather leg,1,7.2
+Total of set,1,0.0
+Normal,1,13.0
+Sturdy,1,28.3
+Heavy,1,43.6
+Metal helmet,1,0.0
+Metal chest piece,1,0.0
+Metal left arm,1,0.0
+Metal right arm,1,0.0
+Metal left leg,1,0.0
+Metal right leg,1,0.0
+Metal helmet,1,3.0
+Metal chest piece,1,0.0
+Metal chest piece,1,6.0
+Sturdy metal chest piece,1,15.5
+Heavy metal chest piece,1,23.1
+Metal arms,1,0.0
+Metal arm,1,3.0
+Sturdy metal arm,1,7.9
+Heavy metal arm,1,12.8
+Metal legs,1,0.0
+Metal leg,1,3.0
+Sturdy metal leg,1,7.9
+Heavy metal leg,1,12.8
+Total of set,1,0.0
+Normal,1,18.0
+Sturdy,1,47.1
+Heavy,1,74.3
+Combat armor helmet,1,4.0
+Combat armor chest piece,1,0.0
+Combat armor chest piece,1,8.0
+Sturdy combat armor chest piece,1,11.7
+Heavy combat armor chest piece,1,15.5
+Combat armor left arm,1,0.0
+Combat armor left arm,1,2.0
+Sturdy combat armor left arm,1,4.5
+Heavy combat armor left arm,1,7.0
+Combat armor right arm,1,0.0
+Combat armor right arm,1,2.0
+Sturdy combat armor right arm,1,4.5
+Heavy combat armor right arm,1,7.0
+Combat armor left leg,1,0.0
+Combat armor left leg,1,2.0
+Sturdy combat armor left leg,1,4.5
+Heavy combat armor left leg,1,9.0
+Combat armor right leg,1,0.0
+Combat armor right leg,1,4.0
+Sturdy combat armor right leg,1,6.5
+Heavy combat armor right leg,1,9.0
+Total of Set,1,0.0
+Normal,1,18.0
+Sturdy,1,31.7
+Heavy,1,51.5
+Synth helmet,1,0.0
+Synth field helmet,1,0.0
+Synth chest piece,1,0.0
+Synth left arm,1,0.0
+Synth right arm,1,0.0
+Synth left leg,1,0.0
+Synth right leg,1,0.0
+Synth helmets,1,0.0
+Synth helmet,1,3.0
+Synth field helmet,1,3.0
+Synth chest piece,1,0.0
+Synth chest piece,1,7.0
+Sturdy synth chest piece,1,12.0
+Heavy synth chest piece,1,17.0
+Synth arms,1,0.0
+Synth arm,1,3.0
+Sturdy synth arm,1,7.0
+Heavy synth arm,1,10.0
+Synth legs,1,0.0
+Synth leg,1,3.0
+Sturdy synth leg,1,7.0
+Heavy synth leg,1,10.0
+Total of set,1,0.0
+Normal,1,19.0
+Sturdy,1,40.0
+Heavy,1,57.0
+DC guard helmets,1,0.0
+DC guard helm,1,1.0
+DC guard heavy helmet,1,1.0
+DC guard chest,1,0.0
+DC guard umpire's pads,1,4.0
+DC guard arms,1,0.0
+DC guard left arm armor,1,2.0
+DC guard right arm armor,1,2.0
+DC guard left shoulder,1,1.0
+DC guard right shoulder,1,1.0
+DC guard left forearm,1,1.0
+DC guard right forearm,1,1.0
+Vault security helmets,1,0.0
+Vault-Tec security helmet (clean),1,2.0
+Vault-Tec security helmet (dirty),1,2.0
+Security helmet,1,2.0
+Vault security armor,1,0.0
+Vault 81 security armor (dirty),1,7.5
+Vault-Tec security armor (Vault 111 dirty),1,7.5
+Vault-Tec security armor (Vault 111 clean),1,5.5
+Covenant security armor,1,3.0
+Assaultron helmet,1,0.0
+Eyebot helmet,1,0.0
+Sentry bot helmet,1,0.0
+Robot chest piece,1,0.0
+Robot left arm,1,0.0
+Robot right arm,1,0.0
+Robot left leg,1,0.0
+Robot right leg,1,0.0
+Robot helmets,1,0.0
+Assaultron helmet,1,3.0
+Eyebot helmet,1,3.0
+Sentry bot helmet,1,4.0
+Robot chest piece,1,0.0
+Robot chest piece,1,8.0
+Sturdy robot chest piece,1,15.5
+Heavy robot chest piece,1,23.1
+Robot arms,1,0.0
+Robot arm,1,3.0
+Sturdy robot arm,1,7.9
+Heavy robot arm,1,12.8
+Robot legs,1,0.0
+Robot leg,1,3.0
+Sturdy robot leg,1,7.9
+Heavy robot leg,1,12.8
+Total of set,1,0.0
+Normal,1,23.0
+Sturdy,1,50.1
+Heavy,1,78.3
+Trapper chest piece,1,0.0
+Trapper left arm,1,0.0
+Trapper right arm,1,0.0
+Trapper left leg,1,0.0
+Trapper right leg,1,0.0
+Trapper chest piece,1,0.0
+Trapper chest piece,1,12.0
+Heavy trapper chest piece,1,17.0
+Trapper arms,1,0.0
+Trapper arm,1,7.0
+Heavy trapper arm,1,10.0
+Trapper legs,1,0.0
+Trapper leg,1,7.0
+Heavy trapper leg,1,10.0
+Helmet,1,0.0
+Chest piece,1,0.0
+Left arm,1,0.0
+Right arm,1,0.0
+Left leg,1,0.0
+Right leg,1,0.0
+Marine armor helmet,1,0.0
+Assault,1,14.0
+Marine armor chest piece,1,0.0
+Zealot's,1,19.0
+Assault,1,25.0
+Inquisitor's,1,25.0
+Marine armor arms,1,0.0
+Zealot's,1,10.0
+Assault,1,14.0
+Inquisitor's,1,14.0
+Marine armor legs,1,0.0
+Zealot's,1,10.0
+Assault,1,14.0
+Inquisitor's,1,14.0
+Total of set,1,0.0
+Zealot,1,55.0
+Assault,1,81.0
+Inquisitor,1,81.0
+Disciples helmets,1,0.0
+Disciples banded helmet,1,19.0
+Disciples bladed helmet,1,19.0
+Disciples cowl,1,10.0
+Disciples head covering,1,19.0
+Disciples hood,1,10.0
+Disciples spiked helmet,1,19.0
+Disciples chest,1,0.0
+Disciples metal chest piece,1,33.0
+Disciples strapped chest piece,1,19.0
+Disciples arms,1,0.0
+Disciples metal left arm,1,19.0
+Disciples metal right arm,1,19.0
+Disciples spiked left arm,1,19.0
+Disciples spiked right arm,1,19.0
+Disciples strapped left arm,1,10.0
+Disciples strapped right arm,1,10.0
+Disciples wrapped left arm,1,10.0
+Disciples wrapped right arm,1,10.0
+Disciples legs,1,0.0
+Disciples metal left leg,1,19.0
+Disciples metal right leg,1,19.0
+Disciples spiked left leg,1,19.0
+Disciples spiked right leg,1,19.0
+Disciples strapped left leg,1,10.0
+Disciples strapped right leg,1,10.0
+Disciples wrapped left leg,1,10.0
+Disciples wrapped right leg,1,10.0
+Total of set,1,0.0
+Standard,1,59.0
+Heavy,1,109.0
+Standard (Improved),1,87.0
+Heavy (Improved),1,137.0
+Operators headwear,1,0.0
+Operators glasses,1,2.0
+Operators goggles,1,3.0
+Operators chest,1,0.0
+Operators belted chest piece,1,19.0
+Operators chest piece,1,19.0
+Operators heavy chest piece,1,33.0
+Operators arms,1,0.0
+Operators left arm,1,10.0
+Operators right arm,1,10.0
+Operators left armband,1,10.0
+Operators right armband,1,10.0
+Operators heavy left arm,1,19.0
+Operators heavy right arm,1,19.0
+Operators heavy left bracer,1,19.0
+Operators heavy right bracer,1,19.0
+Operators legs,1,0.0
+Operators left leg,1,10.0
+Operators right leg,1,10.0
+Operators heavy left leg,1,19.0
+Operators heavy right leg,1,19.0
+Operators heavy left leg guard,1,19.0
+Operators heavy right leg guard,1,19.0
+Total of set,1,0.0
+Standard,1,59.0
+Heavy,1,109.0
+Standard (Improved),1,87.0
+Heavy (Improved),1,137.0
+Pack helmets,1,0.0
+Pack beanie,1,5.0
+Pack beanie and crow mask,1,5.0
+Pack buffalo helmet,1,10.0
+Pack carnival mask,1,5.0
+Pack crow mask,1,5.0
+Pack deer mask,1,5.0
+Pack elephant helmet,1,10.0
+Pack helmet,1,5.0
+Pack horned helm,1,5.0
+Pack jaguar helmet,1,10.0
+Pack masked helm,1,5.0
+Pack moose helmet,1,10.0
+Pack chest,1,0.0
+Pack feather necklace,1,1.0
+Pack necklace,1,1.0
+Pack shawl,1,1.0
+Yao-guai finger necklace,1,1.0
+Pack stuffed chest piece,1,10.0
+Pack chest armor,1,19.0
+Pack arms,1,0.0
+Pack left bracer,1,6.0
+Pack right bracer,1,6.0
+Pack left arm,1,11.0
+Pack right arm,1,11.0
+Pack legs,1,0.0
+Pack stuffed left leg,1,6.0
+Pack stuffed right leg,1,6.0
+Pack bone left leg,1,11.0
+Pack right bone leg,1,11.0
+Total of set,1,0.0
+Standard,1,34.0
+Heavy,1,63.0
+Leather,1,0.0
+Mantis armor,1,0.0
+Mantis left armguard,1,8.7
+Mantis left greave,1,7.8
+Protector's armor,1,0.0
+Protector's left armguard,1,6.0
+Protector's right armguard,1,5.1
+Wastelander's armor,1,0.0
+Wastelander's chest piece,1,10.2
+Wastelander's right leg,1,5.0
+Metal,1,0.0
+Apocalypse armor,1,0.0
+Apocalypse chestplate,1,25.3
+Apocalypse left greave,1,13.1
+Champion armor,1,0.0
+Champion chestpiece,1,17.7
+Champion left arm,1,7.3
+Champion right arm,1,7.3
+Devastator's armor,1,0.0
+Devastator's chestpiece,1,28.4
+Devastator's right greave,1,15.0
+Combat armor,1,0.0
+Commando armor,1,0.0
+Commando chest piece,1,14.6
+Commando helmet,1,6.0
+Steadfast BOS armor,1,0.0
+Steadfast BOS combat armor chest piece,1,0.0
+Destroyer's armor,1,0.0
+Destroyer's helmet,1,5.0
+Destroyer's chest piece,1,9.5
+Destroyer's left arm,1,3.0
+Destroyer's left leg,1,2.7
+Destroyer's right leg,1,5.3
+Freefall legs,1,0.0
+Freefall armor left leg,1,2.5
+Freefall armor right leg,1,7.6
+Overseer's armor,1,0.0
+Overseer's left armguard,1,8.7
+Overseer's right armguard,1,7.1
+Black Ops armor,1,0.0
+Black Ops chestpiece,1,16.5
+Black Ops right shinguard,1,9.0
+Synth,1,0.0
+Mark 2 synth chest piece,1,4.4
+Mark 2 synth helmet,1,6.0
+Mark 3 synth chest piece,1,16.5
+Mark 3 synth right arm,1,8.7
+Mark 4 synth chest piece,1,23.1
+Mark 4 synth left leg,1,13.3
+Acadia's Shield,1,17.0
+Unyielding synth chest piece,1,0.0
+Marine armor (Far Harbor),1,0.0
+Atom's Bulwark,1,0.0
+Recon Marine helmet,1,14.0
+Recon Marine chest piece,1,25.0
+Recon Marine right arm,1,14.0
+Recon Marine left arm,1,14.0
+Army fatigues,1,3.0
+Baseball uniform,1,3.0
+BOS officer uniform,1,2.0
+BOS uniform (orange),1,2.0
+BOS uniform (olive),1,2.0
+Bottle and Cappy shirt & jeans,1,1.0
+Bottle shirt & jeans,1,1.0
+Cappy shirt & jeans,1,1.0
+Colorful brown undergarments,1,1.0
+Colorful dark blue undergarments,1,1.0
+Colorful dark green undergarments,1,1.0
+Colorful green undergarments,1,1.0
+Colorful light blue undergarments,1,1.0
+Colorful light green undergarments,1,1.0
+Colorful pink undergarments,1,1.0
+Colorful yellow undergarments,1,1.0
+Customizable vault jumpsuit,1,1.0
+Customizable vault utility jumpsuit,1,1.0
+Dirty army fatigues,1,3.0
+Fancy plaid suit & string tie,1,1.0
+Fancy plaid suit & tie,1,1.0
+Fancy suit,1,1.0
+Fancy suit & tie,1,1.0
+Flannel shirt and jeans,1,2.0
+Furry undergarments,1,1.0
+Green shirt and combat boots,1,3.0
+Gunner flannel shirt and jeans,1,2.0
+Gunner harness,1,1.0
+Gunner leathers,1,1.0
+Harness,1,1.0
+Legend of Vault 88,1,1.0
+Long johns,1,1.0
+Marine wetsuit,1,2.0
+Military fatigues,1,3.0
+Minuteman outfit,1,3.0
+Nuka-World geyser shirt & jeans,1,1.0
+Nuka-World shirt & jeans,1,1.0
+Patchwork sweater & furry pants,1,1.0
+Patchwork sweater & shorts,1,1.0
+Raider leathers,1,1.0
+Ripped shirt & socks,1,1.0
+Road leathers,1,1.0
+Synth uniform,1,3.0
+Tattered rags,1,2.0
+Torn shirt & jeans,1,1.0
+Torn shirt & ragged pants,1,1.0
+Trapper leathers,1,1.0
+Tunnel Snakes outfit,1,0.0
+Undershirt & jeans,1,1.0
+Vault 75 jumpsuit,1,1.0
+Vault 75 jumpsuit - new,1,1.0
+Vault 81 jumpsuit,1,1.0
+Vault 81 jumpsuit - new,1,1.0
+Vault 88 jumpsuit,1,1.0
+Vault 95 jumpsuit,1,1.0
+Vault 95 jumpsuit - new,1,1.0
+Vault 101 jumpsuit,1,1.0
+Vault 101 jumpsuit - new,1,1.0
+Vault 111 jumpsuit,1,1.0
+Vault 111 jumpsuit - new,1,1.0
+Vault 114 jumpsuit,1,1.0
+Vault 114 jumpsuit - new,1,1.0
+Vault 118 jumpsuit,1,1.0
+Wrap & ragged pants,1,1.0
+Wrap & ripped jeans,1,1.0
+Agatha's dress,1,2.0
+Architect's winter jacket,1,20.0
+Armored Nuka-Cola outfit,1,0.0
+Armored Nuka-Cola Quantum outfit,1,0.0
+Athletic outfit,1,1.0
+Atom Cats jacket and jeans,1,2.0
+Bathrobe,1,2.0
+Beaded blazer,1,2.0
+Black fisherman's overalls,1,3.0
+Black Institute division head coat,1,3.0
+Black Institute lab coat,1,3.0
+Black vest and slacks,1,3.0
+Blue Institute division head coat,1,3.0
+Blue Institute lab coat,1,3.0
+Bomber jacket,1,2.0
+Bottle and Cappy orange jacket & jeans,1,1.0
+Bottle and Cappy red jacket & jeans (Nuka-World),1,1.0
+Brotherhood fatigues (standard),1,4.0
+Brotherhood fatigues (officer),1,4.0
+Brotherhood fatigues (medic),1,4.0
+Brown fisherman's overalls,1,3.0
+Cabot's lab coat,1,2.0
+Cage armor,1,27.0
+Cappy jacket & jeans (Nuka-World),1,1.0
+Captain Cosmos space suit,1,0.0
+Casual outfit (female),1,3.0
+Casual outfit (male),1,2.0
+Chase's uniform,1,15.0
+Checkered shirt and slacks,1,1.0
+Child of Atom simple rags,1,2.0
+Child of Atom brown rags,1,2.0
+Child of Atom green rags,1,2.0
+Child of Atom long rags,1,2.0
+Child of Atom long brown rags,1,2.0
+Child of Atom long green rags,1,2.0
+Child of Atom short rags,1,2.0
+Child of Atom short brown rags,1,2.0
+Child of Atom short green rags,1,2.0
+Chinese stealth armor,1,24.0
+Clean black suit,1,3.0
+Clean blue suit,1,3.0
+Clean grey suit,1,3.0
+Clean striped suit,1,3.0
+Clean tan suit,1,3.0
+Cleanroom suit (hooded),1,3.0
+Cleanroom suit (regular),1,3.0
+Coastal armor,1,15.0
+Colonial duster,1,5.0
+Corset,1,2.0
+Courser uniform,1,15.0
+Covert sweater vest,1,2.0
+Cowhide western outfit,1,5.0
+Damaged hazmat suit,1,5.0
+DB Tech varsity uniform,1,2.0
+DJ's outfit,1,0.0
+Detective coat,1,3.0
+Dirty black Institute division head coat,1,3.0
+Dirty black Institute lab coat,1,3.0
+Dirty black suit,1,3.0
+Dirty blue Institute division head coat,1,3.0
+Dirty blue Institute lab coat,1,3.0
+Dirty blue suit,1,3.0
+Dirty green Institute division head coat,1,3.0
+Dirty green Institute lab coat,1,3.0
+Dirty grey suit,1,3.0
+Dirty Institute jumper,1,3.0
+Dirty orange Institute division head coat,1,3.0
+Dirty orange Institute lab coat,1,3.0
+Dirty postman uniform,1,0.4
+Dirty striped suit,1,3.0
+Dirty tan suit,1,3.0
+Dirty trench coat,1,3.0
+Dirty yellow Institute division head coat,1,3.0
+Dirty yellow Institute lab coat,1,3.0
+Disciples armored skirt,1,39.0
+Doom Marine armor,1,0.0
+Drifter outfit,1,10.0
+Engineer's armor,1,2.0
+Explorer outfit,1,4.0
+Faded trench coat,1,3.0
+Farmhand clothes,1,3.0
+Father's lab coat,1,2.0
+Fatigues,1,2.0
+Feathered dress,1,2.0
+Field scribe's armor,1,4.0
+Fisherman's outfit,1,3.0
+Fisherman's overalls,1,3.0
+Furry pants & T-shirt,1,1.0
+Gage's armor,1,45.0
+Geneva's ensemble,1,3.0
+Greaser jacket and jeans,1,2.0
+Graphic T-shirts,1,2.0
+Green fisherman's overalls,1,3.0
+Green Institute division head coat,1,3.0
+Green Institute lab coat,1,3.0
+Grey fisherman's overalls,1,3.0
+Grognak costume,1,2.0
+Gunner guard outfit,1,1.0
+Hazmat suit,1,5.0
+Helmeted cage armor,1,33.0
+Helmeted spike armor,1,17.0
+High Confessor's robes,1,2.0
+Hooded rags,1,2.0
+Hubologist outfit,1,2.0
+Hunter's long coat,1,0.5
+Hunter's pelt outfit,1,15.0
+Ingram's UnderArmor,1,4.0
+Institute jumper,1,3.0
+Institute renegade outfit,1,20.0
+Kellogg's outfit,1,2.0
+Lab coat,1,2.0
+Laundered blue dress,1,2.0
+Laundered cream dress,1,2.0
+Laundered denim dress,1,2.0
+Laundered green dress,1,2.0
+Laundered loungewear,1,1.0
+Laundered pink dress,1,2.0
+Laundered rose dress,1,2.0
+Leather coat,1,2.0
+Legend of the Harbor,1,2.0
+Letterman's jacket and jeans,1,2.0
+Longshoreman outfit,1,2.0
+Lorenzo's suit,1,3.0
+MacCready's duster,1,1.0
+Magician's tuxedo,1,3.0
+Mason's outfit,1,1.0
+Maxson's battlecoat,1,20.0
+Mechanic jumpsuit (green),1,3.0
+Mechanic jumpsuit (Red Rocket),1,3.0
+Mechanist's armor,1,20.0
+Mercenary outfits,1,0.0
+Minutemen general's uniform,1,5.0
+Morgan's space suit,1,0.0
+Nuka-Cola T-shirt & cargo pants,1,0.0
+Nuka-Cola T-shirt & leather pants,1,0.0
+Nuka-Cola vest & jeans,1,0.0
+Nuka-Girl rocketsuit,1,8.0
+Nuka-World geyser jacket & jeans,1,1.0
+Nuka-World jacket & jeans,1,1.0
+Nuka-World jumpsuit,1,3.0
+Operators armored dress,1,71.0
+Operators armored skirt,1,39.0
+Orange Institute division head coat,1,3.0
+Orange Institute lab coat,1,3.0
+Orange shirt Western outfit,1,5.0
+Padded blue jacket,1,3.0
+Pastor's vestments,1,3.0
+Patched suit,1,3.0
+Patched three-piece suit,1,3.0
+Pint-Sized Slasher costume,1,0.0
+Postman uniform,1,3.0
+Quinlan's armor,1,2.0
+Radstag hide outfit,1,4.0
+Railroad armored coat,1,32.0
+Railroad armored coat Mk I,1,26.0
+Railroad armored coat Mk II,1,30.0
+Railroad armored coat Mk III,1,38.0
+Railroad armored coat Mk IV,1,44.0
+Railroad armored coat Mk V,1,50.0
+Ratty skirt,1,2.0
+Red dress,1,1.2
+Red frock coat,1,3.0
+Red leather trench coat,1,3.0
+Reginald's suit,1,3.0
+Rescue diver suit,1,8.0
+Robes of Atom's Devoted,1,3.0
+Santa costume,1,0.0
+Scavenger outfit,1,4.0
+Scavenger's Nuka-Cola outfit,1,0.0
+Science scribe's armor,1,2.0
+Sequin dress,1,2.0
+Sexy Santa costume,1,0.0
+Shroud outfit,1,0.0
+Silver dress,1,0.0
+Silver Shroud costume (level 45),1,7.0
+Slocum's Joe uniform,1,0.0
+Slocum's Joe T-shirt & jeans,1,0.0
+Spacesuit costume,1,8.0
+Spike armor,1,14.0
+Submariner uniform,1,3.0
+Summer shorts,1,2.0
+Surveyor outfit,1,3.0
+Suspenders and slacks,1,3.0
+Sweater vest and slacks,1,3.0
+T-shirt and slacks,1,3.0
+Talon Company armor,1,0.0
+Tattered field jacket,1,2.0
+Teagan's armor,1,2.0
+Traveling leather coat,1,2.0
+Tuxedo,1,3.0
+Utility coveralls,1,2.0
+Vault-Tec lab coat,1,2.0
+Western duster,1,5.0
+Western outfit,1,5.0
+Western outfit & chaps,1,5.0
+Wildman rags,1,2.0
+Winter jacket and jeans,1,2.0
+Yellow Institute division head coat,1,3.0
+Yellow Institute lab coat,1,3.0
+Yellow trench coat,1,3.0
+Zeke's jacket and jeans,1,2.0
+Assault gas mask,1,3.0
+Assault marine armor helmet,1,10.0
+Assaultron helmet,1,3.0
+BOS hood,1,0.5
+Brown flight helmet,1,2.0
+Disciples banded helmet,1,19.0
+Disciples bladed helmet,1,19.0
+Disciples cowl,1,10.0
+Disciples head covering,1,19.0
+Disciples hood,1,10.0
+Disciples spiked helmet,1,19.0
+Flight helmet,1,2.0
+Gas mask,1,3.0
+Gas mask with goggles,1,3.0
+Inquisitor's cowl,1,3.0
+Iron helmet (standard),1,5.0
+Iron helmet (reinforced),1,5.0
+Iron helmet (lead lined),1,5.0
+Lobster trap helmet,1,1.0
+Marine tactical helmet,1,2.0
+Mechanist's helmet,1,1.0
+Pack beanie and crow mask,1,5.0
+Pack buffalo helmet,1,10.0
+Pack carnival mask,1,5.0
+Pack crow mask,1,5.0
+Pack deer mask,1,5.0
+Pack elephant helmet,1,10.0
+Pack helmet,1,5.0
+Pack horned helm,1,5.0
+Pack jaguar helmet,1,10.0
+Pack masked helm,1,5.0
+Pack moose helmet,1,10.0
+Red flight helmet,1,2.0
+Sack hood,1,0.7
+Sack hood with hoses,1,1.0
+Sack hood with straps,1,1.5
+Security helmet,1,2.0
+Sentry bot helmet,1,4.0
+Spacesuit costume helmet,1,5.0
+Synth helmet,1,3.0
+Laminated Synth helmet,1,4.0
+Resin Synth helmet,1,4.0
+Microcarbon Synth helmet,1,5.0
+Nanofiliment Synth helmet,1,6.0
+Synth field helmet,1,3.0
+Laminated Synth field helmet,1,4.0
+Resin Synth field helmet,1,4.0
+Microcarbon Synth field helmet,1,5.0
+Nanofiliment Synth field helmet,1,6.0
+Vault-Tec security helmet,1,2.0
+Yellow flight helmet,1,2.0
+Airship captain's hat,1,0.5
+Army helmet,1,3.0
+Baseball cap,1,0.2
+Battered fedora,1,0.5
+"Battered fedora, Ballistic weave 1",1,0.5
+"Battered fedora, Ballistic weave 2",1,0.5
+"Battered fedora, Ballistic weave 3",1,0.5
+"Battered fedora, Ballistic weave 4",1,0.5
+"Battered fedora, Ballistic weave 5",1,0.5
+"Battered fedora, Institute Killer weave",1,0.5
+Black cowboy hat,1,0.3
+Black prospector's hat,1,0.3
+Blue batting helmet,1,1.0
+Bowler hat,1,0.3
+Captain Ironsides' hat,1,0.5
+Chef hat,1,0.5
+Coast Guard hat,1,0.4
+Combat armor helmet,1,4.0
+Reinforced Combat armor helmet,1,5.0
+Shadowed Combat armor helmet,1,5.0
+Fiberglass Combat armor helmet,1,5.0
+Polymer Combat armor helmet,1,6.0
+Cowboy hat,1,0.2
+Crumpled fedora,1,0.5
+Detective fedora,1,0.0
+Dirty army helmet,1,3.0
+Dirty fedora,1,0.5
+Dirty postman hat,1,0.4
+Eyebot helmet,1,3.0
+Faded visor,1,0.1
+Field scribe's hat,1,0.5
+Fisherman's hat,1,0.5
+Formal hat,1,0.4
+Grandpa Savoldi's hat,1,0.5
+Gray knit cap,1,0.4
+Green hood,1,3.0
+Green rag hat,1,0.5
+Hard hat,1,0.5
+High Confessor's helm,1,2.0
+Hunter's hood,1,2.0
+Lieutenant's hat,1,0.5
+Lorenzo's Crown,1,3.0
+MacCready's hat,1,0.5
+Mascot head,1,1.0
+Medical goggles,1,0.5
+Metal helmet,1,3.0
+Painted Metal helmet,1,3.7
+Enameled Metal helmet,1,4.8
+Shadowed Metal helmet,1,4.8
+Alloyed Metal helmet,1,5.6
+Polished Metal helmet,1,6.7
+Military cap,1,0.2
+Militia hat,1,0.5
+Mining helmet,1,5.0
+Minuteman hat,1,2.0
+Minutemen general's hat,1,2.0
+Newsboy cap,1,0.4
+Old fisherman's hat,1,0.5
+Oswald's tophat,1,0.4
+Pack beanie,1,5.0
+Pirate hat,1,2.0
+Pompadour wig,1,0.2
+Postman hat,1,0.4
+Press cap,1,0.5
+Prospector's hat,1,0.3
+Santa hat,1,0.0
+Sea captain's hat,1,0.4
+Sexy Santa hat,1,0.0
+Silver Shroud hat,1,0.5
+Slocum's Joe visor,1,0.0
+Submariner hat,1,0.5
+The Captain's Hat,1,0.4
+The Dapper Gent,1,0.4
+Tinker headgear,1,1.0
+Tricorn hat,1,0.5
+Triggerman bowler,1,0.3
+Trilby hat,1,0.5
+Ushanka hat,1,0.3
+Welding helmet,1,4.0
+Wool fisherman's cap,1,1.0
+Worn fedora,1,0.5
+Wrapped cap,1,1.0
+Yellow fedora,1,0.5
+Yellow slicker hat,1,0.3
+Black-rim glasses,1,0.1
+Bottlecap sunglasses,1,0.2
+Cappy glasses,1,0.2
+Eyeglasses,1,0.1
+Fashionable glasses,1,0.2
+Gage's eyepatch,1,1.0
+Liam's glasses,1,0.5
+Operators glasses,1,2.0
+Operators goggles,1,3.0
+Patrolman sunglasses,1,0.1
+Road goggles,1,0.2
+Robotic bits,1,2.0
+Sunglasses,1,0.1
+Welding goggles,1,0.3
+Wraparound goggles,1,0.1
+Blue bandana,1,0.1
+Gunner's camo bandana,1,0.1
+Gunner's green bandana,1,0.1
+Jangles bandana,1,0.1
+Leopard print bandana,1,0.1
+Red bandana,1,0.1
+Skull bandana,1,0.1
+Stars and Stripes bandana,1,0.1
+Striped bandana,1,0.1
+Surgical mask,1,0.2
+Raider power helm,1,14.0
+T-45 helm,1,12.0
+T-51 helm,1,12.0
+T-60 helm,1,12.0
+X-01 helm,1,12.0
+Raider power torso,1,22.0
+T-45 torso,1,20.0
+T-51 torso,1,20.0
+T-60 torso,1,20.0
+X-01 torso,1,20.0
+Raider power left arm,1,16.0
+T-45 left arm,1,15.0
+T-51 left arm,1,15.0
+T-60 left arm,1,15.0
+X-01 left arm,1,15.0
+Raider power right arm,1,16.0
+T-45 right arm,1,15.0
+T-51 right arm,1,15.0
+T-60 right arm,1,15.0
+X-01 right arm,1,15.0
+Raider power left leg,1,16.0
+T-45 left leg,1,15.0
+T-51 left leg,1,15.0
+T-60 left leg,1,15.0
+X-01 left leg,1,15.0
+Raider power right leg,1,16.0
+T-45 right leg,1,15.0
+T-51 right leg,1,15.0
+T-60 right leg,1,15.0
+X-01 right leg,1,15.0
+Exemplar's T-60c torso,1,25.0
+Honor,1,15.0
+Piezonucleic power armor chest,1,20.0
+Tesla T-60 torso,1,20.0
+Tesla T-60 left arm,1,15.0
+Tesla T-60 right arm,1,15.0
+Tessa's Fist,1,16.0
+Vengeance,1,18.0
+Visionary's T-60c helmet,1,12.0
+Overboss power helmet,1,14.0
+Overboss power torso,1,22.0
+Overboss power left arm,1,16.0
+Overboss power right arm,1,16.0
+Overboss power left leg,1,17.0
+Overboss power right leg,1,17.0
+Modular military backpack,1,0.0
+Pip-Boy glove,1,0.0
+Wedding ring,1,0.0
+Silver wedding ring,1,0.0
+Mary Jane's wedding ring,1,0.0
+Shock collar,1,2.0
+Spiked muzzle,1,1.0
+Dog helmet,1,1.0
+Dog deer antlers,1,0.0
+Dog Santa hat,1,0.0
+Bandana,1,0.1
+Chain dog collar,1,1.0
+Dog collar,1,1.0
+Double dog collar,1,1.0
+Reinforced dog collar,1,1.0
+Spiked dog collar,1,1.0
+Dog armor,1,4.0
+Heavy dog armor,1,5.0
+Light dog armor,1,3.0
+Super mutant aviator cap,1,1.0
+Super mutant bladed helmet,1,1.0
+Super mutant cage helmet,1,1.0
+Super mutant helmet,1,1.0
+Watcher's bandage,1,0.5
+Super mutant chest harness,1,7.0
+Super mutant cowl armor,1,10.0
+Super mutant heavy armor,1,12.0
+Super mutant light body armor,1,8.0
+Super mutant shoulder rags,1,6.0
+Super mutant chains,1,10.0
+Super mutant arm guards,1,5.0
+Super mutant bracers,1,6.0
+Super mutant heavy gauntlets,1,4.0
+Super mutant wrist wraps,1,2.0
+Super mutant leg armor,1,6.0
+Super mutant leg guards,1,5.0
+Super mutant waistcloth,1,2.0
+Super mutant bearskin outfit,1,10.0
+Virgil's jumper,1,10.0
+Raider chest piece,1,0.0
+Raider left arm,1,0.0
+Raider right arm,1,0.0
+Raider left leg,1,0.0
+Raider right leg,1,0.0
+Raider chest piece,1,0.0
+Raider chest piece A1,1,7.0
+Raider chest piece A2,1,7.0
+Raider chest piece A3,1,7.0
+Raider chest piece A4,1,7.0
+Raider chest piece A5,1,7.0
+Raider chest piece A6,1,7.0
+Sturdy raider chest piece,1,12.0
+Heavy raider chest piece,1,17.0
+Raider arms,1,0.0
+Raider arm,1,3.0
+Sturdy raider arm,1,7.0
+Heavy raider arm,1,10.0
+Raider legs,1,0.0
+Raider leg,1,3.0
+Sturdy raider leg,1,7.0
+Heavy raider leg,1,10.0
+Total of set,1,0.0
+Normal,1,19.0
+Sturdy,1,40.0
+Heavy,1,57.0
