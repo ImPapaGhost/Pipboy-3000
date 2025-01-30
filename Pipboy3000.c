@@ -9,6 +9,9 @@
 #include <sys/stat.h> // Required for checking file existence
 #include <unistd.h>
 #include <math.h>
+#include "pipboy.h"
+#include "inventory.h"
+
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
@@ -22,92 +25,11 @@ int vaultboy_frame_index = 0;
 Uint32 last_vaultboy_update = 0; // Time tracker for animation updates
 int file_exists(const char *path);
 
-int file_exists(const char *path) {
-    struct stat buffer;
-    return (stat(path, &buffer) == 0);
-}
-
-// Easing subtab animation
-float ease_out_cubic(float t) {
-    return 1 - pow(1 - t, 3);
-}
-
 typedef struct {
     SDL_Texture *texture;
     SDL_Rect rect;
 } Sprite;
 
-typedef enum {
-    TAB_STAT,
-    TAB_INV,
-    TAB_DATA,
-    TAB_MAP,
-    TAB_RADIO,
-    NUM_TABS
-} PipboyTab;
-
-typedef enum {
-    SUBTAB_STATUS,
-    SUBTAB_SPECIAL,
-    SUBTAB_PERKS,
-    NUM_SUBTABS
-} StatSubTab;
-
-typedef enum {
-    SUBTAB_WEAPONS,
-    SUBTAB_APPAREL,
-    SUBTAB_AID,
-    NUM_INV_SUBTABS
-} InvSubTab;
-
-
-typedef struct {
-    char name[50];   // Item name
-    int quantity;    // Item quantity
-    float weight;    // Item weight
-} invItem;
-
-typedef struct {
-    PipboyTab current_tab;
-    StatSubTab current_subtab; // STAT subtabs
-    int selector_position;
-    int special_stats[7];
-    int level;
-    int health;
-    int max_health;
-    int ap;
-    int max_ap;
-    int experience;
-    int current_xp;         // Current XP the player has
-    int xp_for_next_level;  // XP required for the next level
-    int stimpaks;
-    int radaways;
-    char perks[10][50];
-    SDL_Texture *special_animations[7][10]; // 10 frames per SPECIAL animation
-    Uint32 subtab_animation_start_time; // Track the start of subtab animation
-    int subtab_animation_offset; // Offset for animation during transition
-    bool is_animating;           // Whether an animation is in progress
-    Uint32 special_stat_animation_start; // Start time for SPECIAL stat animation
-    int special_stat_animation_offset;   // Vertical offset for animating stat transitions
-    bool is_special_stat_animating;      // Whether a SPECIAL stat animation is active
-    // invItem inv[100];   // Max inv items changed to line below. Changed to pointer for dynamic array of items
-    invItem *weapons;
-    int weapons_count;
-    int weapons_capacity;
-    invItem *apparel;
-    int apparel_count;
-    int apparel_capacity;
-    invItem *aid;
-    int aid_count;
-    int aid_capacity;
-    int inv_scroll_index; // Scroll index for navigation
-    InvSubTab current_inv_subtab;       // Current inv subtab
-    int inv_subtab_animation_offset;   // Animation offset for subtabs
-    bool is_inv_animating;             // Animation flag
-    Uint32 inv_subtab_animation_start_time; // Animation start time
-} PipState;
-
-PipState pip_state;
 void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
 void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
 void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
@@ -121,14 +43,6 @@ void play_sound(const char *file) {
     Mix_FreeChunk(sound);
 }
 
-typedef struct {
-    int head;
-    int left_arm;
-    int right_arm;
-    int torso;
-    int left_leg;
-    int right_leg;
-} DamageBars;
 
 // Initialize damage bars with full health
 DamageBars damage_bars = {100, 100, 100, 100, 100, 100};
@@ -276,144 +190,7 @@ void render_vaultboy(SDL_Renderer *renderer) {
     }
 }
 
-int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity) {
-    FILE *file = fopen(file_path, "r");
-    if (!file) {
-        printf("Failed to open file: %s\n", file_path);
-        return 0;
-    }
 
-    char line[256];
-    int count = 0;
-
-    // Ensure initial memory allocation
-    if (*inv_capacity == 0) {
-        *inv_capacity = 10;
-        *inv_list = malloc(*inv_capacity * sizeof(invItem));
-    }
-
-    while (fgets(line, sizeof(line), file)) {
-        if (count >= *inv_capacity) {
-            *inv_capacity *= 2;
-            *inv_list = realloc(*inv_list, *inv_capacity * sizeof(invItem));
-        }
-
-        sscanf(line, "%[^,],%d,%f", (*inv_list)[count].name, &(*inv_list)[count].quantity, &(*inv_list)[count].weight);
-        count++;
-    }
-
-    fclose(file);
-    *inv_count = count;
-    return count;
-}
-
-void reset_inventory_navigation(PipState *state) {
-    invItem *current_list = NULL;
-    int current_count = 0;
-
-    // Determine the current list and count based on the active subtab
-    switch (state->current_inv_subtab) {
-        case SUBTAB_WEAPONS:
-            current_list = state->weapons;
-            current_count = state->weapons_count;
-            break;
-        case SUBTAB_APPAREL:
-            current_list = state->apparel;
-            current_count = state->apparel_count;
-            break;
-        case SUBTAB_AID:
-            current_list = state->aid;
-            current_count = state->aid_count;
-            break;
-    }
-
-    // Clamp selector_position and inv_scroll_index
-    if (current_list) {
-        if (state->selector_position >= current_count) {
-            state->selector_position = (current_count > 0) ? current_count - 1 : 0;
-        }
-        if (state->inv_scroll_index > state->selector_position) {
-            state->inv_scroll_index = state->selector_position;
-        }
-    } else {
-        state->selector_position = 0;
-        state->inv_scroll_index = 0;
-    }
-}
-
-
-void initialize_pip_state(PipState *state) {
-    // Initialize general state values
-    state->current_tab = TAB_STAT;
-    state->current_subtab = SUBTAB_STATUS;
-    state->selector_position = 0;
-
-    // Set default SPECIAL stats
-    for (int i = 0; i < 7; i++) {
-        state->special_stats[i] = 5; // Default SPECIAL stats
-    }
-
-    state->health = 115;       // Full health
-    state->max_health = 115;   // Max health
-    state->ap = 90;            // Action points
-    state->max_ap = 90;        // Max action points
-    state->level = 1;          // Starting level
-    state->experience = 0;     // Starting experience
-    state->stimpaks = 0;       // Starting number of Stimpaks
-    state->radaways = 0;       // Starting number of RadAways
-    state->current_xp = 50;    // Start with 50 XP
-    state->xp_for_next_level = 100; // XP needed for level 2
-
-    // Allocate initial space for Weapons, Apparel, and Aid
-    state->weapons_capacity = 10;
-    state->weapons = malloc(state->weapons_capacity * sizeof(invItem));
-    state->weapons_count = 0;
-
-    state->apparel_capacity = 10;
-    state->apparel = malloc(state->apparel_capacity * sizeof(invItem));
-    state->apparel_count = 0;
-
-    state->aid_capacity = 10;
-    state->aid = malloc(state->aid_capacity * sizeof(invItem));
-    state->aid_count = 0;
-
-    // Load inv items into respective lists
-    load_inv("weapons.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity);
-    load_inv("apparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity);
-    load_inv("aid.csv", &state->aid, &state->aid_count, &state->aid_capacity);
-
-    // Initialize perks to empty
-    for (int i = 0; i < 10; i++) {
-        memset(state->perks[i], 0, sizeof(state->perks[i]));
-    }
-
-    // Initialize SPECIAL animations to NULL
-    for (int i = 0; i < 7; i++) {
-        for (int j = 0; j < 10; j++) {
-            state->special_animations[i][j] = NULL;
-        }
-    }
-}
-
-
-void add_experience(PipState *state, int xp) {
-    state->current_xp += xp;
-    if (state->current_xp >= state->xp_for_next_level) {
-        state->current_xp -= state->xp_for_next_level; // Rollover XP
-        state->level += 1;                            // Level up
-        state->xp_for_next_level += 50;               // Increase XP threshold
-        printf("Level up! Current level: %d\n", state->level);
-    }
-}
-
-void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int torso, int left_leg, int right_leg) {
-    bars->head = head;
-    bars->left_arm = left_arm;
-    bars->right_arm = right_arm;
-    bars->torso = torso;
-    bars->left_leg = left_leg;
-    bars->right_leg = right_leg;
-}
 
 void load_special_animations(SDL_Renderer *renderer, PipState *state) {
     const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
