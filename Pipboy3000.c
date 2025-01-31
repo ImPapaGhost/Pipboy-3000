@@ -11,6 +11,9 @@
 #include <math.h>
 #include "pipboy.h"
 #include "inventory.h"
+#include "render.h"
+#include "animations.h"
+#include "input.h"
 
 
 #define SCREEN_WIDTH 800
@@ -46,17 +49,6 @@ void play_sound(const char *file) {
 
 // Initialize damage bars with full health
 DamageBars damage_bars = {100, 100, 100, 100, 100, 100};
-
-void play_animation(SDL_Renderer *renderer, SDL_Texture *frames[], int frame_count, int frame_delay) {
-    for (int i = 0; i < frame_count; i++) {
-        if (frames[i]) {
-            SDL_RenderClear(renderer);                     // Clear the renderer
-            SDL_RenderCopy(renderer, frames[i], NULL, NULL); // Render the current frame
-            SDL_RenderPresent(renderer);                  // Present the frame
-            SDL_Delay(frame_delay);                       // Add delay for frame timing
-        }
-    }
-}
 
 void show_boot_animation(SDL_Renderer *renderer) {
     const int NUM_BOOTUP_FRAMES = 119;  // Number of bootup frames
@@ -168,7 +160,6 @@ void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int heig
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
 
-
 void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
         SDL_Rect dest_rect = {325, 130, 110, 200};
@@ -189,8 +180,6 @@ void render_vaultboy(SDL_Renderer *renderer) {
         render_damage_bar(renderer, 260, 280, 25, 5, damage_bars.right_leg);  // Right Leg
     }
 }
-
-
 
 void load_special_animations(SDL_Renderer *renderer, PipState *state) {
     const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
@@ -261,37 +250,6 @@ void load_special_stats_from_csv(const char *file_path, PipState *state) {
         i++;
     }
     fclose(file);
-}
-
-void render_health_background(SDL_Renderer *renderer) {
-    // Load the decorative PNG texture
-    SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOXHP1.jpg");
-
-    // Define the position and size of the decorative container
-    SDL_Rect background_rect = {110, 430, 135, 30}; // Adjust based on x, y, width, height
-    SDL_SetTextureColorMod(background, 0, 255, 0);
-    // Render the texture
-    SDL_RenderCopy(renderer, background, NULL, &background_rect);
-
-    // Clean up the texture after rendering
-    SDL_DestroyTexture(background);
-}
-
-void render_ap_bar(SDL_Renderer *renderer) {
-    // Load the decorative PNG texture
-    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-
-    // Define the position and size of the ap container
-    int bar_width = 145;  // Adjust based on design
-    int bar_x = SCREEN_WIDTH - bar_width - 100; // Align with AP text
-    int bar_y = 430; // Same y-coordinate as the AP text
-    SDL_Rect bar_rect = {bar_x, bar_y, bar_width, 30};
-    SDL_SetTextureColorMod(bar, 0, 255, 0);
-    // Render the texture
-    SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
-
-    // Clean up the texture after rendering
-    SDL_DestroyTexture(bar);
 }
 
 void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
@@ -430,8 +388,6 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     }
 }
 
-
-
 void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
@@ -473,9 +429,6 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
 
     TTF_CloseFont(subtab_font);
 }
-
-
-
 
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
@@ -759,7 +712,6 @@ void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *st
     SDL_DestroyTexture(desc_texture);
 }
 
-
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
 
@@ -827,19 +779,6 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     TTF_CloseFont(subtab_font);
 }
 
-/*void render_inv_tab(SDL_Renderer *renderer, TTF_Font *font) {
-    SDL_Color color = {0, 255, 0, 255};
-    const char *placeholder = "inv Tab Placeholder";
-    SDL_Surface *surface = TTF_RenderText_Solid(font, placeholder, color);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect rect = {75, 140, surface->w, surface->h};
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
-}*/
-
-
-
 void render_data_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
     const char *placeholder = "Data Tab Placeholder";
@@ -890,119 +829,6 @@ void render_current_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
         case TAB_RADIO:
             render_radio_tab(renderer, font);
             break;
-    }
-}
-
-void handle_navigation(SDL_Event *event, PipState *state) {
-    if (event->type == SDL_KEYDOWN) {
-        switch (event->key.keysym.sym) {
-            // Main Tabs Navigation (Q for left, E for right)
-            case SDLK_q:
-                state->current_tab = (state->current_tab - 1 + NUM_TABS) % NUM_TABS;
-                break;
-            case SDLK_e:
-                state->current_tab = (state->current_tab + 1) % NUM_TABS;
-                break;
-
-            // Sub-tabs Navigation
-            case SDLK_a: // Navigate left in sub-tabs
-                if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    // Handle STAT sub-tabs
-                    state->subtab_animation_offset = SUBTAB_SPACING;
-                    state->is_animating = true;
-                    state->subtab_animation_start_time = SDL_GetTicks();
-                    state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
-                } else if (state->current_tab == TAB_INV && !state->is_inv_animating) {
-                    // Handle INV sub-tabs
-                    state->inv_subtab_animation_offset = SUBTAB_SPACING;
-                    state->is_inv_animating = true;
-                    state->inv_subtab_animation_start_time = SDL_GetTicks();
-                    state->current_inv_subtab = (state->current_inv_subtab - 1 + NUM_INV_SUBTABS) % NUM_INV_SUBTABS;
-
-                    // Reset inventory navigation when changing subtabs
-                    reset_inventory_navigation(state);
-                }
-                break;
-
-            case SDLK_d: // Navigate right in sub-tabs
-                if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    // Handle STAT sub-tabs
-                    state->subtab_animation_offset = -SUBTAB_SPACING;
-                    state->is_animating = true;
-                    state->subtab_animation_start_time = SDL_GetTicks();
-                    state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
-                } else if (state->current_tab == TAB_INV && !state->is_inv_animating) {
-                    // Handle INV sub-tabs
-                    state->inv_subtab_animation_offset = -SUBTAB_SPACING;
-                    state->is_inv_animating = true;
-                    state->inv_subtab_animation_start_time = SDL_GetTicks();
-                    state->current_inv_subtab = (state->current_inv_subtab + 1) % NUM_INV_SUBTABS;
-
-                    // Reset inventory navigation when changing subtabs
-                    reset_inventory_navigation(state);
-                }
-                break;
-
-            // SPECIAL Attributes Navigation (W and S for up/down)
-            case SDLK_w:
-                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
-                    state->special_stat_animation_offset = -30; // Move upwards
-                    state->is_special_stat_animating = true;
-                    state->special_stat_animation_start = SDL_GetTicks();
-                    state->selector_position = (state->selector_position - 1 + 7) % 7; // Wrap around SPECIAL stats
-                } else if (state->current_tab == TAB_INV) {
-                    // Inventory scrolling up
-                    if (state->selector_position > 0) {
-                        state->selector_position--;
-                        if (state->selector_position < state->inv_scroll_index) {
-                            state->inv_scroll_index--;
-                        }
-                    }
-                }
-                break;
-
-            case SDLK_s:
-                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
-                    state->special_stat_animation_offset = 30; // Move downwards
-                    state->is_special_stat_animating = true;
-                    state->special_stat_animation_start = SDL_GetTicks();
-                    state->selector_position = (state->selector_position + 1) % 7; // Wrap around SPECIAL stats
-                } else if (state->current_tab == TAB_INV) {
-                    // Inventory scrolling down
-                    invItem *current_list = NULL;
-                    int current_count = 0;
-
-                    // Determine the active inventory subtab list
-                    switch (state->current_inv_subtab) {
-                        case SUBTAB_WEAPONS:
-                            current_list = state->weapons;
-                            current_count = state->weapons_count;
-                            break;
-                        case SUBTAB_APPAREL:
-                            current_list = state->apparel;
-                            current_count = state->apparel_count;
-                            break;
-                        case SUBTAB_AID:
-                            current_list = state->aid;
-                            current_count = state->aid_count;
-                            break;
-                    }
-
-                    // Scroll down within the current inventory subtab
-                    if (current_list && state->selector_position < current_count - 1) {
-                        state->selector_position++;
-                        if (state->selector_position >= state->inv_scroll_index + 10) {
-                            state->inv_scroll_index++;
-                        }
-                    }
-                }
-                break;
-
-            // Simulate gaining XP (testing)
-            case SDLK_x:
-                add_experience(state, 10);
-                break;
-        }
     }
 }
 

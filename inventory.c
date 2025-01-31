@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "pipboy.h"
 
 // Function to load inventory items from a file
 int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity) {
