@@ -102,10 +102,6 @@ extern PipState pip_state; // Declare the game state
 int file_exists(const char *path);
 float ease_out_cubic(float t);
 void initialize_pip_state(PipState *state);
-/* void render_vaultboy(SDL_Renderer *renderer);
-void load_vaultboy_frames(SDL_Renderer *renderer);
-void render_special_animation(SDL_Renderer *renderer, PipState *state);
-void free_vaultboy_frames(); */
 void add_experience(PipState *state, int xp);
 void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int torso, int left_leg, int right_leg);
 int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity);
