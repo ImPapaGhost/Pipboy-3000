@@ -14,6 +14,8 @@
 #include "render.h"
 #include "animations.h"
 #include "input.h"
+#include "ui.h"
+#include "events.h"
 
 
 #define SCREEN_WIDTH 800
@@ -24,16 +26,16 @@
 
 // Utility functions
 SDL_Texture *vaultboy_frames[NUM_VAULTBOY_FRAMES];
-int vaultboy_frame_index = 0;
 Uint32 last_vaultboy_update = 0; // Time tracker for animation updates
 int file_exists(const char *path);
+SDL_Texture *vaultboy_frames[NUM_VAULTBOY_FRAMES]; // Define the vaultboy frames
+int vaultboy_frame_index = 0;  // Define the frame index for animations
 
 typedef struct {
     SDL_Texture *texture;
     SDL_Rect rect;
 } Sprite;
 
-void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
 void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
 void render_special_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
 void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
@@ -117,7 +119,7 @@ void load_categoryline(SDL_Renderer *renderer) {
     }
 }
 
-void load_vaultboy_frames(SDL_Renderer *renderer) {
+/* void load_vaultboy_frames(SDL_Renderer *renderer) {
     char path[256];
     for (int i = 0; i < NUM_VAULTBOY_FRAMES; i++) {
         snprintf(path, sizeof(path), "STAT/VaultBoy/%02d.png", i);
@@ -129,38 +131,18 @@ void load_vaultboy_frames(SDL_Renderer *renderer) {
         vaultboy_frames[i] = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
     }
-}
+} */
 
-void free_vaultboy_frames() {
+/* void free_vaultboy_frames() {
     for (int i = 0; i < NUM_VAULTBOY_FRAMES; i++) {
         if (vaultboy_frames[i]) {
             SDL_DestroyTexture(vaultboy_frames[i]);
             vaultboy_frames[i] = NULL;
         }
     }
-}
+} */
 
-void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int height, int health) {
-    // Draw the background (gray bar)
-    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Dark gray
-    SDL_Rect background_rect = {x, y, width, height};
-    SDL_RenderFillRect(renderer, &background_rect);
-
-    // Draw the health portion (green to red based on health percentage)
-    SDL_Color bar_color = {255 - (2.55 * health), 2.55 * health, 0, 255}; // Gradient
-    SDL_SetRenderDrawColor(renderer, bar_color.r, bar_color.g, bar_color.b, bar_color.a);
-    SDL_Rect health_rect = {x, y, (width * health) / 100, height};
-    SDL_RenderFillRect(renderer, &health_rect);
-
-    // Draw the border (bright green)
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_RenderDrawRect(renderer, &background_rect);
-
-    // Reset render color to black for safety
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-}
-
-void render_vaultboy(SDL_Renderer *renderer) {
+/* void render_vaultboy(SDL_Renderer *renderer) {
     if (vaultboy_frames[vaultboy_frame_index]) {
         SDL_Rect dest_rect = {325, 130, 110, 200};
 
@@ -179,9 +161,9 @@ void render_vaultboy(SDL_Renderer *renderer) {
         render_damage_bar(renderer, 470, 280, 25, 5, damage_bars.left_leg);   // Left Leg
         render_damage_bar(renderer, 260, 280, 25, 5, damage_bars.right_leg);  // Right Leg
     }
-}
+} */
 
-void load_special_animations(SDL_Renderer *renderer, PipState *state) {
+void load_special_animation(SDL_Renderer *renderer, PipState *state) {
     const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
     char path[256];
 
@@ -212,34 +194,6 @@ void load_special_animations(SDL_Renderer *renderer, PipState *state) {
     }
 }
 
-void render_special_animation(SDL_Renderer *renderer, PipState *state) {
-    static Uint32 last_frame_time = 0;
-    static int frame_index = 0;
-    Uint32 current_time = SDL_GetTicks();
-
-    int current_stat = state->selector_position;
-
-    // Determine the actual number of frames for the current stat
-    int frame_count = 0;
-    while (frame_count < 10 && state->special_animations[current_stat][frame_count] != NULL) {
-        frame_count++;
-    }
-
-    if (frame_count == 0) return; // No frames available, skip rendering
-
-    // Update frame every 100ms
-    if (current_time - last_frame_time > 175) {
-        frame_index = (frame_index + 1) % frame_count; // Cycle through available frames
-        last_frame_time = current_time;
-    }
-
-    SDL_Texture *current_frame = state->special_animations[current_stat][frame_index];
-    if (current_frame) {
-        SDL_Rect dest_rect = {415, 65, 275, 225}; // Position and size of animation
-        SDL_RenderCopy(renderer, current_frame, NULL, &dest_rect);
-    }
-}
-
 void load_special_stats_from_csv(const char *file_path, PipState *state) {
     FILE *file = fopen(file_path, "r");
 
@@ -251,69 +205,6 @@ void load_special_stats_from_csv(const char *file_path, PipState *state) {
     }
     fclose(file);
 }
-
-void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
-    // Load the decorative texture for the background
-    SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-
-    // Define the position and size of the decorative box
-    int bg_width = 300;  // Width of the decorative box
-    int bg_height = 30;  // Height of the decorative box
-    int bg_x = (SCREEN_WIDTH / 2) - (bg_width / 2); // Center horizontally
-    int bg_y = 430;       // Position above AP box but below HP text
-    SDL_Rect background_rect = {bg_x, bg_y, bg_width, bg_height};
-
-    // Tint the decorative box green
-    SDL_SetTextureColorMod(background, 0, 255, 0);
-
-    // Render the decorative box
-    SDL_RenderCopy(renderer, background, NULL, &background_rect);
-    SDL_DestroyTexture(background); // Free the texture after rendering
-
-    // Define XP bar dimensions (inside the decorative box)
-    int bar_width = bg_width - 100; // Add padding inside the box
-    int bar_height = 10;           // Height of the XP bar
-    int bar_x = bg_x + 90;         // Padding inside the box
-    int bar_y = bg_y + 10;         // Center vertically inside the box
-
-    // Calculate XP progress
-    float xp_progress = (float)(state->current_xp) / state->xp_for_next_level;
-    if (xp_progress > 1.0f) xp_progress = 1.0f;
-
-    // Draw XP bar background (dark green)
-    SDL_SetRenderDrawColor(renderer, 0, 50, 0, 255);
-    SDL_Rect bar_background_rect = {bar_x, bar_y, bar_width, bar_height};
-    SDL_RenderFillRect(renderer, &bar_background_rect);
-
-    // Draw XP bar fill (bright green)
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_Rect bar_fill_rect = {bar_x, bar_y, (int)(bar_width * xp_progress), bar_height};
-    SDL_RenderFillRect(renderer, &bar_fill_rect);
-
-    // Draw XP bar border
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_RenderDrawRect(renderer, &bar_background_rect);
-
-    // Render LEVEL and XP text around the bar
-    TTF_Font *font = TTF_OpenFont("monofonto.ttf", 20);
-    SDL_Color color = {0, 255, 0, 255}; // Bright green text
-
-    // Render LEVEL text
-    char level_text[20];
-    snprintf(level_text, sizeof(level_text), "LEVEL %d", state->level);
-    SDL_Surface *level_surface = TTF_RenderText_Solid(font, level_text, color);
-    SDL_Texture *level_texture = SDL_CreateTextureFromSurface(renderer, level_surface);
-    SDL_Rect level_rect = {bg_x + 5, bg_y + 3, level_surface->w, level_surface->h}; // Positioned clearly above the XP bar
-    SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
-    SDL_FreeSurface(level_surface);
-    SDL_DestroyTexture(level_texture);
-
-    TTF_CloseFont(font);
-
-    // Reset render color to default
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-}
-void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
 
 void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
@@ -386,48 +277,6 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
 
         y += spacing;
     }
-}
-
-void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID"};
-    SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
-    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
-
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
-
-    int base_x = 205; // Base x-coordinate for the centered subtab
-    int base_y = 65;  // Y-coordinate for subtabs
-
-    // Calculate animation progress
-    Uint32 current_time = SDL_GetTicks();
-    float progress = 1.0f; // Default to fully completed animation
-    if (state->is_inv_animating) {
-        progress = (float)(current_time - state->inv_subtab_animation_start_time) / 300; // 300ms animation duration
-        if (progress >= 1.0f) {
-            progress = 1.0f;
-            state->is_inv_animating = false; // End animation
-        }
-    }
-
-    float offset = (-1.0f + progress) * state->inv_subtab_animation_offset; // Control direction of animation by linear interpolation
-
-    // Render each subtab
-    for (int i = 0; i < NUM_INV_SUBTABS; i++) {
-        int x_position = base_x + (i - state->current_inv_subtab) * SUBTAB_SPACING + offset;
-
-        SDL_Color current_color = (i == state->current_inv_subtab) ? color_active : color_inactive;
-
-        SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
-        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-        SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h};
-        SDL_RenderCopy(renderer, texture, NULL, &rect);
-
-        SDL_FreeSurface(surface);
-        SDL_DestroyTexture(texture);
-    }
-
-    TTF_CloseFont(subtab_font);
 }
 
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
@@ -737,47 +586,6 @@ void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *stat
     }
 }
 
-void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
-    SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
-    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
-
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
-
-    int base_x = 205; // Base x-coordinate for the centered subtab
-    int base_y = 65;  // Y-coordinate for subtabs
-
-    // Calculate animation progress
-    Uint32 current_time = SDL_GetTicks();
-    float progress = 1.0f; // Default to fully completed animation
-    if (state->is_animating) {
-        progress = (float)(current_time - state->subtab_animation_start_time) / 300; // 300ms animation duration
-        if (progress >= 1.0f) {
-            progress = 1.0f;
-            state->is_animating = false; // End animation
-        }
-    }
-
-    float offset = (-1.0f + progress) * state->subtab_animation_offset; // Control direction of animation by linear interpolation
-
-    // Render each subtab
-    for (int i = 0; i < NUM_SUBTABS; i++) {
-        int x_position = base_x + (i - state->current_subtab) * SUBTAB_SPACING + offset;
-
-        SDL_Color current_color = (i == state->current_subtab) ? color_active : color_inactive;
-
-        SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
-        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-        SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h};
-        SDL_RenderCopy(renderer, texture, NULL, &rect);
-
-        SDL_FreeSurface(surface);
-        SDL_DestroyTexture(texture);
-    }
-
-    TTF_CloseFont(subtab_font);
-}
 
 void render_data_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
@@ -891,7 +699,7 @@ int main(int argc, char *argv[]) {
     show_boot_animation(renderer);
     initialize_pip_state(&pip_state);
     load_vaultboy_frames(renderer);
-    load_special_animations(renderer, &pip_state);
+    load_special_animation(renderer, &pip_state);
     load_selectline(renderer);
     load_categoryline(renderer);
 
@@ -902,13 +710,22 @@ int main(int argc, char *argv[]) {
 
     while (running) {
         // Event handling
-        while (SDL_PollEvent(&event)) {
+        /* while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
             } else {
                 handle_navigation(&event, &pip_state);
             }
+        } */
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = false;
+            } else {
+                capture_input(&event); // Store the input in the queue
+            }
         }
+
+        handle_navigation(&pip_state); // Process input queue (One input per frame)
 
         // Frame update
         Uint32 current_time = SDL_GetTicks();

@@ -1,117 +1,48 @@
 #include "input.h"
-#include "inventory.h"
 #include <SDL2/SDL.h>
+#include <stdbool.h>
+#include <stdio.h>
 
+#define INPUT_QUEUE_SIZE 32 // Limits the number of stored inputs
 
-void handle_navigation(SDL_Event *event, PipState *state) {
+typedef struct {
+    SDL_Keycode key; // Store the key that was pressed
+} InputEvent;
+
+// Input event queue
+static InputEvent input_queue[INPUT_QUEUE_SIZE];
+static int queue_front = 0, queue_back = 0, queue_count = 0;
+
+// **Queue Utility Functions**
+bool input_queue_is_empty() {
+    return queue_count == 0;
+}
+
+bool input_queue_is_full() {
+    return queue_count >= INPUT_QUEUE_SIZE;
+}
+
+void input_enqueue(SDL_Keycode key) {
+    if (!input_queue_is_full()) {
+        input_queue[queue_back].key = key;
+        queue_back = (queue_back + 1) % INPUT_QUEUE_SIZE;
+        queue_count++;
+    }
+}
+
+SDL_Keycode input_dequeue() {
+    if (!input_queue_is_empty()) {
+        SDL_Keycode key = input_queue[queue_front].key;
+        queue_front = (queue_front + 1) % INPUT_QUEUE_SIZE;
+        queue_count--;
+        return key;
+    }
+    return SDLK_UNKNOWN; // Return an invalid key if queue is empty
+}
+
+// **Process Input Events (Called Every Frame)**
+void capture_input(SDL_Event *event) {
     if (event->type == SDL_KEYDOWN) {
-        switch (event->key.keysym.sym) {
-            // Main Tabs Navigation (Q for left, E for right)
-            case SDLK_q:
-                state->current_tab = (state->current_tab - 1 + NUM_TABS) % NUM_TABS;
-                break;
-            case SDLK_e:
-                state->current_tab = (state->current_tab + 1) % NUM_TABS;
-                break;
-
-            // Sub-tabs Navigation
-            case SDLK_a: // Navigate left in sub-tabs
-                if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    // Handle STAT sub-tabs
-                    state->subtab_animation_offset = SUBTAB_SPACING;
-                    state->is_animating = true;
-                    state->subtab_animation_start_time = SDL_GetTicks();
-                    state->current_subtab = (state->current_subtab - 1 + NUM_SUBTABS) % NUM_SUBTABS;
-                } else if (state->current_tab == TAB_INV && !state->is_inv_animating) {
-                    // Handle INV sub-tabs
-                    state->inv_subtab_animation_offset = SUBTAB_SPACING;
-                    state->is_inv_animating = true;
-                    state->inv_subtab_animation_start_time = SDL_GetTicks();
-                    state->current_inv_subtab = (state->current_inv_subtab - 1 + NUM_INV_SUBTABS) % NUM_INV_SUBTABS;
-
-                    // Reset inventory navigation when changing subtabs
-                    reset_inventory_navigation(state);
-                }
-                break;
-
-            case SDLK_d: // Navigate right in sub-tabs
-                if (state->current_tab == TAB_STAT && !state->is_animating) {
-                    // Handle STAT sub-tabs
-                    state->subtab_animation_offset = -SUBTAB_SPACING;
-                    state->is_animating = true;
-                    state->subtab_animation_start_time = SDL_GetTicks();
-                    state->current_subtab = (state->current_subtab + 1) % NUM_SUBTABS;
-                } else if (state->current_tab == TAB_INV && !state->is_inv_animating) {
-                    // Handle INV sub-tabs
-                    state->inv_subtab_animation_offset = -SUBTAB_SPACING;
-                    state->is_inv_animating = true;
-                    state->inv_subtab_animation_start_time = SDL_GetTicks();
-                    state->current_inv_subtab = (state->current_inv_subtab + 1) % NUM_INV_SUBTABS;
-
-                    // Reset inventory navigation when changing subtabs
-                    reset_inventory_navigation(state);
-                }
-                break;
-
-            // SPECIAL Attributes Navigation (W and S for up/down)
-            case SDLK_w:
-                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
-                    state->special_stat_animation_offset = -30; // Move upwards
-                    state->is_special_stat_animating = true;
-                    state->special_stat_animation_start = SDL_GetTicks();
-                    state->selector_position = (state->selector_position - 1 + 7) % 7; // Wrap around SPECIAL stats
-                } else if (state->current_tab == TAB_INV) {
-                    // Inventory scrolling up
-                    if (state->selector_position > 0) {
-                        state->selector_position--;
-                        if (state->selector_position < state->inv_scroll_index) {
-                            state->inv_scroll_index--;
-                        }
-                    }
-                }
-                break;
-
-            case SDLK_s:
-                if (state->current_tab == TAB_STAT && state->current_subtab == SUBTAB_SPECIAL && !state->is_special_stat_animating) {
-                    state->special_stat_animation_offset = 30; // Move downwards
-                    state->is_special_stat_animating = true;
-                    state->special_stat_animation_start = SDL_GetTicks();
-                    state->selector_position = (state->selector_position + 1) % 7; // Wrap around SPECIAL stats
-                } else if (state->current_tab == TAB_INV) {
-                    // Inventory scrolling down
-                    invItem *current_list = NULL;
-                    int current_count = 0;
-
-                    // Determine the active inventory subtab list
-                    switch (state->current_inv_subtab) {
-                        case SUBTAB_WEAPONS:
-                            current_list = state->weapons;
-                            current_count = state->weapons_count;
-                            break;
-                        case SUBTAB_APPAREL:
-                            current_list = state->apparel;
-                            current_count = state->apparel_count;
-                            break;
-                        case SUBTAB_AID:
-                            current_list = state->aid;
-                            current_count = state->aid_count;
-                            break;
-                    }
-
-                    // Scroll down within the current inventory subtab
-                    if (current_list && state->selector_position < current_count - 1) {
-                        state->selector_position++;
-                        if (state->selector_position >= state->inv_scroll_index + 10) {
-                            state->inv_scroll_index++;
-                        }
-                    }
-                }
-                break;
-
-            // Simulate gaining XP (testing)
-            case SDLK_x:
-                add_experience(state, 10);
-                break;
-        }
+        input_enqueue(event->key.keysym.sym);
     }
 }

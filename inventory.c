@@ -41,6 +41,7 @@ void reset_inventory_navigation(PipState *state) {
     invItem *current_list = NULL;
     int current_count = 0;
 
+
     // Determine the current list and count based on the active subtab
     switch (state->current_inv_subtab) {
         case SUBTAB_WEAPONS:
@@ -71,3 +72,4 @@ void reset_inventory_navigation(PipState *state) {
     }
 }
 
+void handle_inventory_scroll(PipState *state, int direction);
