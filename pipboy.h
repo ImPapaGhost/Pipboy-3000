@@ -2,6 +2,7 @@
 #define PIPBOY_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
 
 // Constants
@@ -42,6 +43,11 @@ typedef struct {
     char name[50];   // Item name
     int quantity;    // Item quantity
     float weight;    // Item weight
+    int value;       // Item's in-game value
+    int damage;      // Damage dealt (for weapons)
+    int armor;       // Armor rating (for armor)
+    int condition;   // Condition percentage (0-100)
+    char icon_path[100]; // Path to item icon
 } invItem;
 
 typedef struct {
@@ -105,5 +111,7 @@ void initialize_pip_state(PipState *state);
 void add_experience(PipState *state, int xp);
 void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int torso, int left_leg, int right_leg);
 int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity);
+void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
+
 
 #endif

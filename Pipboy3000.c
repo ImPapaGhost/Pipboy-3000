@@ -162,7 +162,7 @@ void load_special_stats_from_csv(const char *file_path, PipState *state) {
     fclose(file);
 }
 
-void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+/* void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};
     int x = 100, y = 120;
     int spacing = 30;
@@ -233,7 +233,7 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
 
         y += spacing;
     }
-}
+} */
 
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
