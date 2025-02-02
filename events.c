@@ -18,9 +18,13 @@ void handle_navigation(PipState *state) {
             // Main Tabs Navigation (Q for left, E for right)
             case SDLK_q:
                 state->current_tab = (state->current_tab - 1 + NUM_TABS) % NUM_TABS;
+                state->selector_position = 0; // Reset selection position
+                state->inv_scroll_index = 0;  // Reset scroll index
                 break;
             case SDLK_e:
                 state->current_tab = (state->current_tab + 1) % NUM_TABS;
+                state->selector_position = 0; // Reset selection position
+                state->inv_scroll_index = 0;  // Reset scroll index
                 break;
 
             // Sub-tabs Navigation
