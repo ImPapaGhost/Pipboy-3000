@@ -39,10 +39,15 @@ void initialize_pip_state(PipState *state) {
     state->aid = malloc(state->aid_capacity * sizeof(invItem));
     state->aid_count = 0;
 
+    state->misc_capacity = 10;
+    state->misc = malloc(state->misc_capacity * sizeof(invItem));
+    state->misc_count = 0;
+
     // Load inv items into respective lists
     load_inv("weapons.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity);
     load_inv("apparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity);
     load_inv("aid.csv", &state->aid, &state->aid_count, &state->aid_capacity);
+    load_inv("misc.csv", &state->misc, &state->misc_count, &state->misc_capacity);
 
     // Initialize perks to empty
     for (int i = 0; i < 10; i++) {
@@ -76,5 +81,5 @@ void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int 
     bars->right_leg = right_leg;
 }
 
-// Define `pip_state` here to allocate memory for it
+// Define `pip_state` to allocate memory for it
 PipState pip_state;

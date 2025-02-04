@@ -35,6 +35,7 @@ typedef enum {
     SUBTAB_WEAPONS,
     SUBTAB_APPAREL,
     SUBTAB_AID,
+    SUBTAB_MISC,
     NUM_INV_SUBTABS
 } InvSubTab;
 
@@ -95,6 +96,9 @@ typedef struct {
     invItem *aid;
     int aid_count;
     int aid_capacity;
+    int misc_count;
+    int misc_capacity;
+    invItem *misc;
     int inv_scroll_index; // Scroll index for navigation
     InvSubTab current_inv_subtab;       // Current inv subtab
     int inv_subtab_animation_offset;   // Animation offset for subtabs

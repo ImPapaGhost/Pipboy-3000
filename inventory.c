@@ -56,6 +56,9 @@ void reset_inventory_navigation(PipState *state) {
             current_list = state->aid;
             current_count = state->aid_count;
             break;
+        case SUBTAB_MISC:
+            current_list = state->misc;
+            current_count = state->misc_count;
     }
 
     // Clamp selector_position and inv_scroll_index

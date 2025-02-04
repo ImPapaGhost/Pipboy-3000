@@ -6,7 +6,7 @@
 
 
 void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
+    const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS", "MISC"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
@@ -48,7 +48,7 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
 }
 
 void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID"};
+    const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID", "MISC"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 

@@ -46,6 +46,9 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             current_list = state->aid;
             current_count = state->aid_count;
             break;
+        case SUBTAB_MISC:
+            current_list = state->misc;
+            current_count = state->misc_count;
     }
 
     if (current_count == 0) {

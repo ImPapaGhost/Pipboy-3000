@@ -162,79 +162,6 @@ void load_special_stats_from_csv(const char *file_path, PipState *state) {
     fclose(file);
 }
 
-/* void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    SDL_Color color = {0, 255, 0, 255};
-    int x = 100, y = 120;
-    int spacing = 30;
-
-    render_inv_subtabs(renderer, font, state);
-
-    invItem *current_list = NULL;
-    int current_count = 0;
-
-    // Determine which list to display
-    switch (state->current_inv_subtab) {
-        case SUBTAB_WEAPONS:
-            current_list = state->weapons;
-            current_count = state->weapons_count;
-            break;
-        case SUBTAB_APPAREL:
-            current_list = state->apparel;
-            current_count = state->apparel_count;
-            break;
-        case SUBTAB_AID:
-            current_list = state->aid;
-            current_count = state->aid_count;
-            break;
-    }
-
-    if (current_count == 0) {
-        SDL_Surface *surface = TTF_RenderText_Solid(font, "No items in this category.", color);
-        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_Rect rect = {x, y, surface->w, surface->h};
-        SDL_RenderCopy(renderer, texture, NULL, &rect);
-        SDL_FreeSurface(surface);
-        SDL_DestroyTexture(texture);
-        return;
-    }
-
-    for (int i = state->inv_scroll_index; i < current_count && i < state->inv_scroll_index + 10; i++) {
-        SDL_Surface *name_surface = TTF_RenderText_Solid(font, current_list[i].name, color);
-        SDL_Texture *name_texture = SDL_CreateTextureFromSurface(renderer, name_surface);
-        SDL_Rect name_rect = {x, y, name_surface->w, name_surface->h};
-        SDL_RenderCopy(renderer, name_texture, NULL, &name_rect);
-        SDL_FreeSurface(name_surface);
-        SDL_DestroyTexture(name_texture);
-
-        char quantity_text[20];
-        snprintf(quantity_text, sizeof(quantity_text), "x%d", current_list[i].quantity);
-        SDL_Surface *quantity_surface = TTF_RenderText_Solid(font, quantity_text, color);
-        SDL_Texture *quantity_texture = SDL_CreateTextureFromSurface(renderer, quantity_surface);
-        SDL_Rect quantity_rect = {x + 200, y, quantity_surface->w, quantity_surface->h};
-        SDL_RenderCopy(renderer, quantity_texture, NULL, &quantity_rect);
-        SDL_FreeSurface(quantity_surface);
-        SDL_DestroyTexture(quantity_texture);
-
-        char weight_text[20];
-        snprintf(weight_text, sizeof(weight_text), "%.2f lbs", current_list[i].weight);
-        SDL_Surface *weight_surface = TTF_RenderText_Solid(font, weight_text, color);
-        SDL_Texture *weight_texture = SDL_CreateTextureFromSurface(renderer, weight_surface);
-        SDL_Rect weight_rect = {x + 300, y, weight_surface->w, weight_surface->h};
-        SDL_RenderCopy(renderer, weight_texture, NULL, &weight_rect);
-        SDL_FreeSurface(weight_surface);
-        SDL_DestroyTexture(weight_texture);
-
-        if (i == state->selector_position) {
-            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-            SDL_Rect highlight_rect = {x - 10, y - 5, 400, spacing};
-            SDL_RenderDrawRect(renderer, &highlight_rect);
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        }
-
-        y += spacing;
-    }
-} */
-
 void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *tab_names[] = {"STAT", "INV", "DATA", "MAP", "RADIO"};
     SDL_Color color = {0, 255, 0, 255}; // Green color for tab text
@@ -709,6 +636,10 @@ int main(int argc, char *argv[]) {
 
     if (pip_state.aid) {
         free(pip_state.aid);
+    }
+
+    if (pip_state.misc) {
+        free(pip_state.misc);
     }
 
     free_vaultboy_frames();
