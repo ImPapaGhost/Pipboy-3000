@@ -127,7 +127,7 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
 
             // Render weight value on the right
             char weight_text[20];
-            snprintf(weight_text, sizeof(weight_text), "%.2f lbs", current_list[i].weight);
+            snprintf(weight_text, sizeof(weight_text), "%.1f lbs", current_list[i].weight);
             SDL_Surface *weight_value_surface = TTF_RenderText_Solid(font, weight_text, color);
             SDL_Texture *weight_value_texture = SDL_CreateTextureFromSurface(renderer, weight_value_surface);
             SDL_Rect weight_value_rect = {weight_x + box_width - weight_value_surface->w - 10, weight_y + 5, weight_value_surface->w, weight_value_surface->h};

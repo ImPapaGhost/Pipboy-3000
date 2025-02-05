@@ -34,7 +34,7 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
         // Ensure we're storing each entry separately
         invItem *item = &(*inv_list)[count];  // Assign a pointer to the correct index
 
-        sscanf(line, "%49[^,],%d,%lf,%d,%d,%d,%d,%d",
+        sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d,%d",
             item->name,
             &item->quantity,
             &item->weight,
@@ -42,7 +42,8 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
             &item->ammo,
             &item->fire_rate,
             &item->range,
-            &item->accuracy);
+            &item->accuracy,
+            &item->value);
 
         count++;
     }

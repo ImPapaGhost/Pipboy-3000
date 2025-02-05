@@ -1,6 +1,6 @@
-Name,Quantity,Weight,Damage,Ammo,FireRate,Range,Accuracy
-10mm Pistol,1,3.0,18,10,46,119,60
-Laser Musket,2,12.0,30,1,6,203,72
-Combat Shotgun,1,11.0,50,8,20,71,30
-Hunting Rifle,1,9.0,37,5,3,173,65
-Minigun,1,27.0,8,500,273,131,45
+Name,Quantity,Weight,Damage,Ammo,FireRate,Range,Accuracy,Value
+10mm Pistol,1,3.0,18,10,46,119,60,100
+Laser Musket,2,12.0,30,1,6,203,72,100
+Combat Shotgun,1,11.0,50,8,20,71,30,100
+Hunting Rifle,1,9.0,37,5,3,173,65,100
+Minigun,1,27.0,8,500,273,131,45,100
