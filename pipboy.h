@@ -36,6 +36,9 @@ typedef enum {
     SUBTAB_APPAREL,
     SUBTAB_AID,
     SUBTAB_MISC,
+    SUBTAB_JUNK,
+    SUBTAB_MODS,
+    SUBTAB_AMMO,
     NUM_INV_SUBTABS
 } InvSubTab;
 
@@ -46,6 +49,10 @@ typedef struct {
     float weight;    // Item weight
     int value;       // Item's in-game value
     int damage;      // Damage dealt (for weapons)
+    int ammo;
+    int fire_rate;
+    int range;
+    int accuracy;
     int armor;       // Armor rating (for armor)
     int condition;   // Condition percentage (0-100)
     char icon_path[100]; // Path to item icon
@@ -99,6 +106,15 @@ typedef struct {
     int misc_count;
     int misc_capacity;
     invItem *misc;
+    int junk_count;
+    int junk_capacity;
+    invItem *junk;
+    int mods_count;
+    int mods_capacity;
+    invItem *mods;
+    int ammo_count;
+    int ammo_capacity;
+    invItem *ammo;
     int inv_scroll_index; // Scroll index for navigation
     InvSubTab current_inv_subtab;       // Current inv subtab
     int inv_subtab_animation_offset;   // Animation offset for subtabs

@@ -642,6 +642,18 @@ int main(int argc, char *argv[]) {
         free(pip_state.misc);
     }
 
+    if (pip_state.junk) {
+        free(pip_state.junk);
+    }
+
+    if (pip_state.mods) {
+        free(pip_state.mods);
+    }
+
+    if (pip_state.ammo) {
+        free(pip_state.ammo);
+    }
+
     free_vaultboy_frames();
     TTF_CloseFont(font);
     TTF_Quit();

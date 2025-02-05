@@ -112,6 +112,15 @@ void handle_navigation(PipState *state) {
                         case SUBTAB_MISC:
                             current_list = state->misc;
                             current_count = state->misc_count;
+                        case SUBTAB_JUNK:
+                            current_list = state->junk;
+                            current_count = state->junk_count;
+                        case SUBTAB_MODS:
+                            current_list = state->mods;
+                            current_count = state->mods_count;
+                        case SUBTAB_AMMO:
+                            current_list = state->ammo;
+                            current_count = state->ammo_count;
                     }
 
                     // Scroll down within the current inventory subtab

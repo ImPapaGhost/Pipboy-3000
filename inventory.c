@@ -19,15 +19,35 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
     if (*inv_capacity == 0) {
         *inv_capacity = 10;
         *inv_list = malloc(*inv_capacity * sizeof(invItem));
+        if (!*inv_list) {
+            fclose(file);
+            return 0;  // Memory allocation failed
+        }
     }
 
     while (fgets(line, sizeof(line), file)) {
         if (count >= *inv_capacity) {
-            *inv_capacity *= 2;
-            *inv_list = realloc(*inv_list, *inv_capacity * sizeof(invItem));
+            int new_capacity = *inv_capacity * 2;
+            invItem *temp = realloc(*inv_list, new_capacity * sizeof(invItem));
+            if (!temp) {
+                printf("Memory allocation failed during resizing.\n");
+                break;
+            }
+            *inv_list = temp;
+            *inv_capacity = new_capacity;
         }
 
-        sscanf(line, "%[^,],%d,%f", (*inv_list)[count].name, &(*inv_list)[count].quantity, &(*inv_list)[count].weight);
+        // Ensure safe string parsing
+        sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d",
+               (*inv_list)[count].name, // Ensure name is large enough in struct (e.g., char name[50];)
+               &(*inv_list)[count].quantity,
+               &(*inv_list)[count].weight,
+               &(*inv_list)[count].damage,
+               &(*inv_list)[count].ammo,
+               &(*inv_list)[count].fire_rate,
+               &(*inv_list)[count].range,
+               &(*inv_list)[count].accuracy);
+
         count++;
     }
 
@@ -59,6 +79,19 @@ void reset_inventory_navigation(PipState *state) {
         case SUBTAB_MISC:
             current_list = state->misc;
             current_count = state->misc_count;
+            break;
+        case SUBTAB_JUNK:
+            current_list = state->junk;
+            current_count = state->junk_count;
+            break;
+        case SUBTAB_MODS:
+            current_list = state->mods;
+            current_count = state->mods_count;
+            break;
+        case SUBTAB_AMMO:
+            current_list = state->ammo;
+            current_count = state->ammo_count;
+            break;
     }
 
     // Clamp selector_position and inv_scroll_index

@@ -43,11 +43,26 @@ void initialize_pip_state(PipState *state) {
     state->misc = malloc(state->misc_capacity * sizeof(invItem));
     state->misc_count = 0;
 
+    state->junk_capacity = 10;
+    state->junk = malloc(state->junk_capacity * sizeof(invItem));
+    state->junk_count = 0;
+
+    state->mods_capacity = 10;
+    state->mods = malloc(state->mods_capacity * sizeof(invItem));
+    state->mods_count = 0;
+
+    state->ammo_capacity = 10;
+    state->ammo = malloc(state->ammo_capacity * sizeof(invItem));
+    state->ammo_count = 0;
+
     // Load inv items into respective lists
     load_inv("weapons.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity);
     load_inv("apparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity);
     load_inv("aid.csv", &state->aid, &state->aid_count, &state->aid_capacity);
     load_inv("misc.csv", &state->misc, &state->misc_count, &state->misc_capacity);
+    load_inv("junk.csv", &state->junk, &state->junk_count, &state->junk_capacity);
+    load_inv("mods.csv", &state->mods, &state->mods_count, &state->mods_capacity);
+    load_inv("ammo.csv", &state->ammo, &state->ammo_count, &state->ammo_capacity);
 
     // Initialize perks to empty
     for (int i = 0; i < 10; i++) {

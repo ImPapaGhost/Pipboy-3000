@@ -6,7 +6,7 @@
 
 
 void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS", "MISC"};
+    const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
@@ -47,14 +47,16 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     TTF_CloseFont(subtab_font);
 }
 
+
+
 void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID", "MISC"};
+    const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID", "MISC", "JUNK", "MODS", "AMMO"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
     TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
 
-    int base_x = 205; // Base x-coordinate for the centered subtab
+    int base_x = 300; // Base x-coordinate for the centered subtab
     int base_y = 65;  // Y-coordinate for subtabs
 
     // Calculate animation progress
