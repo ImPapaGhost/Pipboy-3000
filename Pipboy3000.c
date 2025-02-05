@@ -156,7 +156,7 @@ void load_special_stats_from_csv(const char *file_path, PipState *state) {
     char line[256];
     int i = 0;
     while (fgets(line, sizeof(line), file) && i < 7) {
-        sscanf(line, "%*[^,],%d", &state->special_stats[i]); // Skip the name, read the stat value
+        sscanf(line, "%*[^,],%.1f,%d", &state->special_stats[i]); // Skip the name, read the stat value
         i++;
     }
     fclose(file);

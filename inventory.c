@@ -15,15 +15,8 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
     char line[256];
     int count = 0;
 
-    // Ensure initial memory allocation
-    if (*inv_capacity == 0) {
-        *inv_capacity = 10;
-        *inv_list = malloc(*inv_capacity * sizeof(invItem));
-        if (!*inv_list) {
-            fclose(file);
-            return 0;  // Memory allocation failed
-        }
-    }
+    // Skip the header line
+    fgets(line, sizeof(line), file);
 
     while (fgets(line, sizeof(line), file)) {
         if (count >= *inv_capacity) {
@@ -31,22 +24,25 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
             invItem *temp = realloc(*inv_list, new_capacity * sizeof(invItem));
             if (!temp) {
                 printf("Memory allocation failed during resizing.\n");
-                break;
+                fclose(file);
+                return 0;
             }
             *inv_list = temp;
             *inv_capacity = new_capacity;
         }
 
-        // Ensure safe string parsing
-        sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d",
-               (*inv_list)[count].name, // Ensure name is large enough in struct (e.g., char name[50];)
-               &(*inv_list)[count].quantity,
-               &(*inv_list)[count].weight,
-               &(*inv_list)[count].damage,
-               &(*inv_list)[count].ammo,
-               &(*inv_list)[count].fire_rate,
-               &(*inv_list)[count].range,
-               &(*inv_list)[count].accuracy);
+        // Ensure we're storing each entry separately
+        invItem *item = &(*inv_list)[count];  // Assign a pointer to the correct index
+
+        sscanf(line, "%49[^,],%d,%lf,%d,%d,%d,%d,%d",
+            item->name,
+            &item->quantity,
+            &item->weight,
+            &item->damage,
+            &item->ammo,
+            &item->fire_rate,
+            &item->range,
+            &item->accuracy);
 
         count++;
     }
@@ -55,6 +51,7 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
     *inv_count = count;
     return count;
 }
+
 
 // Reset inventory navigation when changing subtabs
 void reset_inventory_navigation(PipState *state) {

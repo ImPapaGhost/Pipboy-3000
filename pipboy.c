@@ -21,6 +21,7 @@ float ease_out_cubic(float t) {
     return 1 - pow(1 - t, 3);
 }
 
+
 void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};         // Normal bright green
     SDL_Color dimmed_color = {0, 80, 0, 255};  // Dimmed green for highlighted text
@@ -73,9 +74,9 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
         SDL_DestroyTexture(texture);
         return;
     }
+    int i = state->selector_position;
+        for (int i = state->inv_scroll_index; i < state->inv_scroll_index + 10 && i < current_count; i++) {
 
-    for (int i = state->inv_scroll_index; i < current_count && i < state->inv_scroll_index + 10; i++) {
-        // Format the item name with quantity
         char name_with_quantity[100];
         snprintf(name_with_quantity, sizeof(name_with_quantity), "%s (%d)", current_list[i].name, current_list[i].quantity);
 
@@ -100,7 +101,78 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
 
         SDL_FreeSurface(name_surface);
         SDL_DestroyTexture(name_texture);
-        // Render damage box and damage numerical box separate
+
+        // Render the value in a specific location for the selected item
+        if (i == state->selector_position) {
+            int weight_x = 500;  // Position of highlight box
+            int weight_y = 360;
+            int box_width = 200;  // Adjusted width for "Weight" text + value
+            int box_height = 30;
+
+            // Render a dim highlight box for the weight stat
+            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
+            SDL_Rect weight_box_rect = {weight_x, weight_y, box_width, box_height};
+            SDL_RenderFillRect(renderer, &weight_box_rect);
+
+            // Reset render color back to black (prevents global color issues)
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+            // Render "Weight" label on the left
+            SDL_Surface *weight_label_surface = TTF_RenderText_Solid(font, "Weight", color);
+            SDL_Texture *weight_label_texture = SDL_CreateTextureFromSurface(renderer, weight_label_surface);
+            SDL_Rect weight_label_rect = {weight_x + 10, weight_y + 5, weight_label_surface->w, weight_label_surface->h};
+            SDL_RenderCopy(renderer, weight_label_texture, NULL, &weight_label_rect);
+            SDL_FreeSurface(weight_label_surface);
+            SDL_DestroyTexture(weight_label_texture);
+
+            // Render weight value on the right
+            char weight_text[20];
+            snprintf(weight_text, sizeof(weight_text), "%.2f lbs", current_list[i].weight);
+            SDL_Surface *weight_value_surface = TTF_RenderText_Solid(font, weight_text, color);
+            SDL_Texture *weight_value_texture = SDL_CreateTextureFromSurface(renderer, weight_value_surface);
+            SDL_Rect weight_value_rect = {weight_x + box_width - weight_value_surface->w - 10, weight_y + 5, weight_value_surface->w, weight_value_surface->h};
+            SDL_RenderCopy(renderer, weight_value_texture, NULL, &weight_value_rect);
+            SDL_FreeSurface(weight_value_surface);
+            SDL_DestroyTexture(weight_value_texture);
+        }
+
+        // Render the value in a specific location for the selected item
+        if (i == state->selector_position) {
+            int value_x = 500;  // Position of highlight box
+            int value_y = 390;
+            int box_width = 200;  // Adjusted width for "Value" text + value
+            int box_height = 30;
+
+            // Render a dim highlight box for the value stat
+            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
+            SDL_Rect value_box_rect = {value_x, value_y, box_width, box_height};
+            SDL_RenderFillRect(renderer, &value_box_rect);
+
+            // Reset render color back to black (prevents global color issues)
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+            // Render "Value" label on the left
+            SDL_Surface *value_label_surface = TTF_RenderText_Solid(font, "Value", color);
+            SDL_Texture *value_label_texture = SDL_CreateTextureFromSurface(renderer, value_label_surface);
+            SDL_Rect value_label_rect = {value_x + 10, value_y + 5, value_label_surface->w, value_label_surface->h};
+            SDL_RenderCopy(renderer, value_label_texture, NULL, &value_label_rect);
+            SDL_FreeSurface(value_label_surface);
+            SDL_DestroyTexture(value_label_texture);
+
+            // Render weight value on the right
+            char value_text[20];
+            snprintf(value_text, sizeof(value_text), "%d", current_list[i].value);
+            SDL_Surface *value_value_surface = TTF_RenderText_Solid(font, value_text, color);
+            SDL_Texture *value_value_texture = SDL_CreateTextureFromSurface(renderer, value_value_surface);
+            SDL_Rect value_value_rect = {value_x + box_width - value_value_surface->w - 10, value_y + 5, value_value_surface->w, value_value_surface->h};
+            SDL_RenderCopy(renderer, value_value_texture, NULL, &value_value_rect);
+            SDL_FreeSurface(value_value_surface);
+            SDL_DestroyTexture(value_value_texture);
+        }
+
+        y += spacing;
+    }
+    // Render damage box and damage numerical box separate
         if (state->current_inv_subtab == SUBTAB_WEAPONS) {
             int damage_label_x = 500;
             int damage_label_y = 210;
@@ -161,12 +233,7 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
         snprintf(damage_text, sizeof(damage_text), "%d", current_list[i].damage);
         SDL_Surface *damage_value_surface = TTF_RenderText_Solid(font, damage_text, color);
         SDL_Texture *damage_value_texture = SDL_CreateTextureFromSurface(renderer, damage_value_surface);
-        SDL_Rect damage_value_rect_text = {
-            damage_value_x + damage_value_width - damage_value_surface->w - 10, // Right-aligned
-            damage_value_y + 5,
-            damage_value_surface->w,
-            damage_value_surface->h
-        };
+        SDL_Rect damage_value_rect_text = {damage_value_x + damage_value_width - damage_value_surface->w - 10, damage_value_y + 5, damage_value_surface->w, damage_value_surface->h};
         SDL_RenderCopy(renderer, damage_value_texture, NULL, &damage_value_rect_text);
         SDL_FreeSurface(damage_value_surface);
         SDL_DestroyTexture(damage_value_texture);
@@ -176,11 +243,36 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int ammo_value_y = 240;
             int ammo_value_width = 200;  // Adjusted width for "Ammo" text + value
             int ammo_value_height = 30;
-
             // Render a dim highlight box for the weight stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
             SDL_Rect ammo_box_rect = {ammo_value_x, ammo_value_y, ammo_value_width, ammo_value_height};
             SDL_RenderFillRect(renderer, &ammo_box_rect);
+            // Load the Ammo icon
+            SDL_Surface *ammo_surface = IMG_Load("INV/ammo.png");
+            SDL_Texture *ammo_texture = NULL;
+
+            if (!ammo_surface) {
+                printf("Failed to load Ammo icon: %s\n", IMG_GetError());
+            } else {
+                ammo_texture = SDL_CreateTextureFromSurface(renderer, ammo_surface);
+                SDL_FreeSurface(ammo_surface); // Free surface after creating texture
+            }
+
+            // Apply green tint to match Pip-Boy aesthetic
+            if (ammo_texture) {
+                SDL_SetTextureColorMod(ammo_texture, 0, 255, 0); // Apply green tint (R = 0, G = 255, B = 0)
+            }
+
+            // Define position for the Ammo icon (aligned with the "Ammo" label)
+            int ammo_icon_width = 15;  // Adjust size if needed
+            int ammo_icon_height = 15; // Adjust size if needed
+            SDL_Rect ammo_icon_rect = {ammo_value_x + 2, ammo_value_y + (ammo_value_height - ammo_icon_height) / 2, ammo_icon_width, ammo_icon_height};
+
+            // Render the Ammo icon if it was loaded successfully
+            if (ammo_texture) {
+                SDL_RenderCopy(renderer, ammo_texture, NULL, &ammo_icon_rect);
+                SDL_DestroyTexture(ammo_texture); // Clean up texture
+            }
 
             // Reset render color back to black (prevents global color issues)
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -188,7 +280,7 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             // Render "Ammo" label on the left
             SDL_Surface *ammo_label_surface = TTF_RenderText_Solid(font, "Ammo", color);
             SDL_Texture *ammo_label_texture = SDL_CreateTextureFromSurface(renderer, ammo_label_surface);
-            SDL_Rect ammo_label_rect = {ammo_value_x + 10, ammo_value_y + 5, ammo_label_surface->w, ammo_label_surface->h};
+            SDL_Rect ammo_label_rect = {ammo_value_x + ammo_icon_width + 7, ammo_value_y + 5, ammo_label_surface->w, ammo_label_surface->h};
             SDL_RenderCopy(renderer, ammo_label_texture, NULL, &ammo_label_rect);
             SDL_FreeSurface(ammo_label_surface);
             SDL_DestroyTexture(ammo_label_texture);
@@ -271,7 +363,7 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             // Render the accuracy
             int accuracy_value_x = 500;  // Position of highlight box
             int accuracy_value_y = 300;
-            int accuracy_value_width = 200;  // Adjusted width for "Ammo" text + value
+            int accuracy_value_width = 200;  // Adjusted width for "Accuracy" text + value
             int accuracy_value_height = 30;
 
             // Render a dim highlight box for the fire_rate stat
@@ -300,76 +392,4 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             SDL_FreeSurface(accuracy_value_surface);
             SDL_DestroyTexture(accuracy_value_texture);
         }
-
-
-        // Render the value in a specific location for the selected item
-        if (i == state->selector_position) {
-            int weight_x = 500;  // Position of highlight box
-            int weight_y = 360;
-            int box_width = 200;  // Adjusted width for "Weight" text + value
-            int box_height = 30;
-
-            // Render a dim highlight box for the weight stat
-            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect weight_box_rect = {weight_x, weight_y, box_width, box_height};
-            SDL_RenderFillRect(renderer, &weight_box_rect);
-
-            // Reset render color back to black (prevents global color issues)
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-            // Render "Weight" label on the left
-            SDL_Surface *weight_label_surface = TTF_RenderText_Solid(font, "Weight", color);
-            SDL_Texture *weight_label_texture = SDL_CreateTextureFromSurface(renderer, weight_label_surface);
-            SDL_Rect weight_label_rect = {weight_x + 10, weight_y + 5, weight_label_surface->w, weight_label_surface->h};
-            SDL_RenderCopy(renderer, weight_label_texture, NULL, &weight_label_rect);
-            SDL_FreeSurface(weight_label_surface);
-            SDL_DestroyTexture(weight_label_texture);
-
-            // Render weight value on the right
-            char weight_text[20];
-            snprintf(weight_text, sizeof(weight_text), "%.2f lbs", current_list[i].weight);
-            SDL_Surface *weight_value_surface = TTF_RenderText_Solid(font, weight_text, color);
-            SDL_Texture *weight_value_texture = SDL_CreateTextureFromSurface(renderer, weight_value_surface);
-            SDL_Rect weight_value_rect = {weight_x + box_width - weight_value_surface->w - 10, weight_y + 5, weight_value_surface->w, weight_value_surface->h};
-            SDL_RenderCopy(renderer, weight_value_texture, NULL, &weight_value_rect);
-            SDL_FreeSurface(weight_value_surface);
-            SDL_DestroyTexture(weight_value_texture);
-        }
-
-        // Render the value in a specific location for the selected item
-        if (i == state->selector_position) {
-            int value_x = 500;  // Position of highlight box
-            int value_y = 390;
-            int box_width = 200;  // Adjusted width for "Value" text + value
-            int box_height = 30;
-
-            // Render a dim highlight box for the value stat
-            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect value_box_rect = {value_x, value_y, box_width, box_height};
-            SDL_RenderFillRect(renderer, &value_box_rect);
-
-            // Reset render color back to black (prevents global color issues)
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
-            // Render "Value" label on the left
-            SDL_Surface *value_label_surface = TTF_RenderText_Solid(font, "Value", color);
-            SDL_Texture *value_label_texture = SDL_CreateTextureFromSurface(renderer, value_label_surface);
-            SDL_Rect value_label_rect = {value_x + 10, value_y + 5, value_label_surface->w, value_label_surface->h};
-            SDL_RenderCopy(renderer, value_label_texture, NULL, &value_label_rect);
-            SDL_FreeSurface(value_label_surface);
-            SDL_DestroyTexture(value_label_texture);
-
-            // Render weight value on the right
-            char value_text[20];
-            snprintf(value_text, sizeof(value_text), "%d", current_list[i].value);
-            SDL_Surface *value_value_surface = TTF_RenderText_Solid(font, value_text, color);
-            SDL_Texture *value_value_texture = SDL_CreateTextureFromSurface(renderer, value_value_surface);
-            SDL_Rect value_value_rect = {value_x + box_width - value_value_surface->w - 10, value_y + 5, value_value_surface->w, value_value_surface->h};
-            SDL_RenderCopy(renderer, value_value_texture, NULL, &value_value_rect);
-            SDL_FreeSurface(value_value_surface);
-            SDL_DestroyTexture(value_value_texture);
-        }
-
-        y += spacing;
-    }
 }

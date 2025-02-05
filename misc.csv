@@ -1,6 +1,6 @@
-Name,Value,Weight,V:W,QI,Related quest,Component for,Form ID,CC Content
-Bobby Pin,5,0.1,50.0,0,None,Lockpicking,0000000A,No
-Pre-War Money,8,0.3,26.67,0,None,Barter,0000000B,No
-Toy Alien,2,0.5,4.0,0,None,Decoration,0000000C,No
-Wonderglue,10,0.4,25.0,0,None,Crafting,0000000D,No
-Alarm Clock,4,1.0,4.0,0,None,Crafting,0000000E,No
+Name,Quantity,Weight,Value
+Bobby Pin,10,0.0,2
+Pre-War Money,5,0.1,8
+Technical Document,1,0.5,25
+Holotape,1,0.3,5
+Fusion Core,3,4.0,200
