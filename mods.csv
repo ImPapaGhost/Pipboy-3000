@@ -1,6 +1,6 @@
-Name,Quantity,Weight,Type
-10mm Suppressor,1,0.5,Muzzle
-Sniper Scope,1,1.0,Scope
-Laser Pistol Automatic Barrel,1,2.5,Barrel
-Short Stock,1,0.8,Stock
-Calibrated Receiver,1,1.2,Receiver
+Name,Quantity,Weight,Value,Type
+10mm Suppressor,1,0.5,100,Muzzle
+Sniper Scope,1,1.0,100,Scope
+Laser Pistol Automatic Barrel,1,2.5,100,Barrel
+Short Stock,1,0.8,100,Stock
+Calibrated Receiver,1,1.2,100,Receiver

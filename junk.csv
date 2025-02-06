@@ -1,6 +1,6 @@
-Name,Quantity,Weight,Components
-Wonderglue,2,0.5,Adhesive
-Duct Tape,3,0.8,Adhesive
-Aluminum Can,5,0.1,Aluminum
-Camera,1,2.0,"Circuitry, Glass, Screw"
-Hot Plate,1,3.5,"Copper, Circuitry"
+Name,Quantity,Weight,Value,Components
+Wonderglue,2,0.5,10,Adhesive
+Duct Tape,3,0.8,200,Adhesive
+Aluminum Can,5,0.1,10,Aluminum
+Camera,1,2.0,10,"Circuitry, Glass, Screw"
+Hot Plate,1,3.5,10,"Copper, Circuitry"

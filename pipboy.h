@@ -50,6 +50,7 @@ typedef struct {
     int value;       // Item's in-game value
     int damage;      // Damage dealt (for weapons)
     int ammo;
+    char ammo_type[50]; // NEW: Type of ammo used (for weapons)
     int fire_rate;
     int range;
     int accuracy;
@@ -57,6 +58,11 @@ typedef struct {
     int condition;   // Condition percentage (0-100)
     char icon_path[100]; // Path to item icon
 } invItem;
+
+typedef struct {
+    char name[50];   // Ammo name (e.g., "10mm Round")
+    int quantity;    // Ammo count from ammo.csv
+} AmmoEntry;
 
 typedef struct {
     int head;
@@ -115,6 +121,8 @@ typedef struct {
     int ammo_count;
     int ammo_capacity;
     invItem *ammo;
+    AmmoEntry ammo_map[50]; // Lookup table for ammo (max 50 types)
+    int ammo_map_count;
     int inv_scroll_index; // Scroll index for navigation
     InvSubTab current_inv_subtab;       // Current inv subtab
     int inv_subtab_animation_offset;   // Animation offset for subtabs
@@ -132,6 +140,7 @@ void add_experience(PipState *state, int xp);
 void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int torso, int left_leg, int right_leg);
 int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity);
 void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
+void load_ammo_map(const char *filename, PipState *state);
 
 
 #endif

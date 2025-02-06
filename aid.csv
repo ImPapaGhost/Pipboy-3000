@@ -1,6 +1,6 @@
-Name,Quantity,Weight,HPRecovery,Rads
-Stimpak,5,0.1,30,0
-RadAway,3,0.5,0,-30
-Med-X,2,0.1,0,0
-Buffout,2,0.1,0,0
-Psycho,1,0.1,0,0
+Name,Quantity,Weight,Value,HPRecovery,Rads
+Stimpak,5,0.1,30,0,0
+RadAway,3,0.5,10,30,-30
+Med-X,2,0.1,10,0,0
+Buffout,2,0.1,10,0,0
+Psycho,1,0.1,10,0,0

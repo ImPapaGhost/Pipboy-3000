@@ -1,6 +1,6 @@
-Name,Quantity,Weight,DR(Energy),DR(Ballistic)
-Leather Chest Piece,1,5.0,10,15
-Metal Right Arm,1,7.5,13,18
-Combat Armor Left Leg,1,8.3,15,22
-T-45 Power Armor Torso,1,35.0,50,50
-Vault 111 Jumpsuit,1,0.5,2,5
+Name,Quantity,Weight,Value,DR(Energy),DR(Ballistic)
+Leather Chest Piece,1,5.0,300,10,15
+Metal Right Arm,1,7.5,100,13,18
+Combat Armor Left Leg,1,8.3,100,15,22
+T-45 Power Armor Torso,1,35.0,100,50,50
+Vault 111 Jumpsuit,1,0.5,100,2,5

@@ -33,8 +33,35 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
 
         // Ensure we're storing each entry separately
         invItem *item = &(*inv_list)[count];  // Assign a pointer to the correct index
-
-        sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d,%d",
+        // Check if loading weapons or aid based on the file name
+        if (strstr(file_path, "weapons.csv")) {
+            sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d,%d",
+                item->name, &item->quantity, &item->weight, &item->damage,
+                &item->ammo, &item->fire_rate, &item->range, &item->accuracy, &item->value);
+        } else if (strstr(file_path, "apparel.csv")) {
+            sscanf(line, "%49[^,],%d,%f,%d",
+                item->name, &item->quantity, &item->weight, &item->value);
+        } else if (strstr(file_path, "aid.csv")) {
+            sscanf(line, "%49[^,],%d,%f,%d",
+                item->name, &item->quantity, &item->weight, &item->value);
+        } else if (strstr(file_path, "misc.csv")) {
+            sscanf(line, "%49[^,],%d,%f,%d",
+                item->name, &item->quantity, &item->weight, &item->value);
+        } else if (strstr(file_path, "junk.csv")) {
+            sscanf(line, "%49[^,],%d,%f,%d",
+                item->name, &item->quantity, &item->weight, &item->value);
+        } else if (strstr(file_path, "mods.csv")) {
+            sscanf(line, "%49[^,],%d,%f,%d",
+                item->name, &item->quantity, &item->weight, &item->value);
+        } else if (strstr(file_path, "ammo.csv")) {
+            sscanf(line, "%49[^,],%d,%f,%d",
+                item->name, &item->quantity, &item->weight, &item->value);
+        } else {
+            // Default parsing in case of unknown category
+            sscanf(line, "%49[^,],%d,%f,%d",
+                item->name, &item->quantity, &item->weight, &item->value);
+        }
+        /*sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d,%d",
             item->name,
             &item->quantity,
             &item->weight,
@@ -43,7 +70,7 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
             &item->fire_rate,
             &item->range,
             &item->accuracy,
-            &item->value);
+            &item->value); */
 
         count++;
     }
