@@ -399,24 +399,25 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int component_y_offset = 0; // Offset to move each line down
 
             while (token) {
+                while (*token == ' ') token++;  // Remove leading spaces
+
+                // Render the cleaned component
                 SDL_Surface *component_value_surface = TTF_RenderText_Solid(font, token, color);
                 SDL_Texture *component_value_texture = SDL_CreateTextureFromSurface(renderer, component_value_surface);
 
-                SDL_Rect component_value_rect = {
-                    component_x + 10, component_y + 5 + component_y_offset,
-                    component_value_surface->w, component_value_surface->h
-                };
+                SDL_Rect component_value_rect = {component_x + 10, component_y + 5 + component_y_offset,
+                                                 component_value_surface->w, component_value_surface->h};
 
                 SDL_RenderCopy(renderer, component_value_texture, NULL, &component_value_rect);
                 SDL_FreeSurface(component_value_surface);
                 SDL_DestroyTexture(component_value_texture);
 
-                // Move down for the next line
-                component_y_offset += 20;  // Adjust spacing between lines
+                component_y_offset += 20;
 
-                // Get next component in the list
-                token = strtok(NULL, ",");
+                token = strtok(NULL, ",");  // Next component
             }
+
+            free(component_copy);
 
         }
 }

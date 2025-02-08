@@ -50,6 +50,12 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
         } else if (strstr(file_path, "junk.csv")) {
             sscanf(line, "%49[^,],%d,%f,%d,%49[^\n]",
                 item->name, &item->quantity, &item->weight, &item->value, item->component);
+                // Remove surrounding quotes if present
+                int len = strlen(item->component);
+                if (len > 1 && item->component[0] == '"' && item->component[len - 1] == '"') {
+                    memmove(item->component, item->component + 1, len - 2);
+                    item->component[len - 2] = '\0'; // Properly terminate the string
+                }
         } else if (strstr(file_path, "mods.csv")) {
             sscanf(line, "%49[^,],%d,%f,%d",
                 item->name, &item->quantity, &item->weight, &item->value);
