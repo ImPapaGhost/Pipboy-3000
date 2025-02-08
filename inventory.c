@@ -33,7 +33,7 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
 
         // Ensure we're storing each entry separately
         invItem *item = &(*inv_list)[count];  // Assign a pointer to the correct index
-        // Check if loading weapons or aid based on the file name
+        // Check if loading inventory item list
         if (strstr(file_path, "weapons.csv")) {
             sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d,%d",
                 item->name, &item->quantity, &item->weight, &item->damage,
@@ -48,8 +48,8 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
             sscanf(line, "%49[^,],%d,%f,%d",
                 item->name, &item->quantity, &item->weight, &item->value);
         } else if (strstr(file_path, "junk.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d",
-                item->name, &item->quantity, &item->weight, &item->value);
+            sscanf(line, "%49[^,],%d,%f,%d,%49[^\n]",
+                item->name, &item->quantity, &item->weight, &item->value, item->component);
         } else if (strstr(file_path, "mods.csv")) {
             sscanf(line, "%49[^,],%d,%f,%d",
                 item->name, &item->quantity, &item->weight, &item->value);
@@ -61,16 +61,6 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
             sscanf(line, "%49[^,],%d,%f,%d",
                 item->name, &item->quantity, &item->weight, &item->value);
         }
-        /*sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d,%d",
-            item->name,
-            &item->quantity,
-            &item->weight,
-            &item->damage,
-            &item->ammo,
-            &item->fire_rate,
-            &item->range,
-            &item->accuracy,
-            &item->value); */
 
         count++;
     }

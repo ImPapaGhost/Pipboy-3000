@@ -174,10 +174,10 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int damage_label_x = 500;
             int damage_label_y = 210;
             int damage_label_width = 120;
-            int damage_label_height = 30;
+            int box_height = 30;
 
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255);
-            SDL_Rect damage_label_rect = {damage_label_x, damage_label_y, damage_label_width, damage_label_height};
+            SDL_Rect damage_label_rect = {damage_label_x, damage_label_y, damage_label_width, box_height};
             SDL_RenderFillRect(renderer, &damage_label_rect);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -191,10 +191,9 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int damage_value_x = damage_label_x + damage_label_width + 5;
             int damage_value_y = damage_label_y;
             int damage_value_width = 75;
-            int damage_value_height = 30;
 
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255);
-            SDL_Rect damage_value_rect = {damage_value_x, damage_value_y, damage_value_width, damage_value_height};
+            SDL_Rect damage_value_rect = {damage_value_x, damage_value_y, damage_value_width, box_height};
             SDL_RenderFillRect(renderer, &damage_value_rect);
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
@@ -239,10 +238,9 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int ammo_value_x = 500;  // Position of highlight box
             int ammo_value_y = 240;
             int ammo_value_width = 200;  // Adjusted width for "Ammo" text + value
-            int ammo_value_height = 30;
             // Render a dim highlight box for the weight stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect ammo_box_rect = {ammo_value_x, ammo_value_y, ammo_value_width, ammo_value_height};
+            SDL_Rect ammo_box_rect = {ammo_value_x, ammo_value_y, ammo_value_width, box_height};
             SDL_RenderFillRect(renderer, &ammo_box_rect);
             // Load the Ammo icon
             SDL_Surface *ammo_surface = IMG_Load("INV/ammo.png");
@@ -263,7 +261,7 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             // Define position for the Ammo icon (aligned with the "Ammo" label)
             int ammo_icon_width = 15;  // Adjust size if needed
             int ammo_icon_height = 15; // Adjust size if needed
-            SDL_Rect ammo_icon_rect = {ammo_value_x + 2, ammo_value_y + (ammo_value_height - ammo_icon_height) / 2, ammo_icon_width, ammo_icon_height};
+            SDL_Rect ammo_icon_rect = {ammo_value_x + 2, ammo_value_y + (box_height - ammo_icon_height) / 2, ammo_icon_width, ammo_icon_height};
 
             // Render the Ammo icon if it was loaded successfully
             if (ammo_texture) {
@@ -296,11 +294,10 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int fire_rate_value_x = 500;  // Position of highlight box
             int fire_rate_value_y = 270;
             int fire_rate_value_width = 200;  // Adjusted width for "Fire rate" text + value
-            int fire_rate_value_height = 30;
 
             // Render a dim highlight box for the fire_rate stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect fire_rate_box_rect = {fire_rate_value_x, fire_rate_value_y, fire_rate_value_width, fire_rate_value_height};
+            SDL_Rect fire_rate_box_rect = {fire_rate_value_x, fire_rate_value_y, fire_rate_value_width, box_height};
             SDL_RenderFillRect(renderer, &fire_rate_box_rect);
 
             // Reset render color back to black (prevents global color issues)
@@ -329,11 +326,10 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int range_value_x = 500;  // Position of highlight box
             int range_value_y = 330;
             int range_value_width = 200;  // Adjusted width for "Ammo" text + value
-            int range_value_height = 30;
 
             // Render a dim highlight box for the fire_rate stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect range_box_rect = {range_value_x, range_value_y, range_value_width, range_value_height};
+            SDL_Rect range_box_rect = {range_value_x, range_value_y, range_value_width, box_height};
             SDL_RenderFillRect(renderer, &range_box_rect);
 
             // Reset render color back to black (prevents global color issues)
@@ -361,11 +357,10 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             int accuracy_value_x = 500;  // Position of highlight box
             int accuracy_value_y = 300;
             int accuracy_value_width = 200;  // Adjusted width for "Accuracy" text + value
-            int accuracy_value_height = 30;
 
             // Render a dim highlight box for the fire_rate stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect accuracy_box_rect = {accuracy_value_x, accuracy_value_y, accuracy_value_width, accuracy_value_height};
+            SDL_Rect accuracy_box_rect = {accuracy_value_x, accuracy_value_y, accuracy_value_width, box_height};
             SDL_RenderFillRect(renderer, &accuracy_box_rect);
 
             // Reset render color back to black (prevents global color issues)
@@ -388,5 +383,40 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             SDL_RenderCopy(renderer, accuracy_value_texture, NULL, &accuracy_value_rect);
             SDL_FreeSurface(accuracy_value_surface);
             SDL_DestroyTexture(accuracy_value_texture);
+        }
+        if (state->current_inv_subtab == SUBTAB_JUNK) {
+            int component_x = 500;  // Position of highlight box
+            int component_y = 250;
+            int component_width = 200;  // Adjusted width for "Component" text + value
+            int box_height = 30;
+
+            // Render component value on the right
+            char component_text[20];
+
+            // Split the component string into separate lines
+            char *component_copy = strdup(current_list[i].component);  // Make a copy to modify
+            char *token = strtok(component_copy, ",");  // Split by comma
+            int component_y_offset = 0; // Offset to move each line down
+
+            while (token) {
+                SDL_Surface *component_value_surface = TTF_RenderText_Solid(font, token, color);
+                SDL_Texture *component_value_texture = SDL_CreateTextureFromSurface(renderer, component_value_surface);
+
+                SDL_Rect component_value_rect = {
+                    component_x + 10, component_y + 5 + component_y_offset,
+                    component_value_surface->w, component_value_surface->h
+                };
+
+                SDL_RenderCopy(renderer, component_value_texture, NULL, &component_value_rect);
+                SDL_FreeSurface(component_value_surface);
+                SDL_DestroyTexture(component_value_texture);
+
+                // Move down for the next line
+                component_y_offset += 20;  // Adjust spacing between lines
+
+                // Get next component in the list
+                token = strtok(NULL, ",");
+            }
+
         }
 }

@@ -57,6 +57,7 @@ typedef struct {
     int armor;       // Armor rating (for armor)
     int condition;   // Condition percentage (0-100)
     char icon_path[100]; // Path to item icon
+    char component[50];
 } invItem;
 
 typedef struct {
