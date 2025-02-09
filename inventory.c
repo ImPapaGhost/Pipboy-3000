@@ -35,9 +35,11 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
         invItem *item = &(*inv_list)[count];  // Assign a pointer to the correct index
         // Check if loading inventory item list
         if (strstr(file_path, "weapons.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d,%d,%d,%d,%d,%d",
+            sscanf(line, "%49[^,],%d,%f,%d,%d,%49[^,],%19[^,],%d,%d,%d,%d",
                 item->name, &item->quantity, &item->weight, &item->damage,
-                &item->ammo, &item->fire_rate, &item->range, &item->accuracy, &item->value);
+                &item->ammo, item->ammo_type, item->speed, &item->fire_rate,
+                &item->range, &item->accuracy, &item->value);
+                // Copy speed only for melee weapons (ammo == 0)
         } else if (strstr(file_path, "apparel.csv")) {
             sscanf(line, "%49[^,],%d,%f,%d",
                 item->name, &item->quantity, &item->weight, &item->value);

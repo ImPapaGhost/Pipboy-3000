@@ -49,8 +49,9 @@ typedef struct {
     float weight;    // Item weight
     int value;       // Item's in-game value
     int damage;      // Damage dealt (for weapons)
-    int ammo;
-    char ammo_type[50]; // NEW: Type of ammo used (for weapons)
+    int ammo;        // Amount of ammo (for weapons)
+    char ammo_type[50]; // Ammo type used (for weapons)
+    char speed[20];
     int fire_rate;
     int range;
     int accuracy;
@@ -60,10 +61,10 @@ typedef struct {
     char component[50];
 } invItem;
 
-typedef struct {
+/* typedef struct {
     char name[50];   // Ammo name (e.g., "10mm Round")
     int quantity;    // Ammo count from ammo.csv
-} AmmoEntry;
+} AmmoEntry; */
 
 typedef struct {
     int head;
@@ -122,8 +123,7 @@ typedef struct {
     int ammo_count;
     int ammo_capacity;
     invItem *ammo;
-    AmmoEntry ammo_map[50]; // Lookup table for ammo (max 50 types)
-    int ammo_map_count;
+    // AmmoEntry ammo_type[50]; // Lookup table for ammo (max 50 types)
     int inv_scroll_index; // Scroll index for navigation
     InvSubTab current_inv_subtab;       // Current inv subtab
     int inv_subtab_animation_offset;   // Animation offset for subtabs

@@ -8,7 +8,10 @@
 #include "pipboy.h"
 #include "state.h"
 #include "ui.h"
-
+#define BOX_WIDTH 200
+#define BOX_HEIGHT 25
+#define X_VALUE 500
+#define Y_VALUE 390
 
 
 int file_exists(const char *path) {
@@ -74,6 +77,7 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
         SDL_DestroyTexture(texture);
         return;
     }
+
     int i = state->selector_position;
         for (int i = state->inv_scroll_index; i < state->inv_scroll_index + 10 && i < current_count; i++) {
 
@@ -104,14 +108,11 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
 
         // Render the value in a specific location for the selected item
         if (i == state->selector_position) {
-            int weight_x = 500;  // Position of highlight box
             int weight_y = 360;
-            int weight_width = 200;  // Adjusted width for "Weight" text + value
-            int box_height = 30;
 
             // Render a dim highlight box for the weight stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect weight_box_rect = {weight_x, weight_y, weight_width, box_height};
+            SDL_Rect weight_box_rect = {X_VALUE, weight_y, BOX_WIDTH, BOX_HEIGHT};
             SDL_RenderFillRect(renderer, &weight_box_rect);
 
             // Reset render color back to black (prevents global color issues)
@@ -120,7 +121,8 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             // Render "Weight" label on the left
             SDL_Surface *weight_label_surface = TTF_RenderText_Solid(font, "Weight", color);
             SDL_Texture *weight_label_texture = SDL_CreateTextureFromSurface(renderer, weight_label_surface);
-            SDL_Rect weight_label_rect = {weight_x + 10, weight_y + 5, weight_label_surface->w, weight_label_surface->h};
+            int weight_label_y_center = weight_y + (BOX_HEIGHT - weight_label_surface->h) / 2;
+            SDL_Rect weight_label_rect = {X_VALUE + 10, weight_label_y_center, weight_label_surface->w, weight_label_surface->h};
             SDL_RenderCopy(renderer, weight_label_texture, NULL, &weight_label_rect);
             SDL_FreeSurface(weight_label_surface);
             SDL_DestroyTexture(weight_label_texture);
@@ -130,152 +132,137 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             snprintf(weight_text, sizeof(weight_text), "%.1f", current_list[i].weight);
             SDL_Surface *weight_value_surface = TTF_RenderText_Solid(font, weight_text, color);
             SDL_Texture *weight_value_texture = SDL_CreateTextureFromSurface(renderer, weight_value_surface);
-            SDL_Rect weight_value_rect = {weight_x + weight_width - weight_value_surface->w - 10, weight_y + 5, weight_value_surface->w, weight_value_surface->h};
+            int weight_value_y_center = weight_y + (BOX_HEIGHT - weight_label_surface->h) / 2;
+            SDL_Rect weight_value_rect = {X_VALUE + BOX_WIDTH - weight_value_surface->w - 10, weight_value_y_center, weight_value_surface->w, weight_value_surface->h};
             SDL_RenderCopy(renderer, weight_value_texture, NULL, &weight_value_rect);
             SDL_FreeSurface(weight_value_surface);
             SDL_DestroyTexture(weight_value_texture);
 
         // Render the value in a specific location for the selected item
-            int value_x = 500;  // Position of highlight box
-            int value_y = 390;
-            int value_width = 200;  // Adjusted width for "Value" text + value
+        int value_y = 390;
 
-            // Render a dim highlight box for the value stat
-            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect value_box_rect = {value_x, value_y, value_width, box_height};
-            SDL_RenderFillRect(renderer, &value_box_rect);
+        // Render a dim highlight box for the value stat
+        SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
+        SDL_Rect value_box_rect = {X_VALUE, value_y, BOX_WIDTH, BOX_HEIGHT};
+        SDL_RenderFillRect(renderer, &value_box_rect);
 
-            // Reset render color back to black (prevents global color issues)
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        // Reset render color back to black (prevents global color issues)
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-            // Render "Value" label on the left
-            SDL_Surface *value_label_surface = TTF_RenderText_Solid(font, "Value", color);
-            SDL_Texture *value_label_texture = SDL_CreateTextureFromSurface(renderer, value_label_surface);
-            SDL_Rect value_label_rect = {value_x + 10, value_y + 5, value_label_surface->w, value_label_surface->h};
-            SDL_RenderCopy(renderer, value_label_texture, NULL, &value_label_rect);
-            SDL_FreeSurface(value_label_surface);
-            SDL_DestroyTexture(value_label_texture);
+        // Render "Value" label on the left
+        SDL_Surface *value_label_surface = TTF_RenderText_Solid(font, "Value", color);
+        SDL_Texture *value_label_texture = SDL_CreateTextureFromSurface(renderer, value_label_surface);
+        int value_label_y_center = value_y + (BOX_HEIGHT - value_label_surface->h) / 2;
+        SDL_Rect value_label_rect = {X_VALUE + 10, value_label_y_center, value_label_surface->w, value_label_surface->h};
+        SDL_RenderCopy(renderer, value_label_texture, NULL, &value_label_rect);
+        SDL_FreeSurface(value_label_surface);
+        SDL_DestroyTexture(value_label_texture);
 
-            // Render weight value on the right
-            char value_text[20];
-            snprintf(value_text, sizeof(value_text), "%d", current_list[i].value);
-            SDL_Surface *value_value_surface = TTF_RenderText_Solid(font, value_text, color);
-            SDL_Texture *value_value_texture = SDL_CreateTextureFromSurface(renderer, value_value_surface);
-            SDL_Rect value_value_rect = {value_x + value_width - value_value_surface->w - 10, value_y + 5, value_value_surface->w, value_value_surface->h};
-            SDL_RenderCopy(renderer, value_value_texture, NULL, &value_value_rect);
-            SDL_FreeSurface(value_value_surface);
-            SDL_DestroyTexture(value_value_texture);
-        }
-
-        y += spacing;
+        // Render weight value on the right
+        char value_text[20];
+        snprintf(value_text, sizeof(value_text), "%d", current_list[i].value);
+        SDL_Surface *value_value_surface = TTF_RenderText_Solid(font, value_text, color);
+        SDL_Texture *value_value_texture = SDL_CreateTextureFromSurface(renderer, value_value_surface);
+        int value_value_y_center = value_y + (BOX_HEIGHT - value_label_surface->h) / 2;
+        SDL_Rect value_value_rect = {X_VALUE + BOX_WIDTH - value_value_surface->w - 10, value_value_y_center, value_value_surface->w, value_value_surface->h};
+        SDL_RenderCopy(renderer, value_value_texture, NULL, &value_value_rect);
+        SDL_FreeSurface(value_value_surface);
+        SDL_DestroyTexture(value_value_texture);
     }
+
+    y += spacing;
+
+    }
+
     // Render damage box and damage numerical box separate
-        if (state->current_inv_subtab == SUBTAB_WEAPONS) {
-            int damage_label_x = 500;
-            int damage_label_y = 210;
-            int damage_label_width = 120;
-            int box_height = 30;
+    if (state->current_inv_subtab == SUBTAB_WEAPONS) {
+        int damage_label_y = 210;
+        int damage_label_width = 120;
 
-            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255);
-            SDL_Rect damage_label_rect = {damage_label_x, damage_label_y, damage_label_width, box_height};
-            SDL_RenderFillRect(renderer, &damage_label_rect);
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        // Render the damage highlight box
+        SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255);
+        SDL_Rect damage_label_rect = {X_VALUE, damage_label_y, damage_label_width, BOX_HEIGHT};
+        SDL_RenderFillRect(renderer, &damage_label_rect);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-            SDL_Surface *damage_label_surface = TTF_RenderText_Solid(font, "Damage", color);
-            SDL_Texture *damage_label_texture = SDL_CreateTextureFromSurface(renderer, damage_label_surface);
-            SDL_Rect damage_label_rect_text = {damage_label_x + 10, damage_label_y + 5, damage_label_surface->w, damage_label_surface->h};
-            SDL_RenderCopy(renderer, damage_label_texture, NULL, &damage_label_rect_text);
-            SDL_FreeSurface(damage_label_surface);
-            SDL_DestroyTexture(damage_label_texture);
+        // Render damage text over box
+        SDL_Surface *damage_label_surface = TTF_RenderText_Solid(font, "Damage", color);
+        SDL_Texture *damage_label_texture = SDL_CreateTextureFromSurface(renderer, damage_label_surface);
+        int damage_label_y_center = damage_label_y + (BOX_HEIGHT - damage_label_surface->h) / 2;
+        SDL_Rect damage_label_rect_text = {X_VALUE + 10, damage_label_y_center, damage_label_surface->w, damage_label_surface->h};
+        SDL_RenderCopy(renderer, damage_label_texture, NULL, &damage_label_rect_text);
+        SDL_FreeSurface(damage_label_surface);
+        SDL_DestroyTexture(damage_label_texture);
 
-            int damage_value_x = damage_label_x + damage_label_width + 5;
-            int damage_value_y = damage_label_y;
-            int damage_value_width = 75;
+        int damage_X_VALUE = X_VALUE + damage_label_width + 5;
+        int damage_value_y = damage_label_y;
+        int damage_BOX_WIDTH = 75;
 
-            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255);
-            SDL_Rect damage_value_rect = {damage_value_x, damage_value_y, damage_value_width, box_height};
-            SDL_RenderFillRect(renderer, &damage_value_rect);
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        // Render the highlight box for the damage value
+        SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255);
+        SDL_Rect damage_value_rect = {damage_X_VALUE, damage_value_y, damage_BOX_WIDTH, BOX_HEIGHT};
+        SDL_RenderFillRect(renderer, &damage_value_rect);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-            // Load the target icon
+        // Load the target icon over box
         SDL_Surface *target_surface = IMG_Load("INV/TARGET1.jpg");
         SDL_Texture *target_texture = NULL;
-
-        if (!target_surface) {
-            printf("Failed to load target icon: %s\n", IMG_GetError());
-        } else {
-            target_texture = SDL_CreateTextureFromSurface(renderer, target_surface);
-            SDL_FreeSurface(target_surface); // Free surface after creating texture
-        }
-
-        // Apply green tint if texture loaded successfully
-        if (target_texture) {
-            SDL_SetTextureColorMod(target_texture, 0, 255, 0); // Apply green tint (R = 0, G = 255, B = 0)
-        }
+        target_texture = SDL_CreateTextureFromSurface(renderer, target_surface);
+        SDL_FreeSurface(target_surface); // Free surface after creating texture
+        SDL_SetTextureColorMod(target_texture, 0, 255, 0); // Apply green tint (R = 0, G = 255, B = 0)
 
         // Define position for the target icon (left-aligned next to damage value)
         int target_icon_width = 20;  // Adjust size if needed
         int target_icon_height = 20; // Adjust size if needed
-        SDL_Rect target_rect = {damage_value_x + 5, damage_value_y + 5, target_icon_width, target_icon_height};
+        int target_icon_y_center = damage_value_y + (BOX_HEIGHT - target_icon_height) / 2;
+        SDL_Rect target_rect = {damage_X_VALUE + 5, target_icon_y_center, target_icon_width, target_icon_height};
+        SDL_RenderCopy(renderer, target_texture, NULL, &target_rect);
+        SDL_DestroyTexture(target_texture); // Clean up texture
 
-        // Render the target icon if it was loaded successfully
-        if (target_texture) {
-            SDL_RenderCopy(renderer, target_texture, NULL, &target_rect);
-            SDL_DestroyTexture(target_texture); // Clean up texture
-        }
-
-        // Render damage text (right-aligned)
+        // Render damage text over box (right-aligned)
         char damage_text[20];
         snprintf(damage_text, sizeof(damage_text), "%d", current_list[i].damage);
         SDL_Surface *damage_value_surface = TTF_RenderText_Solid(font, damage_text, color);
         SDL_Texture *damage_value_texture = SDL_CreateTextureFromSurface(renderer, damage_value_surface);
-        SDL_Rect damage_value_rect_text = {damage_value_x + damage_value_width - damage_value_surface->w - 10, damage_value_y + 5, damage_value_surface->w, damage_value_surface->h};
+        int damage_value_y_center = damage_value_y + (BOX_HEIGHT - damage_value_surface->h) / 2;
+        SDL_Rect damage_value_rect_text = {damage_X_VALUE + damage_BOX_WIDTH - damage_value_surface->w - 10, damage_value_y_center, damage_value_surface->w, damage_value_surface->h};
         SDL_RenderCopy(renderer, damage_value_texture, NULL, &damage_value_rect_text);
         SDL_FreeSurface(damage_value_surface);
         SDL_DestroyTexture(damage_value_texture);
 
-            // Render the ammo
-            int ammo_value_x = 500;  // Position of highlight box
+            if (strcmp(current_list[i].ammo_type, "None") != 0) {  //Skip for melee weapons
+
+            // Render the ammo box
             int ammo_value_y = 240;
-            int ammo_value_width = 200;  // Adjusted width for "Ammo" text + value
-            // Render a dim highlight box for the weight stat
+            // Render highlight box for the ammo stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect ammo_box_rect = {ammo_value_x, ammo_value_y, ammo_value_width, box_height};
+            SDL_Rect ammo_box_rect = {X_VALUE, ammo_value_y, BOX_WIDTH, BOX_HEIGHT};
             SDL_RenderFillRect(renderer, &ammo_box_rect);
-            // Load the Ammo icon
+            // Load the Ammo icon over box
             SDL_Surface *ammo_surface = IMG_Load("INV/ammo.png");
             SDL_Texture *ammo_texture = NULL;
+            ammo_texture = SDL_CreateTextureFromSurface(renderer, ammo_surface);
+            SDL_FreeSurface(ammo_surface); // Free surface after creating texture
+            SDL_SetTextureColorMod(ammo_texture, 0, 255, 0); // Apply green tint (R = 0, G = 255, B = 0)
 
-            if (!ammo_surface) {
-                printf("Failed to load Ammo icon: %s\n", IMG_GetError());
-            } else {
-                ammo_texture = SDL_CreateTextureFromSurface(renderer, ammo_surface);
-                SDL_FreeSurface(ammo_surface); // Free surface after creating texture
-            }
-
-            // Apply green tint to match Pip-Boy aesthetic
-            if (ammo_texture) {
-                SDL_SetTextureColorMod(ammo_texture, 0, 255, 0); // Apply green tint (R = 0, G = 255, B = 0)
-            }
-
-            // Define position for the Ammo icon (aligned with the "Ammo" label)
+            // Define position for the Ammo icon (aligned with the "Ammo" label) over box
             int ammo_icon_width = 15;  // Adjust size if needed
             int ammo_icon_height = 15; // Adjust size if needed
-            SDL_Rect ammo_icon_rect = {ammo_value_x + 2, ammo_value_y + (box_height - ammo_icon_height) / 2, ammo_icon_width, ammo_icon_height};
-
-            // Render the Ammo icon if it was loaded successfully
-            if (ammo_texture) {
-                SDL_RenderCopy(renderer, ammo_texture, NULL, &ammo_icon_rect);
-                SDL_DestroyTexture(ammo_texture); // Clean up texture
-            }
+            int ammo_icon_y_center = ammo_value_y + (BOX_HEIGHT - ammo_icon_height) / 2;
+            SDL_Rect ammo_icon_rect = {X_VALUE + 2, ammo_icon_y_center, ammo_icon_width, ammo_icon_height};
+            SDL_RenderCopy(renderer, ammo_texture, NULL, &ammo_icon_rect);
+            SDL_DestroyTexture(ammo_texture); // Clean up texture
 
             // Reset render color back to black (prevents global color issues)
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-            // Render "Ammo" label on the left
-            SDL_Surface *ammo_label_surface = TTF_RenderText_Solid(font, "Ammo", color);
+            // Render "Ammo" label on the left over box
+            char ammo_type[20];
+            snprintf(ammo_type, sizeof(ammo_type), "%s", current_list[i].ammo_type);
+            SDL_Surface *ammo_label_surface = TTF_RenderText_Solid(font, ammo_type, color);
             SDL_Texture *ammo_label_texture = SDL_CreateTextureFromSurface(renderer, ammo_label_surface);
-            SDL_Rect ammo_label_rect = {ammo_value_x + ammo_icon_width + 7, ammo_value_y + 5, ammo_label_surface->w, ammo_label_surface->h};
+            int ammo_label_y_center = ammo_value_y + (BOX_HEIGHT - ammo_label_surface->h) / 2;
+            SDL_Rect ammo_label_rect = {X_VALUE + ammo_icon_width + 7, ammo_label_y_center, ammo_label_surface->w, ammo_label_surface->h};
             SDL_RenderCopy(renderer, ammo_label_texture, NULL, &ammo_label_rect);
             SDL_FreeSurface(ammo_label_surface);
             SDL_DestroyTexture(ammo_label_texture);
@@ -285,19 +272,18 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             snprintf(ammo_text, sizeof(ammo_text), "%d", current_list[i].ammo);
             SDL_Surface *ammo_value_surface = TTF_RenderText_Solid(font, ammo_text, color);
             SDL_Texture *ammo_value_texture = SDL_CreateTextureFromSurface(renderer, ammo_value_surface);
-            SDL_Rect ammo_value_rect = {ammo_value_x + ammo_value_width - ammo_value_surface->w - 10, ammo_value_y + 5, ammo_value_surface->w, ammo_value_surface->h};
+            int ammo_value_y_center = ammo_value_y + (BOX_HEIGHT - ammo_value_surface->h) / 2;
+            SDL_Rect ammo_value_rect = {X_VALUE + BOX_WIDTH - ammo_value_surface->w - 10, ammo_value_y_center, ammo_value_surface->w, ammo_value_surface->h};
             SDL_RenderCopy(renderer, ammo_value_texture, NULL, &ammo_value_rect);
             SDL_FreeSurface(ammo_value_surface);
             SDL_DestroyTexture(ammo_value_texture);
 
             // Render the fire_rate
-            int fire_rate_value_x = 500;  // Position of highlight box
             int fire_rate_value_y = 270;
-            int fire_rate_value_width = 200;  // Adjusted width for "Fire rate" text + value
 
             // Render a dim highlight box for the fire_rate stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect fire_rate_box_rect = {fire_rate_value_x, fire_rate_value_y, fire_rate_value_width, box_height};
+            SDL_Rect fire_rate_box_rect = {X_VALUE, fire_rate_value_y, BOX_WIDTH, BOX_HEIGHT};
             SDL_RenderFillRect(renderer, &fire_rate_box_rect);
 
             // Reset render color back to black (prevents global color issues)
@@ -306,7 +292,8 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             // Render "fire rate" label on the left
             SDL_Surface *fire_rate_label_surface = TTF_RenderText_Solid(font, "Fire Rate", color);
             SDL_Texture *fire_rate_label_texture = SDL_CreateTextureFromSurface(renderer, fire_rate_label_surface);
-            SDL_Rect fire_rate_label_rect = {fire_rate_value_x + 10, fire_rate_value_y + 5, fire_rate_label_surface->w, fire_rate_label_surface->h};
+            int fire_rate_label_y_center = fire_rate_value_y + (BOX_HEIGHT - fire_rate_label_surface->h) / 2;
+            SDL_Rect fire_rate_label_rect = {X_VALUE + 10, fire_rate_label_y_center, fire_rate_label_surface->w, fire_rate_label_surface->h};
             SDL_RenderCopy(renderer, fire_rate_label_texture, NULL, &fire_rate_label_rect);
             SDL_FreeSurface(fire_rate_label_surface);
             SDL_DestroyTexture(fire_rate_label_texture);
@@ -316,20 +303,18 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             snprintf(fire_rate_text, sizeof(fire_rate_text), "%d", current_list[i].fire_rate);
             SDL_Surface *fire_rate_value_surface = TTF_RenderText_Solid(font, fire_rate_text, color);
             SDL_Texture *fire_rate_value_texture = SDL_CreateTextureFromSurface(renderer, fire_rate_value_surface);
-            SDL_Rect fire_rate_value_rect = {fire_rate_value_x + fire_rate_value_width - fire_rate_value_surface->w - 10, fire_rate_value_y + 5, fire_rate_value_surface->w, fire_rate_value_surface->h};
+            int fire_rate_value_y_center = fire_rate_value_y + (BOX_HEIGHT - fire_rate_label_surface->h) / 2;
+            SDL_Rect fire_rate_value_rect = {X_VALUE + BOX_WIDTH - fire_rate_value_surface->w - 10, fire_rate_label_y_center, fire_rate_value_surface->w, fire_rate_value_surface->h};
             SDL_RenderCopy(renderer, fire_rate_value_texture, NULL, &fire_rate_value_rect);
             SDL_FreeSurface(fire_rate_value_surface);
             SDL_DestroyTexture(fire_rate_value_texture);
 
-
             // Render the accuracy
-            int range_value_x = 500;  // Position of highlight box
             int range_value_y = 330;
-            int range_value_width = 200;  // Adjusted width for "Ammo" text + value
 
             // Render a dim highlight box for the fire_rate stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect range_box_rect = {range_value_x, range_value_y, range_value_width, box_height};
+            SDL_Rect range_box_rect = {X_VALUE, range_value_y, BOX_WIDTH, BOX_HEIGHT};
             SDL_RenderFillRect(renderer, &range_box_rect);
 
             // Reset render color back to black (prevents global color issues)
@@ -338,7 +323,8 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             // Render "accuracy" label on the left
             SDL_Surface *range_label_surface = TTF_RenderText_Solid(font, "Range", color);
             SDL_Texture *range_label_texture = SDL_CreateTextureFromSurface(renderer, range_label_surface);
-            SDL_Rect range_label_rect = {range_value_x + 10, range_value_y + 5, range_label_surface->w, range_label_surface->h};
+            int range_label_y_center = range_value_y + (BOX_HEIGHT - range_label_surface->h) / 2;
+            SDL_Rect range_label_rect = {X_VALUE + 10, range_label_y_center, range_label_surface->w, range_label_surface->h};
             SDL_RenderCopy(renderer, range_label_texture, NULL, &range_label_rect);
             SDL_FreeSurface(range_label_surface);
             SDL_DestroyTexture(range_label_texture);
@@ -348,19 +334,17 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             snprintf(range_text, sizeof(range_text), "%d", current_list[i].range);
             SDL_Surface *range_value_surface = TTF_RenderText_Solid(font, range_text, color);
             SDL_Texture *range_value_texture = SDL_CreateTextureFromSurface(renderer, range_value_surface);
-            SDL_Rect range_value_rect = {range_value_x + range_value_width - range_value_surface->w - 10, range_value_y + 5, range_value_surface->w, range_value_surface->h};
+            SDL_Rect range_value_rect = {X_VALUE + BOX_WIDTH - range_value_surface->w - 10, range_label_y_center, range_value_surface->w, range_value_surface->h};
             SDL_RenderCopy(renderer, range_value_texture, NULL, &range_value_rect);
             SDL_FreeSurface(range_value_surface);
             SDL_DestroyTexture(range_value_texture);
 
             // Render the accuracy
-            int accuracy_value_x = 500;  // Position of highlight box
             int accuracy_value_y = 300;
-            int accuracy_value_width = 200;  // Adjusted width for "Accuracy" text + value
 
             // Render a dim highlight box for the fire_rate stat
             SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green
-            SDL_Rect accuracy_box_rect = {accuracy_value_x, accuracy_value_y, accuracy_value_width, box_height};
+            SDL_Rect accuracy_box_rect = {X_VALUE, accuracy_value_y, BOX_WIDTH, BOX_HEIGHT};
             SDL_RenderFillRect(renderer, &accuracy_box_rect);
 
             // Reset render color back to black (prevents global color issues)
@@ -369,7 +353,8 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             // Render "accuracy" label on the left
             SDL_Surface *accuracy_label_surface = TTF_RenderText_Solid(font, "Accuracy", color);
             SDL_Texture *accuracy_label_texture = SDL_CreateTextureFromSurface(renderer, accuracy_label_surface);
-            SDL_Rect accuracy_label_rect = {accuracy_value_x + 10, accuracy_value_y + 5, accuracy_label_surface->w, accuracy_label_surface->h};
+            int accuracy_label_y_center = accuracy_value_y + (BOX_HEIGHT - accuracy_label_surface->h) / 2;
+            SDL_Rect accuracy_label_rect = {X_VALUE + 10, accuracy_label_y_center, accuracy_label_surface->w, accuracy_label_surface->h};
             SDL_RenderCopy(renderer, accuracy_label_texture, NULL, &accuracy_label_rect);
             SDL_FreeSurface(accuracy_label_surface);
             SDL_DestroyTexture(accuracy_label_texture);
@@ -379,45 +364,72 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
             snprintf(accuracy_text, sizeof(accuracy_text), "%d", current_list[i].accuracy);
             SDL_Surface *accuracy_value_surface = TTF_RenderText_Solid(font, accuracy_text, color);
             SDL_Texture *accuracy_value_texture = SDL_CreateTextureFromSurface(renderer, accuracy_value_surface);
-            SDL_Rect accuracy_value_rect = {accuracy_value_x + accuracy_value_width - accuracy_value_surface->w - 10, accuracy_value_y + 5, accuracy_value_surface->w, accuracy_value_surface->h};
+            int accuracy_value_y_center = accuracy_value_y + (BOX_HEIGHT - accuracy_label_surface->h) / 2;
+            SDL_Rect accuracy_value_rect = {X_VALUE + BOX_WIDTH - accuracy_value_surface->w - 10, accuracy_value_y_center, accuracy_value_surface->w, accuracy_value_surface->h};
             SDL_RenderCopy(renderer, accuracy_value_texture, NULL, &accuracy_value_rect);
             SDL_FreeSurface(accuracy_value_surface);
             SDL_DestroyTexture(accuracy_value_texture);
         }
-        if (state->current_inv_subtab == SUBTAB_JUNK) {
-            int component_x = 500;  // Position of highlight box
-            int component_y = 250;
-            int component_width = 200;  // Adjusted width for "Component" text + value
-            int box_height = 30;
 
-            // Render component value on the right
-            char component_text[20];
+        if (strcmp(current_list[i].ammo_type, "None") == 0) {
+            int speed_value_y = 330;
 
-            // Split the component string into separate lines
-            char *component_copy = strdup(current_list[i].component);  // Make a copy to modify
-            char *token = strtok(component_copy, ",");  // Split by comma
-            int component_y_offset = 0; // Offset to move each line down
+            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255);
+            SDL_Rect speed_box_rect = {X_VALUE, speed_value_y, BOX_WIDTH, BOX_HEIGHT};
+            SDL_RenderFillRect(renderer, &speed_box_rect);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-            while (token) {
-                while (*token == ' ') token++;  // Remove leading spaces
+            SDL_Surface *speed_label_surface = TTF_RenderText_Solid(font, "Speed", color);
+            SDL_Texture *speed_label_texture = SDL_CreateTextureFromSurface(renderer, speed_label_surface);
+            int speed_label_y_center = speed_value_y + (BOX_HEIGHT - speed_label_surface->h) / 2;
+            SDL_Rect speed_label_rect = {X_VALUE + 10, speed_label_y_center, speed_label_surface->w, speed_label_surface->h};
+            SDL_RenderCopy(renderer, speed_label_texture, NULL, &speed_label_rect);
+            SDL_FreeSurface(speed_label_surface);
+            SDL_DestroyTexture(speed_label_texture);
 
-                // Render the cleaned component
-                SDL_Surface *component_value_surface = TTF_RenderText_Solid(font, token, color);
-                SDL_Texture *component_value_texture = SDL_CreateTextureFromSurface(renderer, component_value_surface);
-
-                SDL_Rect component_value_rect = {component_x + 10, component_y + 5 + component_y_offset,
-                                                 component_value_surface->w, component_value_surface->h};
-
-                SDL_RenderCopy(renderer, component_value_texture, NULL, &component_value_rect);
-                SDL_FreeSurface(component_value_surface);
-                SDL_DestroyTexture(component_value_texture);
-
-                component_y_offset += 20;
-
-                token = strtok(NULL, ",");  // Next component
-            }
-
-            free(component_copy);
-
+            SDL_Surface *speed_value_surface = TTF_RenderText_Solid(font, current_list[i].speed, color);
+            SDL_Texture *speed_value_texture = SDL_CreateTextureFromSurface(renderer, speed_value_surface);
+            int speed_value_y_center = speed_value_y + (BOX_HEIGHT - speed_value_surface->h) / 2;
+            SDL_Rect speed_value_rect = {X_VALUE + BOX_WIDTH - speed_value_surface->w - 10, speed_value_y_center, speed_value_surface->w, speed_value_surface->h};
+            SDL_RenderCopy(renderer, speed_value_texture, NULL, &speed_value_rect);
+            SDL_FreeSurface(speed_value_surface);
+            SDL_DestroyTexture(speed_value_texture);
         }
+    }
+
+    if (state->current_inv_subtab == SUBTAB_JUNK) {
+        int component_x = 500;  // Position of highlight box
+        int component_y = 250;
+        int component_width = 200;  // Adjusted width for "Component" text + value
+
+        // Render component value on the right
+        char component_text[20];
+
+        // Split the component string into separate lines
+        char *component_copy = strdup(current_list[i].component);  // Make a copy to modify
+        char *token = strtok(component_copy, ",");  // Split by comma
+        int component_y_offset = 0; // Offset to move each line down
+
+        while (token) {
+            while (*token == ' ') token++;  // Remove leading spaces
+
+            // Render the cleaned component
+            SDL_Surface *component_value_surface = TTF_RenderText_Solid(font, token, color);
+            SDL_Texture *component_value_texture = SDL_CreateTextureFromSurface(renderer, component_value_surface);
+
+            SDL_Rect component_value_rect = {component_x + 10, component_y + 5 + component_y_offset,
+                                                component_value_surface->w, component_value_surface->h};
+
+            SDL_RenderCopy(renderer, component_value_texture, NULL, &component_value_rect);
+            SDL_FreeSurface(component_value_surface);
+            SDL_DestroyTexture(component_value_texture);
+
+            component_y_offset += 20;
+
+            token = strtok(NULL, ",");  // Next component
+        }
+
+        free(component_copy);
+
+    }
 }
