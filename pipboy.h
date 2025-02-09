@@ -51,10 +51,10 @@ typedef struct {
     int damage;      // Damage dealt (for weapons)
     int ammo;        // Amount of ammo (for weapons)
     char ammo_type[50]; // Ammo type used (for weapons)
-    char speed[20];
-    int fire_rate;
-    int range;
-    int accuracy;
+    char speed[20];     // Speed of melee weapon
+    int fire_rate;      // Fire rate (for weapons)
+    int range;          // Range (for weapons)
+    int accuracy;       // Accuracy (for weapons)
     int armor;       // Armor rating (for armor)
     int condition;   // Condition percentage (0-100)
     char icon_path[100]; // Path to item icon
