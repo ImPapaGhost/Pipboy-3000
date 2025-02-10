@@ -1,6 +1,9 @@
 Name,Quantity,Weight,Value
-10mm Round,100,0.1,18
-5.56mm Round,200,0.1,30
+10mm,100,0.1,18
+5.56mm,200,0.1,30
 Fusion Cell,50,0.2,25
 Plasma Cartridge,30,0.3,40
 Mini Nuke,1,12.0,300
+.308,45,0.1,10
+5mm,200,0.1,30
+Fusion Cell,50,0.2,35

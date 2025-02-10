@@ -4,6 +4,15 @@
 #include <string.h>
 #include "pipboy.h"
 
+int get_ammo_count(const char *ammo_type, PipState *state) {
+    for (int i = 0; i < state->ammo_count; i++) {
+        if (strcmp(state->ammo[i].name, ammo_type) == 0) {
+            return state->ammo[i].quantity;
+        }
+    }
+    return 0; // If ammo type not found, return 0
+}
+
 // Function to load inventory items from a file
 int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity) {
     FILE *file = fopen(file_path, "r");

@@ -8,6 +8,7 @@
 #include "pipboy.h"
 #include "state.h"
 #include "ui.h"
+#include "inventory.h"
 #define BOX_WIDTH 200
 #define BOX_HEIGHT 25
 #define X_VALUE 500
@@ -264,7 +265,9 @@ void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
 
             // Render ammo value on the right
             char ammo_text[20];
-            snprintf(ammo_text, sizeof(ammo_text), "%d", current_list[i].ammo);
+            // snprintf(ammo_text, sizeof(ammo_text), "%d", current_list[i].ammo);
+            int ammo_count = get_ammo_count(current_list[i].ammo_type, state);
+            snprintf(ammo_text, sizeof(ammo_text), "%d", ammo_count);
             SDL_Surface *ammo_value_surface = TTF_RenderText_Solid(font, ammo_text, color);
             SDL_Texture *ammo_value_texture = SDL_CreateTextureFromSurface(renderer, ammo_value_surface);
             int ammo_value_y_center = Y_POSITION(6) + (BOX_HEIGHT - ammo_value_surface->h) / 2;

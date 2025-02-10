@@ -1,6 +1,6 @@
 Name,Quantity,Weight,Damage,Ammo,AmmoType,Speed,FireRate,Range,Accuracy,Value
 10mm Pistol,1,3.0,18,0,10mm,0,46,119,60,100
 Hunting Rifle,1,5.0,25,20,.308,0,20,200,300,200
-Laser Musket,2,12.0,30,100,Laser Cart.,0,203,72,100,150
+Laser Musket,2,12.0,30,100,Fusion Cell,0,203,72,100,150
 Minigun,1,27.0,8,500,5mm,0,273,131,45,500
 SuperSledge,1,19.0,34,0,None,FAST,0,0,0,230

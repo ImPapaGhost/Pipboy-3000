@@ -4,7 +4,9 @@
 #include "pipboy.h"
 
 // Function Prototypes
-int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity);
+int get_ammo_count(const char *ammo_type, PipState *state);
+int get_ammo_count(const char *ammo_type, PipState *state);
 void reset_inventory_navigation(PipState *state);
+
 
 #endif
