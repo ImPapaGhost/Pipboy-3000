@@ -3,7 +3,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
-
+#include <math.h>
 
 void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
@@ -13,7 +13,7 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
 
     int base_x = 205; // Base x-coordinate for the centered subtab
-    int base_y = 65;  // Y-coordinate for subtabs
+    int base_y = 45;  // Y-coordinate for subtabs
 
     // Calculate animation progress
     Uint32 current_time = SDL_GetTicks();
@@ -47,8 +47,6 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     TTF_CloseFont(subtab_font);
 }
 
-
-
 void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID", "MISC", "JUNK", "MODS", "AMMO"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
@@ -56,8 +54,26 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
 
     TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
 
-    int base_x = 300; // Base x-coordinate for the centered subtab
-    int base_y = 65;  // Y-coordinate for subtabs
+    int base_y = 45;  // Y-coordinate for subtabs
+
+    // Calculate widths of each subtab
+    int subtab_widths[NUM_INV_SUBTABS];
+    int total_width = 0;
+
+    for (int i = 0; i < NUM_INV_SUBTABS; i++) {
+        TTF_SizeText(subtab_font, subtab_names[i], &subtab_widths[i], NULL);
+        total_width += subtab_widths[i] + 25; // Adding padding
+    }
+    total_width -= 25; // Remove extra padding at the end
+
+    // Calculate offset so that the **selected** subtab is centered
+    int center_x = (SCREEN_WIDTH / 2) - 100;
+    int selected_offset = 0;
+    for (int i = 0; i < state->current_inv_subtab; i++) {
+        selected_offset += subtab_widths[i] + 25;
+    }
+
+    int base_x = center_x - (selected_offset + (subtab_widths[state->current_inv_subtab] / 2));
 
     // Calculate animation progress
     Uint32 current_time = SDL_GetTicks();
@@ -70,26 +86,31 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
         }
     }
 
-    float offset = (-1.0f + progress) * state->inv_subtab_animation_offset; // Control direction of animation by linear interpolation
+    float offset = (-1.0f + progress) * state->inv_subtab_animation_offset; // Animation shift
 
     // Render each subtab
+    int current_x = base_x;
     for (int i = 0; i < NUM_INV_SUBTABS; i++) {
-        int x_position = base_x + (i - state->current_inv_subtab) * SUBTAB_SPACING + offset;
+        int x_position = current_x + offset;
 
         SDL_Color current_color = (i == state->current_inv_subtab) ? color_active : color_inactive;
 
         SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
 
-        SDL_Rect rect = {x_position - surface->w / 2, base_y, surface->w, surface->h};
+        SDL_Rect rect = {x_position, base_y, surface->w, surface->h};
         SDL_RenderCopy(renderer, texture, NULL, &rect);
 
         SDL_FreeSurface(surface);
         SDL_DestroyTexture(texture);
+
+        current_x += subtab_widths[i] + 25; // Move to the next subtab
     }
 
     TTF_CloseFont(subtab_font);
 }
+
+
 
 void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
     // Load the decorative texture for the background

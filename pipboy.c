@@ -10,11 +10,10 @@
 #include "ui.h"
 #include "inventory.h"
 #define BOX_WIDTH 200
-#define BOX_HEIGHT 25
+#define BOX_HEIGHT 20
 #define X_VALUE 500
 #define Y_VALUE 390
-#define Y_POSITION(index) (Y_VALUE - (30 * (index)))
-
+#define Y_POSITION(index) (Y_VALUE - (20 * (index)))
 
 int file_exists(const char *path) {
     struct stat buffer;
@@ -25,7 +24,6 @@ int file_exists(const char *path) {
 float ease_out_cubic(float t) {
     return 1 - pow(1 - t, 3);
 }
-
 
 void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color = {0, 255, 0, 255};         // Normal bright green

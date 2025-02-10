@@ -170,21 +170,22 @@ void render_tabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     // Load a larger font specifically for tabs
     TTF_Font *tab_font = TTF_OpenFont("monofonto.ttf", 28); // Larger font size for tabs
 
-
     // Calculate starting x-coordinate for centering
-    int total_tab_width = 0;
-    int tab_text_widths[NUM_TABS]; // Array to store text widths
-
+    // Calculate text widths for each tab
+    int tab_text_widths[NUM_TABS];
     for (int i = 0; i < NUM_TABS; i++) {
-        // Calculate the width of each tab's text
-        int w;
-        TTF_SizeText(tab_font, tab_names[i], &w, NULL);
-        tab_text_widths[i] = w;
-        total_tab_width += w + tab_spacing;
+        TTF_SizeText(tab_font, tab_names[i], &tab_text_widths[i], NULL);
     }
-    total_tab_width -= tab_spacing; // Remove extra spacing after the last tab
+
+    // Calculate total width needed to align tabs by last letter
+    int total_tab_width = 0;
+    for (int i = 0; i < NUM_TABS; i++) {
+        total_tab_width += tab_text_widths[i] + tab_spacing;
+    }
+    total_tab_width -= tab_spacing; // Remove last extra spacing
+
     int tab_x = (SCREEN_WIDTH - total_tab_width) / 2; // Center-align tabs
-    int tab_y = 25; // Starting y-coordinate
+    int tab_y = 5; // Y position of the tabs
 
     // Render the CATEGORYLINE graphic (background line for all tabs)
     if (categoryline_texture) {
