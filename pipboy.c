@@ -13,7 +13,7 @@
 #define BOX_HEIGHT 20
 #define X_VALUE 500
 #define Y_VALUE 390
-#define Y_POSITION(index) (Y_VALUE - (20 * (index)))
+#define Y_POSITION(index) (Y_VALUE - (25 * (index)))
 
 int file_exists(const char *path) {
     struct stat buffer;

@@ -75,6 +75,98 @@ void initialize_pip_state(PipState *state) {
             state->special_animations[i][j] = NULL;
         }
     }
+
+    state->current_data_subtab = SUBTAB_QUESTS;
+    state->current_quest = 0;
+
+    // Allocate initial space for quests
+    state->quest_capacity = 5; // Start with room for 5 quests
+    state->quest_count = 0;
+    state->quests = malloc(state->quest_capacity * sizeof(Quest));
+
+    // Add initial quests
+    if (state->quests) {
+        strcpy(state->quests[state->quest_count].name, "Welcome to the Wasteland");
+        strcpy(state->quests[state->quest_count].description, "Survive your first day in the wasteland.");
+        state->quests[state->quest_count].is_active = true;
+        state->quest_count++;
+
+        strcpy(state->quests[state->quest_count].name, "Find Shelter");
+        strcpy(state->quests[state->quest_count].description, "Locate a safe place to stay for the night.");
+        state->quests[state->quest_count].is_active = true;
+        state->quest_count++;
+
+        strcpy(state->quests[state->quest_count].name, "Gather Supplies");
+        strcpy(state->quests[state->quest_count].description, "Find food, water, and medical supplies.");
+        state->quests[state->quest_count].is_active = false;
+        state->quest_count++;
+    }
+
+    state->current_workshop = 0; // Start at the first workshop
+
+    // Allocate initial space for workshops
+    state->workshop_capacity = 5; // Start with room for 5 workshops
+    state->workshop_count = 0;
+    state->workshops = malloc(state->workshop_capacity * sizeof(Workshop));
+
+    // Add initial workshops
+    if (state->workshops) {
+        strcpy(state->workshops[state->workshop_count].name, "Sanctuary Hills");
+        state->workshops[state->workshop_count].population = 10;
+        state->workshops[state->workshop_count].food = 20;
+        state->workshops[state->workshop_count].water = 15;
+        state->workshops[state->workshop_count].power = 5;
+        state->workshops[state->workshop_count].defense = 25;
+        state->workshops[state->workshop_count].beds = 12;
+        state->workshops[state->workshop_count].happiness = 80;
+        state->workshop_count++;
+
+        strcpy(state->workshops[state->workshop_count].name, "Red Rocket Truck Stop");
+        state->workshops[state->workshop_count].population = 5;
+        state->workshops[state->workshop_count].food = 10;
+        state->workshops[state->workshop_count].water = 8;
+        state->workshops[state->workshop_count].power = 3;
+        state->workshops[state->workshop_count].defense = 15;
+        state->workshops[state->workshop_count].beds = 6;
+        state->workshops[state->workshop_count].happiness = 60;
+        state->workshop_count++;
+    }
+
+    state->current_data_subtab = SUBTAB_STATS;
+    state->current_stat = 0; // Start at the first stat
+
+    // Allocate initial space for stats
+    state->stats_capacity = 10; // Room for 10 stats initially
+    state->stats_count = 0;
+    state->stats = malloc(state->stats_capacity * sizeof(PlayerStat));
+
+    // Add initial stats
+    if (state->stats) {
+        strcpy(state->stats[state->stats_count].name, "Level");
+        strcpy(state->stats[state->stats_count].description, "Your current experience level.");
+        state->stats[state->stats_count].value = state->level;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Experience Points");
+        strcpy(state->stats[state->stats_count].description, "Total XP earned.");
+        state->stats[state->stats_count].value = state->current_xp;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Locations Discovered");
+        strcpy(state->stats[state->stats_count].description, "The number of locations you have visited.");
+        state->stats[state->stats_count].value = 5; // Example value
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Quests Completed");
+        strcpy(state->stats[state->stats_count].description, "The number of quests you have completed.");
+        state->stats[state->stats_count].value = 2; // Example value
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Enemies Killed");
+        strcpy(state->stats[state->stats_count].description, "The number of enemies you have defeated.");
+        state->stats[state->stats_count].value = 12; // Example value
+        state->stats_count++;
+    }
 }
 
 void add_experience(PipState *state, int xp) {

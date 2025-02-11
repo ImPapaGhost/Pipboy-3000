@@ -61,11 +61,6 @@ typedef struct {
     char component[50];
 } invItem;
 
-/* typedef struct {
-    char name[50];   // Ammo name (e.g., "10mm Round")
-    int quantity;    // Ammo count from ammo.csv
-} AmmoEntry; */
-
 typedef struct {
     int head;
     int left_arm;
@@ -76,6 +71,37 @@ typedef struct {
 } DamageBars;
 
 extern DamageBars damage_bars;
+
+// DATA Subtabs
+typedef enum {
+    SUBTAB_QUESTS,
+    SUBTAB_WORKSHOPS,
+    SUBTAB_STATS,
+    NUM_DATA_SUBTABS
+} DataSubTab;
+
+typedef struct {
+    char name[50];           // Quest title
+    char description[256];   // Quest description
+    bool is_active;          // Whether the quest is active
+} Quest;
+
+typedef struct {
+    char name[50];        // Workshop name
+    int population;       // Number of settlers
+    int food;             // Food production
+    int water;            // Water production
+    int power;            // Power available
+    int defense;          // Defense rating
+    int beds;             // Number of beds
+    int happiness;        // Happiness level (0-100)
+} Workshop;
+
+typedef struct {
+    char name[50];  // Name of the stat
+    char description[256]; // Description of what the stat does
+    int value;       // Numeric value of the stat
+} PlayerStat;
 
 // Pip-Boy State
 typedef struct {
@@ -124,11 +150,27 @@ typedef struct {
     int ammo_capacity;
     invItem *ammo;
     // AmmoEntry ammo_type[50]; // Lookup table for ammo (max 50 types)
-    int inv_scroll_index; // Scroll index for navigation
-    InvSubTab current_inv_subtab;       // Current inv subtab
-    int inv_subtab_animation_offset;   // Animation offset for subtabs
-    bool is_inv_animating;             // Animation flag
+    int inv_scroll_index;                   // Scroll index for navigation
+    InvSubTab current_inv_subtab;           // Current inv subtab
+    int inv_subtab_animation_offset;        // Animation offset for subtabs
+    bool is_inv_animating;                  // Animation flag
     Uint32 inv_subtab_animation_start_time; // Animation start time
+    DataSubTab current_data_subtab;         // Current DATA subtab
+    bool is_data_animating;                 // Animation flag
+    int data_subtab_animation_offset;
+    Uint32 data_subtab_animation_start_time;
+    int current_quest;           // Selected quest index
+    Quest *quests;               // Pointer to dynamically allocated quests
+    int quest_count;             // Number of active quests
+    int quest_capacity;          // Current capacity of the quest list
+    Workshop *workshops;  // Dynamic array of workshops
+    int workshop_count;   // Number of workshops
+    int current_workshop; // Currently selected workshop
+    int workshop_capacity; // Dynamic allocation capacity
+    PlayerStat *stats;   // Dynamic array of player stats
+    int stats_count;     // Number of available stats
+    int current_stat;    // Currently selected stat
+    int stats_capacity;  // Memory capacity for stats
 } PipState;
 
 extern PipState pip_state; // Declare the game state

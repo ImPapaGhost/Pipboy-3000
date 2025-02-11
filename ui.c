@@ -67,7 +67,7 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
     total_width -= 25; // Remove extra padding at the end
 
     // Calculate offset so that the **selected** subtab is centered
-    int center_x = (SCREEN_WIDTH / 2) - 100;
+    int center_x = 300;
     int selected_offset = 0;
     for (int i = 0; i < state->current_inv_subtab; i++) {
         selected_offset += subtab_widths[i] + 25;
@@ -110,68 +110,204 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
     TTF_CloseFont(subtab_font);
 }
 
+void render_data_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+    const char *subtab_names[] = {"QUESTS", "WORKSHOPS", "STATS"};
+    SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
+    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
+    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
+    // Calculate widths of each subtab
+    int subtab_widths[NUM_DATA_SUBTABS];
+    int total_width = 0;
+    for (int i = 0; i < NUM_DATA_SUBTABS; i++) {
+        TTF_SizeText(subtab_font, subtab_names[i], &subtab_widths[i], NULL);
+        total_width += subtab_widths[i] + 25; // Adding padding
+    }
+    total_width -= 25; // Remove extra padding at the end
+    // Calculate offset so that the **selected** subtab is centered
+    int center_x = 395;
+    int selected_offset = 0;
+    for (int i = 0; i < state->current_data_subtab; i++) {
+        selected_offset += subtab_widths[i] + 25;
+    }
+
+    int base_x = center_x - (selected_offset + (subtab_widths[state->current_data_subtab] / 2));
+
+    int base_y = 45;
+
+    // Calculate animation progress
+    Uint32 current_time = SDL_GetTicks();
+    float progress = 1.0f; // Default to fully completed animation
+    if (state->is_data_animating) {
+        progress = (float)(current_time - state->data_subtab_animation_start_time) / 300; // 300ms animation duration
+        if (progress >= 1.0f) {
+            progress = 1.0f;
+            state->is_data_animating = false; // End animation
+        }
+    }
+
+    float offset = (-1.0f + progress) * state->data_subtab_animation_offset;
+
+    // Render each subtab
+    int current_x = base_x;
+    for (int i = 0; i < NUM_DATA_SUBTABS; i++) {
+        int x_position = current_x + offset;
+
+        SDL_Color current_color = (i == state->current_data_subtab) ? color_active : color_inactive;
+
+        SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+        SDL_Rect rect = {x_position, base_y, surface->w, surface->h};
+        SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+
+        current_x += subtab_widths[i] + 25; // Move to the next subtab
+    }
+
+    TTF_CloseFont(subtab_font);
+}
+
+void render_quests(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+    SDL_Color color_active = {0, 255, 0, 255}; // Bright green for selected quest
+    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for unselected
+
+    int x = 100, y = 120, spacing = 30;
+
+    for (int i = 0; i < state->quest_count; i++) {
+        SDL_Color current_color = (state->current_quest == i) ? color_active : color_inactive;
+
+        SDL_Surface *surface = TTF_RenderText_Solid(font, state->quests[i].name, current_color);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_Rect rect = {x, y + (i * spacing), surface->w, surface->h};
+        SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+    }
+
+    // Render Quest Description on the Right
+    SDL_Color desc_color = {0, 255, 0, 255};
+    SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, state->quests[state->current_quest].description, desc_color, 300);
+    SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
+    SDL_Rect desc_rect = {400, 120, desc_surface->w, desc_surface->h};
+    SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
+
+    SDL_FreeSurface(desc_surface);
+    SDL_DestroyTexture(desc_texture);
+}
+
+void render_workshops(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+    SDL_Color color_active = {0, 255, 0, 255}; // Bright green for selected workshop
+    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for unselected
+
+    int x = 100, y = 120, spacing = 30;
+
+    // Render Workshop List
+    for (int i = 0; i < state->workshop_count; i++) {
+        SDL_Color current_color = (state->current_workshop == i) ? color_active : color_inactive;
+
+        SDL_Surface *surface = TTF_RenderText_Solid(font, state->workshops[i].name, current_color);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_Rect rect = {x, y + (i * spacing), surface->w, surface->h};
+        SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+    }
+
+    // Render Workshop Details on the Right
+    Workshop *selected = &state->workshops[state->current_workshop];
+
+    char details[256];
+    snprintf(details, sizeof(details), 
+             "Population: %d\nFood: %d\nWater: %d\nPower: %d\nDefense: %d\nBeds: %d\nHappiness: %d%%",
+             selected->population, selected->food, selected->water, 
+             selected->power, selected->defense, selected->beds, 
+             selected->happiness);
+
+    SDL_Color desc_color = {0, 255, 0, 255};
+    SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, details, desc_color, 300);
+    SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
+    SDL_Rect desc_rect = {400, 120, desc_surface->w, desc_surface->h};
+    SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
+
+    SDL_FreeSurface(desc_surface);
+    SDL_DestroyTexture(desc_texture);
+}
 
 
-void render_level_xp_background(SDL_Renderer *renderer, PipState *state) {
-    // Load the decorative texture for the background
+void render_stats(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+    SDL_Color color_active = {0, 255, 0, 255}; // Bright green for selected stat
+    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for unselected
+
+    int x = 100, y = 120, spacing = 30;
+
+    // Render Stats List
+    for (int i = 0; i < state->stats_count; i++) {
+        SDL_Color current_color = (state->current_stat == i) ? color_active : color_inactive;
+
+        char stat_display[100];
+        snprintf(stat_display, sizeof(stat_display), "%s: %d", state->stats[i].name, state->stats[i].value);
+
+        SDL_Surface *surface = TTF_RenderText_Solid(font, stat_display, current_color);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_Rect rect = {x, y + (i * spacing), surface->w, surface->h};
+        SDL_RenderCopy(renderer, texture, NULL, &rect);
+
+        SDL_FreeSurface(surface);
+        SDL_DestroyTexture(texture);
+    }
+
+    // Render Stat Description on the Right
+    PlayerStat *selected = &state->stats[state->current_stat];
+
+    SDL_Color desc_color = {0, 255, 0, 255};
+    SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, selected->description, desc_color, 300);
+    SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
+    SDL_Rect desc_rect = {400, 120, desc_surface->w, desc_surface->h};
+    SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
+
+    SDL_FreeSurface(desc_surface);
+    SDL_DestroyTexture(desc_texture);
+}
+
+void render_data_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+    render_data_subtabs(renderer, font, state);
+
+    switch (state->current_data_subtab) {
+        case SUBTAB_QUESTS:
+            render_quests(renderer, font, &pip_state);
+            break;
+        case SUBTAB_WORKSHOPS:
+            render_workshops(renderer, font, state);
+            break;
+        case SUBTAB_STATS:
+            render_stats(renderer, font, state);
+            break;
+    }
+}
+
+void render_mid_background(SDL_Renderer *renderer, PipState *state) {
     SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
+    if (!background) return;
 
-    // Define the position and size of the decorative box
-    int bg_width = 300;  // Width of the decorative box
-    int bg_height = 30;  // Height of the decorative box
-    int bg_x = (SCREEN_WIDTH / 2) - (bg_width / 2); // Center horizontally
-    int bg_y = 430;       // Position above AP box but below HP text
-    SDL_Rect background_rect = {bg_x, bg_y, bg_width, bg_height};
+    // Default XP bar settings (STAT tab)
+    int bg_width = 300;
+    int bg_x = (SCREEN_WIDTH / 2) - (bg_width / 2);
 
-    // Tint the decorative box green
+    // Adjust width and position in DATA tab
+    if (state->current_tab == TAB_DATA) {
+        bg_width = 100;  // Adjusted width
+        bg_x = (SCREEN_WIDTH / 2) - (bg_width / 2) - 100;  // Move slightly left
+    }
+
+    SDL_Rect background_rect = {bg_x, 430, bg_width, 30};
+
     SDL_SetTextureColorMod(background, 0, 255, 0);
-
-    // Render the decorative box
     SDL_RenderCopy(renderer, background, NULL, &background_rect);
-    SDL_DestroyTexture(background); // Free the texture after rendering
-
-    // Define XP bar dimensions (inside the decorative box)
-    int bar_width = bg_width - 100; // Add padding inside the box
-    int bar_height = 10;           // Height of the XP bar
-    int bar_x = bg_x + 90;         // Padding inside the box
-    int bar_y = bg_y + 10;         // Center vertically inside the box
-
-    // Calculate XP progress
-    float xp_progress = (float)(state->current_xp) / state->xp_for_next_level;
-    if (xp_progress > 1.0f) xp_progress = 1.0f;
-
-    // Draw XP bar background (dark green)
-    SDL_SetRenderDrawColor(renderer, 0, 50, 0, 255);
-    SDL_Rect bar_background_rect = {bar_x, bar_y, bar_width, bar_height};
-    SDL_RenderFillRect(renderer, &bar_background_rect);
-
-    // Draw XP bar fill (bright green)
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_Rect bar_fill_rect = {bar_x, bar_y, (int)(bar_width * xp_progress), bar_height};
-    SDL_RenderFillRect(renderer, &bar_fill_rect);
-
-    // Draw XP bar border
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-    SDL_RenderDrawRect(renderer, &bar_background_rect);
-
-    // Render LEVEL and XP text around the bar
-    TTF_Font *font = TTF_OpenFont("monofonto.ttf", 20);
-    SDL_Color color = {0, 255, 0, 255}; // Bright green text
-
-    // Render LEVEL text
-    char level_text[20];
-    snprintf(level_text, sizeof(level_text), "LEVEL %d", state->level);
-    SDL_Surface *level_surface = TTF_RenderText_Solid(font, level_text, color);
-    SDL_Texture *level_texture = SDL_CreateTextureFromSurface(renderer, level_surface);
-    SDL_Rect level_rect = {bg_x + 5, bg_y + 3, level_surface->w, level_surface->h}; // Positioned clearly above the XP bar
-    SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
-    SDL_FreeSurface(level_surface);
-    SDL_DestroyTexture(level_texture);
-
-    TTF_CloseFont(font);
-
-    // Reset render color to default
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_DestroyTexture(background);
 }
 
 void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int height, int health) {

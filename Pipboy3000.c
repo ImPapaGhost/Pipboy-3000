@@ -331,6 +331,8 @@ void render_stat_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
     TTF_CloseFont(ap_font); // Clean up the AP font
+
+
 }
 
 void render_status_content(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
@@ -470,18 +472,6 @@ void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *stat
     }
 }
 
-
-void render_data_tab(SDL_Renderer *renderer, TTF_Font *font) {
-    SDL_Color color = {0, 255, 0, 255};
-    const char *placeholder = "Data Tab Placeholder";
-    SDL_Surface *surface = TTF_RenderText_Solid(font, placeholder, color);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect rect = {75, 140, surface->w, surface->h};
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
-}
-
 void render_map_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
     const char *placeholder = "Map Tab Placeholder";
@@ -513,7 +503,7 @@ void render_current_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
             render_inv(renderer, font, state);
             break;
         case TAB_DATA:
-            render_data_tab(renderer, font);
+            render_data_tab(renderer, font, state);
             break;
         case TAB_MAP:
             render_map_tab(renderer, font);
@@ -613,10 +603,11 @@ int main(int argc, char *argv[]) {
         // Render
         SDL_RenderClear(renderer);
         render_health_background(renderer); // Render HP bar
-        render_ap_bar(renderer);           // Render AP bar
-        render_level_xp_background(renderer, &pip_state); // Render XP bar
+        render_ap_bar(renderer, &pip_state);           // Render AP bar
+        render_mid_background(renderer, &pip_state); // Render XP bar
         render_tabs(renderer, font, &pip_state); // Render the tabs with the selector line
         render_current_tab(renderer, font, &pip_state); // Render active tab content
+        render_date_time(renderer, font, &pip_state);
 
         if (pip_state.current_tab == TAB_STAT && pip_state.current_subtab == SUBTAB_SPECIAL) {
             render_special_animation(renderer, &pip_state); // Render SPECIAL animations if applicable
@@ -653,6 +644,18 @@ int main(int argc, char *argv[]) {
 
     if (pip_state.ammo) {
         free(pip_state.ammo);
+    }
+
+    if (pip_state.quests) {
+        free(pip_state.quests);
+    }
+
+    if (pip_state.workshops) {
+        free(pip_state.workshops);
+    }
+
+    if (pip_state.stats) {
+        free(pip_state.stats);
     }
 
     free_vaultboy_frames();

@@ -20,11 +20,18 @@ void handle_navigation(PipState *state) {
                 state->current_tab = (state->current_tab - 1 + NUM_TABS) % NUM_TABS;
                 state->selector_position = 0; // Reset selection position
                 state->inv_scroll_index = 0;  // Reset scroll index
+                // Reset DATA subtabs to Quests when switching to DATA
+                if (state->current_tab == TAB_DATA) {
+                    state->current_data_subtab = SUBTAB_QUESTS;
+                }
                 break;
             case SDLK_e:
                 state->current_tab = (state->current_tab + 1) % NUM_TABS;
                 state->selector_position = 0; // Reset selection position
                 state->inv_scroll_index = 0;  // Reset scroll index
+                if (state->current_tab == TAB_DATA) {
+                    state->current_data_subtab = SUBTAB_QUESTS;
+                }
                 break;
 
             // Sub-tabs Navigation
@@ -44,6 +51,11 @@ void handle_navigation(PipState *state) {
 
                     // Reset inventory navigation when changing subtabs
                     reset_inventory_navigation(state);
+                } else if (state->current_tab == TAB_DATA && !state->is_data_animating) {
+                    state->data_subtab_animation_offset = SUBTAB_SPACING;
+                    state->is_data_animating = true;
+                    state->data_subtab_animation_start_time = SDL_GetTicks();
+                    state->current_data_subtab = (state->current_data_subtab - 1 + NUM_DATA_SUBTABS) % NUM_DATA_SUBTABS;
                 }
                 break;
 
@@ -63,6 +75,11 @@ void handle_navigation(PipState *state) {
 
                     // Reset inventory navigation when changing subtabs
                     reset_inventory_navigation(state);
+                } else if (state->current_tab == TAB_DATA && !state->is_data_animating) {
+                    state->data_subtab_animation_offset = -SUBTAB_SPACING;
+                    state->is_data_animating = true;
+                    state->data_subtab_animation_start_time = SDL_GetTicks();
+                    state->current_data_subtab = (state->current_data_subtab + 1) % NUM_DATA_SUBTABS;
                 }
                 break;
 
@@ -80,6 +97,20 @@ void handle_navigation(PipState *state) {
                         if (state->selector_position < state->inv_scroll_index) {
                             state->inv_scroll_index--;
                         }
+                    }
+                } else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_QUESTS) {
+                    if (state->current_quest > 0) {
+                        state->current_quest--;
+                    }
+                }
+                else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_WORKSHOPS) {
+                    if (state->current_workshop > 0) {
+                        state->current_workshop--;
+                    }
+                }
+                else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_STATS) {
+                    if (state->current_stat > 0) {
+                        state->current_stat--;
                     }
                 }
                 break;
@@ -130,7 +161,20 @@ void handle_navigation(PipState *state) {
                             state->inv_scroll_index++;
                         }
                     }
+                } else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_QUESTS) {
+                    if (state->current_quest < state->quest_count - 1) {
+                        state->current_quest++;
+                    }
+                } else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_WORKSHOPS) {
+                    if (state->current_workshop < state->workshop_count - 1) {
+                        state->current_workshop++;
+                    }
                 }
+                else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_STATS) {
+                    if (state->current_stat < state->stats_count - 1) {
+                        state->current_stat++;
+                    }
+                }                
                 break;
 
             // Simulate gaining XP (testing)
