@@ -108,10 +108,8 @@ void handle_navigation(PipState *state) {
                         state->current_workshop--;
                     }
                 }
-                else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_STATS) {
-                    if (state->current_stat > 0) {
-                        state->current_stat--;
-                    }
+                else if (state->current_stat_category > 0) {
+                    state->current_stat_category--;
                 }
                 break;
 
@@ -170,11 +168,9 @@ void handle_navigation(PipState *state) {
                         state->current_workshop++;
                     }
                 }
-                else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_STATS) {
-                    if (state->current_stat < state->stats_count - 1) {
-                        state->current_stat++;
-                    }
-                }                
+                else if (state->current_stat_category < NUM_STAT_CATEGORIES - 1) {
+                    state->current_stat_category++;
+                }
                 break;
 
             // Simulate gaining XP (testing)

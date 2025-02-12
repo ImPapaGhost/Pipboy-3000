@@ -133,38 +133,222 @@ void initialize_pip_state(PipState *state) {
     }
 
     state->current_data_subtab = SUBTAB_STATS;
-    state->current_stat = 0; // Start at the first stat
+    state->current_stat_category = 0; // Start with the first category (General)
 
     // Allocate initial space for stats
-    state->stats_capacity = 10; // Room for 10 stats initially
+    state->stats_capacity = 50; // Increased capacity for stats
     state->stats_count = 0;
     state->stats = malloc(state->stats_capacity * sizeof(PlayerStat));
-
     // Add initial stats
     if (state->stats) {
-        strcpy(state->stats[state->stats_count].name, "Level");
-        strcpy(state->stats[state->stats_count].description, "Your current experience level.");
-        state->stats[state->stats_count].value = state->level;
-        state->stats_count++;
-
-        strcpy(state->stats[state->stats_count].name, "Experience Points");
-        strcpy(state->stats[state->stats_count].description, "Total XP earned.");
-        state->stats[state->stats_count].value = state->current_xp;
-        state->stats_count++;
-
+        // GENERAL STATS
         strcpy(state->stats[state->stats_count].name, "Locations Discovered");
-        strcpy(state->stats[state->stats_count].description, "The number of locations you have visited.");
-        state->stats[state->stats_count].value = 5; // Example value
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
         state->stats_count++;
 
+        strcpy(state->stats[state->stats_count].name, "Locations Cleared");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Days Passed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Hours Slept");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Hours Waiting");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Caps Found");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Most Caps Carried");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Junk Collected");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Chests Looted");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Magazines Found");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_GENERAL;
+        state->stats_count++;
+
+        // QUEST STATS
         strcpy(state->stats[state->stats_count].name, "Quests Completed");
-        strcpy(state->stats[state->stats_count].description, "The number of quests you have completed.");
-        state->stats[state->stats_count].value = 2; // Example value
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_QUEST;
         state->stats_count++;
 
-        strcpy(state->stats[state->stats_count].name, "Enemies Killed");
-        strcpy(state->stats[state->stats_count].description, "The number of enemies you have defeated.");
-        state->stats[state->stats_count].value = 12; // Example value
+        strcpy(state->stats[state->stats_count].name, "Misc Objectives Completed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_QUEST;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Main Quests Completed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_QUEST;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Side Quests Completed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_QUEST;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Minutemen Quests Completed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_QUEST;
+        state->stats_count++;
+
+        // COMBAT STATS
+        strcpy(state->stats[state->stats_count].name, "People Killed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Animals Killed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Creatures Killed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Robots Killed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Synths Killed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Turrets Killed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Legendary Enemies Killed");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Critical Strikes");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Sneak Attacks");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Backstabs");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_COMBAT;
+        state->stats_count++;
+
+        // CRAFTING STATS
+        strcpy(state->stats[state->stats_count].name, "Weapon Mods Crafted");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Armor Mods Crafted");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Plants Harvested");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Chems Crafted");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Food Cooked");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Workshop Unlocked");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Items Scrapped");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Objects Built");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Supply Lines Created");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRAFTING;
+        state->stats_count++;
+
+        // CRIME STATS
+        strcpy(state->stats[state->stats_count].name, "Locks Picked");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Computers Hacked");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Pockets Picked");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Items Stolen");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Assaults");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Murders");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
+        state->stats_count++;
+
+        strcpy(state->stats[state->stats_count].name, "Trespasses");
+        state->stats[state->stats_count].value = 0;
+        state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
         state->stats_count++;
     }
 }

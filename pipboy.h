@@ -97,10 +97,20 @@ typedef struct {
     int happiness;        // Happiness level (0-100)
 } Workshop;
 
+typedef enum {
+    STAT_CATEGORY_GENERAL,
+    STAT_CATEGORY_QUEST,
+    STAT_CATEGORY_COMBAT,
+    STAT_CATEGORY_CRAFTING,
+    STAT_CATEGORY_CRIME,
+    NUM_STAT_CATEGORIES
+} StatCategory;
+
 typedef struct {
-    char name[50];  // Name of the stat
-    char description[256]; // Description of what the stat does
-    int value;       // Numeric value of the stat
+    char name[50];
+    char description[256];
+    int value;
+    StatCategory category;
 } PlayerStat;
 
 // Pip-Boy State
@@ -167,10 +177,10 @@ typedef struct {
     int workshop_count;   // Number of workshops
     int current_workshop; // Currently selected workshop
     int workshop_capacity; // Dynamic allocation capacity
-    PlayerStat *stats;   // Dynamic array of player stats
-    int stats_count;     // Number of available stats
-    int current_stat;    // Currently selected stat
-    int stats_capacity;  // Memory capacity for stats
+    int current_stat_category; // Index of the selected category (0 = General, 1 = Quest, etc.)
+    PlayerStat *stats;
+    int stats_count;
+    int stats_capacity;
 } PipState;
 
 extern PipState pip_state; // Declare the game state

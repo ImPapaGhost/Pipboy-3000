@@ -66,7 +66,7 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
     }
     total_width -= 25; // Remove extra padding at the end
 
-    // Calculate offset so that the **selected** subtab is centered
+    // Calculate offset so that the selected subtab is centered
     int center_x = 300;
     int selected_offset = 0;
     for (int i = 0; i < state->current_inv_subtab; i++) {
@@ -123,7 +123,7 @@ void render_data_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
         total_width += subtab_widths[i] + 25; // Adding padding
     }
     total_width -= 25; // Remove extra padding at the end
-    // Calculate offset so that the **selected** subtab is centered
+    // Calculate offset so that the selected subtab is centered
     int center_x = 395;
     int selected_offset = 0;
     for (int i = 0; i < state->current_data_subtab; i++) {
@@ -237,40 +237,95 @@ void render_workshops(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_DestroyTexture(desc_texture);
 }
 
-
 void render_stats(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    SDL_Color color_active = {0, 255, 0, 255}; // Bright green for selected stat
-    SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for unselected
+    SDL_Color color = {0, 255, 0, 255};         // Normal bright green text
+    SDL_Color dimmed_color = {0, 80, 0, 255};  // Dimmed green for highlighted text
+    int x_left = 100, x_right = 400, y_start = 120, spacing = 28; // Adjusted spacing
+    int highlight_padding = 10;
+    int highlight_box_height = 24; // Reduce height for perfect alignment
 
-    int x = 100, y = 120, spacing = 30;
+    // Category Titles (Left Side)
+    const char *category_names[NUM_STAT_CATEGORIES] = {
+        "General", "Quest", "Combat", "Crafting", "Crime"
+    };
 
-    // Render Stats List
-    for (int i = 0; i < state->stats_count; i++) {
-        SDL_Color current_color = (state->current_stat == i) ? color_active : color_inactive;
+    // Render Category List on the Left
+    for (int cat = 0; cat < NUM_STAT_CATEGORIES; cat++) {
+        SDL_Color text_color = (state->current_stat_category == cat) ? dimmed_color : color;
 
-        char stat_display[100];
-        snprintf(stat_display, sizeof(stat_display), "%s: %d", state->stats[i].name, state->stats[i].value);
+        // Calculate text width and height
+        int text_width, text_height;
+        TTF_SizeText(font, category_names[cat], &text_width, &text_height);
 
-        SDL_Surface *surface = TTF_RenderText_Solid(font, stat_display, current_color);
-        SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_Rect rect = {x, y + (i * spacing), surface->w, surface->h};
-        SDL_RenderCopy(renderer, texture, NULL, &rect);
+        int box_y = y_start + (cat * spacing) - 3;
 
-        SDL_FreeSurface(surface);
-        SDL_DestroyTexture(texture);
+        // Render a highlight box for the selected category
+        if (state->current_stat_category == cat) {
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // Bright green highlight
+            SDL_Rect highlight_rect = {x_left - highlight_padding, box_y,
+                                       text_width + (highlight_padding * 2), highlight_box_height};
+            SDL_RenderFillRect(renderer, &highlight_rect);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Reset color
+        }
+
+        // Render category text, vertically centered
+        SDL_Surface *category_surface = TTF_RenderText_Solid(font, category_names[cat], text_color);
+        SDL_Texture *category_texture = SDL_CreateTextureFromSurface(renderer, category_surface);
+        SDL_Rect category_rect = {
+            x_left,
+            box_y + ((highlight_box_height - text_height) / 2), // Perfect centering
+            category_surface->w, category_surface->h
+        };
+        SDL_RenderCopy(renderer, category_texture, NULL, &category_rect);
+        SDL_FreeSurface(category_surface);
+        SDL_DestroyTexture(category_texture);
     }
 
-    // Render Stat Description on the Right
-    PlayerStat *selected = &state->stats[state->current_stat];
+    // Render Stats for the Selected Category on the Right
+    int stat_y = y_start;
+    for (int i = 0; i < state->stats_count; i++) {
+        if (state->stats[i].category == state->current_stat_category) {
+            // Measure text height for centering
+            int stat_text_width, stat_text_height;
+            TTF_SizeText(font, state->stats[i].name, &stat_text_width, &stat_text_height);
 
-    SDL_Color desc_color = {0, 255, 0, 255};
-    SDL_Surface *desc_surface = TTF_RenderText_Blended_Wrapped(font, selected->description, desc_color, 300);
-    SDL_Texture *desc_texture = SDL_CreateTextureFromSurface(renderer, desc_surface);
-    SDL_Rect desc_rect = {400, 120, desc_surface->w, desc_surface->h};
-    SDL_RenderCopy(renderer, desc_texture, NULL, &desc_rect);
+            int box_y = stat_y - 3;
 
-    SDL_FreeSurface(desc_surface);
-    SDL_DestroyTexture(desc_texture);
+            // Render highlight box for stats
+            SDL_SetRenderDrawColor(renderer, 0, 80, 0, 255); // Dimmed green for highlight box
+            SDL_Rect highlight_box = {x_right - highlight_padding, box_y, 300, highlight_box_height};
+            SDL_RenderFillRect(renderer, &highlight_box);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Reset color
+
+            // Render stat name, vertically centered
+            SDL_Surface *stat_surface = TTF_RenderText_Solid(font, state->stats[i].name, color);
+            SDL_Texture *stat_texture = SDL_CreateTextureFromSurface(renderer, stat_surface);
+            SDL_Rect stat_rect = {
+                x_right,
+                box_y + ((highlight_box_height - stat_text_height) / 2), // Perfect centering
+                stat_surface->w, stat_surface->h
+            };
+            SDL_RenderCopy(renderer, stat_texture, NULL, &stat_rect);
+            SDL_FreeSurface(stat_surface);
+            SDL_DestroyTexture(stat_texture);
+
+            // Render stat value (right-aligned), also vertically centered
+            char stat_value_text[10];
+            snprintf(stat_value_text, sizeof(stat_value_text), "%d", state->stats[i].value);
+            SDL_Surface *value_surface = TTF_RenderText_Solid(font, stat_value_text, color);
+            SDL_Texture *value_texture = SDL_CreateTextureFromSurface(renderer, value_surface);
+            SDL_Rect value_rect = {
+                x_right + 275 - value_surface->w,
+                box_y + ((highlight_box_height - stat_text_height) / 2), // Perfect centering
+                value_surface->w, value_surface->h
+            };
+            SDL_RenderCopy(renderer, value_texture, NULL, &value_rect);
+            SDL_FreeSurface(value_surface);
+            SDL_DestroyTexture(value_texture);
+
+            stat_y += spacing; // Move down, ensuring no overlap
+        }
+    }
 }
 
 void render_data_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
