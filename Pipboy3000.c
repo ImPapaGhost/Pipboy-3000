@@ -16,6 +16,7 @@
 #include "input.h"
 #include "ui.h"
 #include "events.h"
+#include "MAP/map.h"
 
 
 #define SCREEN_WIDTH 800
@@ -473,15 +474,9 @@ void render_perks_content(SDL_Renderer *renderer, TTF_Font *font, PipState *stat
 }
 
 void render_map_tab(SDL_Renderer *renderer, TTF_Font *font) {
-    SDL_Color color = {0, 255, 0, 255};
-    const char *placeholder = "Map Tab Placeholder";
-    SDL_Surface *surface = TTF_RenderText_Solid(font, placeholder, color);
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect rect = {75, 140, surface->w, surface->h};
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
+    map_render(renderer); // Calls your new map engine's render function
 }
+
 
 void render_radio_tab(SDL_Renderer *renderer, TTF_Font *font) {
     SDL_Color color = {0, 255, 0, 255};
@@ -576,6 +571,7 @@ int main(int argc, char *argv[]) {
     load_special_animation(renderer, &pip_state);
     load_selectline(renderer);
     load_categoryline(renderer);
+    map_init(renderer);
 
     // Main pip loop
     bool running = true;
@@ -658,6 +654,7 @@ int main(int argc, char *argv[]) {
         free(pip_state.stats);
     }
 
+    map_shutdown();
     free_vaultboy_frames();
     TTF_CloseFont(font);
     TTF_Quit();
