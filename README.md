@@ -15,6 +15,7 @@ Pip-Boy 3000 is a work-in-progress Fallout-inspired interface written in C with 
 
 The planned offline country-map and GPS design is documented in [docs/OFFLINE_MAP_AND_GPS.md](docs/OFFLINE_MAP_AND_GPS.md).
 The versioned persistence schema and recovery behavior are documented in [docs/SAVE_FORMAT.md](docs/SAVE_FORMAT.md).
+The accumulated-radiation rules and segmented HP display are documented in [docs/RADIATION.md](docs/RADIATION.md).
 
 ## Windows quick start
 

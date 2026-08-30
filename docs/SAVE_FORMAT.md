@@ -42,6 +42,10 @@ unreadable. Missing fields retain their definition/default value. Numeric
 fields are clamped to valid ranges, and only one weapon and one apparel item
 may remain equipped after loading.
 
+Effective maximum HP is derived from `max_health`, `radiation`, and
+`max_radiation`; it is not serialized separately. Loaded current HP is clamped
+to that derived cap.
+
 ## Atomic writes and recovery
 
 Saves are written to `player.json.tmp` first. A successful write moves the

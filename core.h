@@ -35,5 +35,7 @@ typedef struct {
 } PipCommandOutcome;
 
 PipCommandOutcome pipboy_execute_command(PipState *state, const PipCommand *command);
+int pipboy_effective_max_health(const PipState *state);
+int pipboy_radiation_blocked_health(const PipState *state);
 
 #endif

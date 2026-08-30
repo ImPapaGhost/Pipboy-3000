@@ -5,6 +5,25 @@
 
 #include "inventory.h"
 
+int pipboy_effective_max_health(const PipState *state) {
+    if (!state || state->max_health <= 0 || state->max_radiation <= 0) {
+        return 0;
+    }
+
+    int radiation = state->radiation;
+    if (radiation < 0) radiation = 0;
+    if (radiation > state->max_radiation) radiation = state->max_radiation;
+    const long long available = (long long)state->max_health *
+                                (long long)(state->max_radiation - radiation);
+    return (int)((available + (state->max_radiation / 2)) / state->max_radiation);
+}
+
+int pipboy_radiation_blocked_health(const PipState *state) {
+    if (!state) return 0;
+    const int blocked = state->max_health - pipboy_effective_max_health(state);
+    return blocked > 0 ? blocked : 0;
+}
+
 static PipCommandOutcome outcome(PipCommandResult result, bool changed, const char *message) {
     PipCommandOutcome value = {result, changed, {0}};
     if (message) {
@@ -39,10 +58,11 @@ static PipCommandOutcome use_item(PipState *state, const char *id) {
 
     int healed = 0;
     int rads_removed = 0;
-    if (item->heal_amount > 0 && state->health < state->max_health) {
+    const int effective_max_health = pipboy_effective_max_health(state);
+    if (item->heal_amount > 0 && state->health < effective_max_health) {
         healed = item->heal_amount;
-        if (healed > state->max_health - state->health) {
-            healed = state->max_health - state->health;
+        if (healed > effective_max_health - state->health) {
+            healed = effective_max_health - state->health;
         }
         state->health += healed;
     }
@@ -154,9 +174,19 @@ static PipCommandOutcome add_radiation(PipState *state, int amount) {
         amount = state->max_radiation - state->radiation;
     }
     state->radiation += amount;
+    const int effective_max_health = pipboy_effective_max_health(state);
+    if (state->health > effective_max_health) {
+        state->health = effective_max_health;
+    }
 
     PipCommandOutcome result = outcome(PIP_COMMAND_OK, true, NULL);
-    snprintf(result.message, sizeof(result.message), "RADIATION EXPOSURE  +%d RADS", amount);
+    snprintf(
+        result.message,
+        sizeof(result.message),
+        "RADIATION +%d RADS  MAX HP %d",
+        amount,
+        effective_max_health
+    );
     return result;
 }
 

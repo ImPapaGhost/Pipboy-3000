@@ -20,6 +20,7 @@
 #include "input.h"
 #include "ui.h"
 #include "events.h"
+#include "core.h"
 #include "MAP/map.h"
 #include "save.h"
 
@@ -247,14 +248,37 @@ static void render_stat_tab(
 
     // Render general stats at the bottom
     TTF_Font *detail_font = resources->detail_font;
+    TTF_Font *footer_font = resources->body_font;
+    const int effective_max_health = pipboy_effective_max_health(state);
     char hp_text[20];
-    snprintf(hp_text, sizeof(hp_text), "HP %d/%d", state->health, state->max_health);
-    SDL_Surface *hp_surface = TTF_RenderText_Solid(detail_font, hp_text, color);
+    snprintf(hp_text, sizeof(hp_text), "HP %d/%d", state->health, effective_max_health);
+    SDL_Surface *hp_surface = TTF_RenderText_Solid(footer_font, hp_text, color);
     SDL_Texture *hp_texture = SDL_CreateTextureFromSurface(renderer, hp_surface);
-    SDL_Rect hp_rect = {115, 432, hp_surface->w, hp_surface->h}; // Left aligned
+    SDL_Rect hp_rect = {115, 433, hp_surface->w, hp_surface->h}; // Left aligned
     SDL_RenderCopy(renderer, hp_texture, NULL, &hp_rect);
     SDL_FreeSurface(hp_surface);
     SDL_DestroyTexture(hp_texture);
+
+    if (state->radiation > 0) {
+        const SDL_Color radiation_color = {255, 96, 32, 255};
+        char radiation_text[20];
+        snprintf(radiation_text, sizeof(radiation_text), "RAD %d", state->radiation);
+        SDL_Surface *radiation_surface = TTF_RenderText_Solid(
+            footer_font,
+            radiation_text,
+            radiation_color
+        );
+        SDL_Texture *radiation_texture = SDL_CreateTextureFromSurface(renderer, radiation_surface);
+        SDL_Rect radiation_rect = {
+            285 - radiation_surface->w,
+            433,
+            radiation_surface->w,
+            radiation_surface->h
+        };
+        SDL_RenderCopy(renderer, radiation_texture, NULL, &radiation_rect);
+        SDL_FreeSurface(radiation_surface);
+        SDL_DestroyTexture(radiation_texture);
+    }
 
     char ap_text[20];
     snprintf(ap_text, sizeof(ap_text), "AP %d/%d", state->ap, state->max_ap);
@@ -265,19 +289,26 @@ static void render_stat_tab(
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
 
-    char radiation_text[24];
-    snprintf(radiation_text, sizeof(radiation_text), "RADS %d", state->radiation);
-    SDL_Surface *radiation_surface = TTF_RenderText_Solid(detail_font, radiation_text, color);
-    SDL_Texture *radiation_texture = SDL_CreateTextureFromSurface(renderer, radiation_surface);
-    SDL_Rect radiation_rect = {
-        (SCREEN_WIDTH - radiation_surface->w) / 2,
-        432,
-        radiation_surface->w,
-        radiation_surface->h
+    char level_text[48];
+    snprintf(
+        level_text,
+        sizeof(level_text),
+        "LEVEL %d   XP %d/%d",
+        state->level,
+        state->current_xp,
+        state->xp_for_next_level
+    );
+    SDL_Surface *level_surface = TTF_RenderText_Solid(footer_font, level_text, color);
+    SDL_Texture *level_texture = SDL_CreateTextureFromSurface(renderer, level_surface);
+    SDL_Rect level_rect = {
+        295 + (255 - level_surface->w) / 2,
+        433,
+        level_surface->w,
+        level_surface->h
     };
-    SDL_RenderCopy(renderer, radiation_texture, NULL, &radiation_rect);
-    SDL_FreeSurface(radiation_surface);
-    SDL_DestroyTexture(radiation_texture);
+    SDL_RenderCopy(renderer, level_texture, NULL, &level_rect);
+    SDL_FreeSurface(level_surface);
+    SDL_DestroyTexture(level_texture);
 }
 
 static void render_status_content(
@@ -660,7 +691,7 @@ int main(int argc, char *argv[]) {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        render_health_background(renderer, &resources);
+        render_health_background(renderer, &resources, &pip_state);
         render_ap_bar(renderer, &resources, &pip_state);
         render_mid_background(renderer, &resources, &pip_state);
         render_tabs(renderer, &resources, &pip_state);

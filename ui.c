@@ -356,8 +356,8 @@ void render_mid_background(SDL_Renderer *renderer, const AppResources *resources
     if (!resources || !resources->box_background) return;
 
     // Default XP bar settings (STAT tab)
-    int bg_width = 300;
-    int bg_x = (SCREEN_WIDTH / 2) - (bg_width / 2);
+    int bg_width = 255;
+    int bg_x = 295;
 
     // Adjust width and position in DATA tab
     if (state->current_tab == TAB_DATA) {
@@ -369,6 +369,26 @@ void render_mid_background(SDL_Renderer *renderer, const AppResources *resources
 
     SDL_SetTextureColorMod(resources->box_background, 0, 255, 0);
     SDL_RenderCopy(renderer, resources->box_background, NULL, &background_rect);
+
+    if (state->current_tab != TAB_DATA && state->xp_for_next_level > 0) {
+        SDL_Rect meter = {bg_x + 5, 453, bg_width - 10, 5};
+        SDL_SetRenderDrawColor(renderer, 0, 35, 0, 255);
+        SDL_RenderFillRect(renderer, &meter);
+
+        int current_xp = state->current_xp;
+        if (current_xp < 0) current_xp = 0;
+        if (current_xp > state->xp_for_next_level) current_xp = state->xp_for_next_level;
+        const int progress_width = meter.w * current_xp / state->xp_for_next_level;
+        if (progress_width > 0) {
+            SDL_Rect progress = {meter.x, meter.y, progress_width, meter.h};
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            SDL_RenderFillRect(renderer, &progress);
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        SDL_RenderDrawRect(renderer, &meter);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    }
 }
 
 void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int height, int health) {

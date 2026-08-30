@@ -13,6 +13,7 @@
 #endif
 
 #include "inventory.h"
+#include "core.h"
 #include "third_party/cjson/cJSON.h"
 
 #define PIP_SAVE_VERSION 1
@@ -254,6 +255,10 @@ static bool apply_json(PipState *state, const cJSON *root) {
     state->ap = json_int(player, "ap", state->ap, 0, state->max_ap);
     state->max_radiation = json_int(player, "max_radiation", state->max_radiation, 1, 100000);
     state->radiation = json_int(player, "radiation", state->radiation, 0, state->max_radiation);
+    const int effective_max_health = pipboy_effective_max_health(state);
+    if (state->health > effective_max_health) {
+        state->health = effective_max_health;
+    }
     state->level = json_int(player, "level", state->level, 1, 100000);
     state->current_xp = json_int(player, "current_xp", state->current_xp, 0, 100000000);
     state->xp_for_next_level = json_int(
