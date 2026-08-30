@@ -100,10 +100,22 @@ int main(void) {
     const PipCommand radiation = {PIP_COMMAND_ADD_RADIATION, NULL, 100};
     CHECK(pipboy_execute_command(&state, &radiation).result == PIP_COMMAND_OK);
     CHECK(state.radiation == 100);
+    CHECK(pipboy_effective_max_health(&state) == 104);
+    CHECK(pipboy_radiation_blocked_health(&state) == 11);
+    CHECK(state.health == 104);
     const PipCommand use_radaway = {PIP_COMMAND_USE_ITEM, "aid_radaway", 0};
     CHECK(pipboy_execute_command(&state, &use_radaway).result == PIP_COMMAND_OK);
     CHECK(state.radiation == 70);
+    CHECK(pipboy_effective_max_health(&state) == 107);
+    CHECK(state.health == 104);
     CHECK(get_inventory_quantity(&state, "aid_radaway") == 2);
+
+    state.health = 100;
+    CHECK(pipboy_execute_command(&state, &use_stimpak).result == PIP_COMMAND_OK);
+    CHECK(state.health == 107);
+    CHECK(stimpak->quantity == 2);
+    CHECK(pipboy_execute_command(&state, &use_stimpak).result == PIP_COMMAND_NO_EFFECT);
+    CHECK(stimpak->quantity == 2);
 
     const PipCommand equip_pistol = {PIP_COMMAND_EQUIP_ITEM, "weapon_10mm_pistol", 0};
     const PipCommand equip_rifle = {PIP_COMMAND_EQUIP_ITEM, "weapon_hunting_rifle", 0};
@@ -127,7 +139,7 @@ int main(void) {
     CHECK(load_pip_state(&restored, test_save) == PIP_SAVE_LOADED);
     CHECK(restored.health == state.health);
     CHECK(restored.radiation == state.radiation);
-    CHECK(get_inventory_quantity(&restored, "aid_stimpak") == 3);
+    CHECK(get_inventory_quantity(&restored, "aid_stimpak") == 2);
     CHECK(find_inventory_item(&restored, "weapon_hunting_rifle")->equipped);
     CHECK(find_inventory_item(&restored, "weapon_hunting_rifle")->favorite);
 
