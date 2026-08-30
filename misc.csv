@@ -1,6 +1,6 @@
-Name,Quantity,Weight,Value
-Bobby Pin,10,0.0,2
-Pre-War Money,5,0.1,8
-Technical Document,1,0.5,25
-Holotape,1,0.3,5
-Fusion Core,3,4.0,200
+Id,Name,Quantity,Weight,Value
+misc_bobby_pin,Bobby Pin,10,0.0,2
+misc_prewar_money,Pre-War Money,5,0.1,8
+misc_technical_document,Technical Document,1,0.5,25
+misc_holotape,Holotape,1,0.3,5
+misc_fusion_core,Fusion Core,3,4.0,200

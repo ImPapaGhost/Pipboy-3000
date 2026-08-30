@@ -1,9 +1,8 @@
-Name,Quantity,Weight,Value
-10mm,100,0.1,18
-5.56mm,200,0.1,30
-Fusion Cell,50,0.2,25
-Plasma Cartridge,30,0.3,40
-Mini Nuke,1,12.0,300
-.308,45,0.1,10
-5mm,200,0.1,30
-Fusion Cell,50,0.2,35
+Id,Name,Quantity,Weight,Value
+ammo_10mm,10mm,100,0.1,18
+ammo_556,5.56mm,200,0.1,30
+ammo_fusion_cell,Fusion Cell,100,0.2,25
+ammo_plasma_cartridge,Plasma Cartridge,30,0.3,40
+ammo_mini_nuke,Mini Nuke,1,12.0,300
+ammo_308,.308,45,0.1,10
+ammo_5mm,5mm,200,0.1,30

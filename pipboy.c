@@ -51,8 +51,11 @@ void render_inv(SDL_Renderer *renderer, const AppResources *resources, PipState 
          item_index++) {
 
         char name_with_quantity[100];
-        snprintf(name_with_quantity, sizeof(name_with_quantity), "%s (%d)",
-                 current_list[item_index].name, current_list[item_index].quantity);
+        const char *marker = current_list[item_index].equipped
+            ? (current_list[item_index].favorite ? "[E*] " : "[E] ")
+            : (current_list[item_index].favorite ? "[*] " : "");
+        snprintf(name_with_quantity, sizeof(name_with_quantity), "%s%s (%d)",
+                 marker, current_list[item_index].name, current_list[item_index].quantity);
 
         // Determine text color (dimmed if selected)
         SDL_Color text_color = (item_index == state->selector_position) ? dimmed_color : color;
@@ -222,7 +225,7 @@ void render_inv(SDL_Renderer *renderer, const AppResources *resources, PipState 
             // Render ammo value on the right
             char ammo_text[20];
             // snprintf(ammo_text, sizeof(ammo_text), "%d", current_list[i].ammo);
-            int ammo_count = get_ammo_count(current_list[i].ammo_type, state);
+            int ammo_count = get_ammo_count(current_list[i].ammo_id, state);
             snprintf(ammo_text, sizeof(ammo_text), "%d", ammo_count);
             SDL_Surface *ammo_value_surface = TTF_RenderText_Solid(font, ammo_text, color);
             SDL_Texture *ammo_value_texture = SDL_CreateTextureFromSurface(renderer, ammo_value_surface);
@@ -373,5 +376,20 @@ void render_inv(SDL_Renderer *renderer, const AppResources *resources, PipState 
 
             token = strtok(NULL, ",");  // Next component
         }
+    }
+
+    SDL_Surface *hint_surface = TTF_RenderText_Solid(
+        font,
+        "ENTER: USE/EQUIP    F: FAVORITE",
+        dimmed_color
+    );
+    if (hint_surface) {
+        SDL_Texture *hint_texture = SDL_CreateTextureFromSurface(renderer, hint_surface);
+        if (hint_texture) {
+            SDL_Rect hint_rect = {100, 405, hint_surface->w, hint_surface->h};
+            SDL_RenderCopy(renderer, hint_texture, NULL, &hint_rect);
+            SDL_DestroyTexture(hint_texture);
+        }
+        SDL_FreeSurface(hint_surface);
     }
 }

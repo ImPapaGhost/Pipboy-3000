@@ -9,16 +9,19 @@ set(CMAKE_C_EXTENSIONS OFF)
 set(PIPBOY_SOURCES
     Pipboy3000.c
     animations.c
+    core.c
     events.c
     input.c
     inventory.c
     pipboy.c
     render.c
     resources.c
+    save.c
     state.c
     ui.c
     video.c
     MAP/map.c
+    third_party/cjson/cjson_impl.c
 )
 
 function(pipboy_enable_warnings target)
@@ -112,14 +115,20 @@ if(BUILD_TESTING)
     add_executable(pipboy_core_tests
         tests/core_tests.c
         events.c
+        core.c
         input.c
         inventory.c
+        save.c
         state.c
         MAP/map.c
+        third_party/cjson/cjson_impl.c
     )
     target_compile_definitions(pipboy_core_tests PRIVATE SDL_MAIN_HANDLED)
     target_include_directories(pipboy_core_tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
     target_link_libraries(pipboy_core_tests PRIVATE pipboy_sdl)
+    if(UNIX)
+        target_link_libraries(pipboy_core_tests PRIVATE m)
+    endif()
     pipboy_enable_warnings(pipboy_core_tests)
 
     if(PIPBOY_RUNTIME_DLLS)

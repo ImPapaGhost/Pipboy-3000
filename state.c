@@ -15,6 +15,7 @@ bool initialize_pip_state(PipState *state) {
     state->current_tab = TAB_STAT;
     state->current_subtab = SUBTAB_STATUS;
     state->selector_position = 0;
+    state->persistence_enabled = true;
 
     // Set default SPECIAL stats
     for (int i = 0; i < 7; i++) {
@@ -25,10 +26,10 @@ bool initialize_pip_state(PipState *state) {
     state->max_health = 115;   // Max health
     state->ap = 90;            // Action points
     state->max_ap = 90;        // Max action points
+    state->radiation = 0;
+    state->max_radiation = 1000;
     state->level = 1;          // Starting level
     state->experience = 0;     // Starting experience
-    state->stimpaks = 0;       // Starting number of Stimpaks
-    state->radaways = 0;       // Starting number of RadAways
     state->current_xp = 50;    // Start with 50 XP
     state->xp_for_next_level = 100; // XP needed for level 2
 

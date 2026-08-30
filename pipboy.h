@@ -44,12 +44,14 @@ typedef enum {
 
 // Inventory Item Structure
 typedef struct {
+    char id[64];       // Stable gameplay/save identifier
     char name[50];   // Item name
     int quantity;    // Item quantity
     float weight;    // Item weight
     int value;       // Item's in-game value
     int damage;      // Damage dealt (for weapons)
     int ammo;        // Amount of ammo (for weapons)
+    char ammo_id[64];   // Stable ID of ammunition used by the weapon
     char ammo_type[50]; // Ammo type used (for weapons)
     char speed[20];     // Speed of melee weapon
     int fire_rate;      // Fire rate (for weapons)
@@ -59,6 +61,10 @@ typedef struct {
     int condition;   // Condition percentage (0-100)
     char icon_path[100]; // Path to item icon
     char component[50];
+    int heal_amount;
+    int radiation_delta;
+    bool equipped;
+    bool favorite;
 } invItem;
 
 typedef struct {
@@ -124,11 +130,11 @@ typedef struct {
     int max_health;
     int ap;
     int max_ap;
+    int radiation;
+    int max_radiation;
     int experience;
     int current_xp;         // Current XP the player has
     int xp_for_next_level;  // XP required for the next level
-    int stimpaks;
-    int radaways;
     char perks[10][50];
     Uint32 subtab_animation_start_time; // Track the start of subtab animation
     int subtab_animation_offset; // Offset for animation during transition
@@ -136,6 +142,10 @@ typedef struct {
     Uint32 special_stat_animation_start; // Start time for SPECIAL stat animation
     int special_stat_animation_offset;   // Vertical offset for animating stat transitions
     bool is_special_stat_animating;      // Whether a SPECIAL stat animation is active
+    char notification[128];
+    Uint32 notification_start_time;
+    bool notification_is_error;
+    bool persistence_enabled;
     // invItem inv[100];   // Max inv items changed to line below. Changed to pointer for dynamic array of items
     invItem *weapons;
     int weapons_count;
