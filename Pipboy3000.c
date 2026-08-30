@@ -6,6 +6,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#if defined(_WIN32)
+#include <direct.h>
+#define change_directory _chdir
+#else
+#include <unistd.h>
+#define change_directory chdir
+#endif
 #include "pipboy.h"
 #include "inventory.h"
 #include "render.h"
@@ -27,6 +34,48 @@ static void render_status_content(
 );
 static void render_special_content(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
 static void render_perks_content(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
+
+static bool runtime_assets_available(void) {
+    FILE *font = fopen("monofonto.ttf", "rb");
+    FILE *boot_video = fopen("BOOT/bootup.mpg", "rb");
+    const bool available = font && boot_video;
+    if (font) fclose(font);
+    if (boot_video) fclose(boot_video);
+    return available;
+}
+
+static void trim_to_parent_directory(char *path) {
+    size_t length = strlen(path);
+    while (length > 0 && (path[length - 1] == '/' || path[length - 1] == '\\')) {
+        path[--length] = '\0';
+    }
+    while (length > 0 && path[length - 1] != '/' && path[length - 1] != '\\') {
+        length--;
+    }
+    path[length] = '\0';
+}
+
+static bool select_runtime_asset_directory(void) {
+    if (runtime_assets_available()) {
+        return true;
+    }
+
+    char *base_path = SDL_GetBasePath();
+    if (!base_path) {
+        return false;
+    }
+
+    bool found = change_directory(base_path) == 0 && runtime_assets_available();
+    if (!found) {
+        trim_to_parent_directory(base_path);
+        found = base_path[0] != '\0' &&
+                change_directory(base_path) == 0 &&
+                runtime_assets_available();
+    }
+
+    SDL_free(base_path);
+    return found;
+}
 
 static bool has_argument(int argc, char *argv[], const char *argument) {
     for (int i = 1; i < argc; i++) {
@@ -428,15 +477,25 @@ int main(int argc, char *argv[]) {
     bool state_initialized = false;
     bool renderer_vsync = false;
 
-    // Redirect stdout and stderr to debug.log
-    freopen("debug.log", "w", stdout);
-    freopen("debug.log", "a", stderr);
-
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         fprintf(stderr, "SDL initialization failed: %s\n", SDL_GetError());
         goto cleanup;
     }
     sdl_initialized = true;
+
+    if (!select_runtime_asset_directory()) {
+        SDL_ShowSimpleMessageBox(
+            SDL_MESSAGEBOX_ERROR,
+            "Pip-Boy 3000",
+            "Could not locate the Pip-Boy runtime assets.",
+            NULL
+        );
+        goto cleanup;
+    }
+
+    // Keep the runtime log next to the source assets, regardless of launch location.
+    freopen("debug.log", "w", stdout);
+    freopen("debug.log", "a", stderr);
 
     const int requested_image_formats = IMG_INIT_JPG | IMG_INIT_PNG;
     const int initialized_image_formats = IMG_Init(requested_image_formats);
