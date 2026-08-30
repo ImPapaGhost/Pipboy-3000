@@ -25,7 +25,9 @@ static void set_notification(PipState *state, const char *message, bool is_error
 
 static void execute_and_save(PipState *state, const PipCommand *command) {
     const PipCommandOutcome result = pipboy_execute_command(state, command);
-    set_notification(state, result.message, result.result != PIP_COMMAND_OK);
+    const bool radiation_warning = command->type == PIP_COMMAND_ADD_RADIATION &&
+                                   state->radiation >= 800;
+    set_notification(state, result.message, result.result != PIP_COMMAND_OK || radiation_warning);
     if (result.state_changed && !state->persistence_enabled) {
         set_notification(state, "STATE CHANGED - SAVING DISABLED", true);
     } else if (result.state_changed && !save_pip_state(state, PIP_SAVE_PATH)) {
@@ -217,7 +219,20 @@ void handle_navigation(PipState *state) {
             }
 
             case SDLK_z: {
-                const PipCommand command = {PIP_COMMAND_ADD_RADIATION, NULL, 100};
+                const int debug_limit = 900;
+                if (state->radiation >= debug_limit) {
+                    set_notification(state, "TEST RAD LIMIT 900 - PRESS C TO RESET", true);
+                } else {
+                    int amount = debug_limit - state->radiation;
+                    if (amount > 100) amount = 100;
+                    const PipCommand command = {PIP_COMMAND_ADD_RADIATION, NULL, amount};
+                    execute_and_save(state, &command);
+                }
+                break;
+            }
+
+            case SDLK_c: {
+                const PipCommand command = {PIP_COMMAND_RESET_TEST_VITALS, NULL, 0};
                 execute_and_save(state, &command);
                 break;
             }

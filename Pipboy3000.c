@@ -691,9 +691,11 @@ int main(int argc, char *argv[]) {
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-        render_health_background(renderer, &resources, &pip_state);
-        render_ap_bar(renderer, &resources, &pip_state);
-        render_mid_background(renderer, &resources, &pip_state);
+        if (pip_state.current_tab == TAB_STAT || pip_state.current_tab == TAB_DATA) {
+            render_health_background(renderer, &resources, &pip_state);
+            render_ap_bar(renderer, &resources, &pip_state);
+            render_mid_background(renderer, &resources, &pip_state);
+        }
         render_tabs(renderer, &resources, &pip_state);
         render_current_tab(renderer, &resources, &pip_state, elapsed_seconds);
         render_date_time(renderer, &resources, &pip_state);

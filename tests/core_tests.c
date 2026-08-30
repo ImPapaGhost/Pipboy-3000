@@ -174,6 +174,33 @@ int main(void) {
     CHECK(restored.health == restored.max_health - 10);
     CHECK(get_inventory_quantity(&restored, "aid_stimpak") == event_stimpaks - 1);
 
+    restored.radiation = 0;
+    restored.health = restored.max_health;
+    for (int press = 0; press < 12; press++) {
+        press_key(SDLK_z);
+        handle_navigation(&restored);
+    }
+    CHECK(restored.radiation == 900);
+    CHECK(restored.health == pipboy_effective_max_health(&restored));
+    CHECK(restored.health > 0);
+    press_key(SDLK_c);
+    handle_navigation(&restored);
+    CHECK(restored.radiation == 0);
+    CHECK(restored.health == restored.max_health);
+    CHECK(get_inventory_quantity(&restored, "aid_stimpak") == 5);
+    CHECK(get_inventory_quantity(&restored, "aid_radaway") == 3);
+
+    const PipCommand lethal_radiation = {PIP_COMMAND_ADD_RADIATION, NULL, 1000};
+    CHECK(pipboy_execute_command(&restored, &lethal_radiation).result == PIP_COMMAND_OK);
+    CHECK(restored.radiation == 1000);
+    CHECK(restored.health == 0);
+    const PipCommand reset_vitals = {PIP_COMMAND_RESET_TEST_VITALS, NULL, 0};
+    CHECK(pipboy_execute_command(&restored, &reset_vitals).result == PIP_COMMAND_OK);
+    CHECK(restored.radiation == 0);
+    CHECK(restored.health == restored.max_health);
+    CHECK(get_inventory_quantity(&restored, "aid_stimpak") == 5);
+    CHECK(get_inventory_quantity(&restored, "aid_radaway") == 3);
+
     remove(test_save);
     remove("build/test-player-save.json.backup");
     remove("build/test-player-save.json.corrupt");
