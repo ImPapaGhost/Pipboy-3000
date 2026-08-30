@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/stat.h>
+#include <string.h>
 #include <SDL2/SDL_ttf.h>
 #include "pipboy.h"
 #include "state.h"
@@ -11,11 +11,6 @@
 #define X_VALUE 500
 #define Y_VALUE 390
 #define Y_POSITION(index) (Y_VALUE - (25 * (index)))
-
-int file_exists(const char *path) {
-    struct stat buffer;
-    return (stat(path, &buffer) == 0);
-}
 
 // Easing subtab animation
 float ease_out_cubic(float t) {

@@ -16,21 +16,17 @@
 #include "MAP/map.h"
 
 
-SDL_Texture *vaultboy_frames[NUM_VAULTBOY_FRAMES] = {NULL};
-int vaultboy_frame_index = 0;
-
 // Initialize damage bars with full health
 DamageBars damage_bars = {100, 100, 100, 100, 100, 100};
 
-static void render_status_content(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
+static void render_status_content(
+    SDL_Renderer *renderer,
+    AppResources *resources,
+    PipState *state,
+    double elapsed_seconds
+);
 static void render_special_content(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
 static void render_perks_content(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
-
-typedef enum {
-    BOOT_FINISHED,
-    BOOT_SKIPPED,
-    BOOT_QUIT
-} BootResult;
 
 static bool has_argument(int argc, char *argv[], const char *argument) {
     for (int i = 1; i < argc; i++) {
@@ -41,96 +37,13 @@ static bool has_argument(int argc, char *argv[], const char *argument) {
     return false;
 }
 
-static BootResult wait_for_boot_frame(Uint32 delay_ms) {
-    const Uint32 started_at = SDL_GetTicks();
-
-    while (SDL_GetTicks() - started_at < delay_ms) {
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                return BOOT_QUIT;
-            }
-            if (event.type == SDL_KEYDOWN) {
-                return BOOT_SKIPPED;
-            }
-        }
-
-        const Uint32 elapsed = SDL_GetTicks() - started_at;
-        const Uint32 remaining = (elapsed < delay_ms) ? delay_ms - elapsed : 0;
-        SDL_Delay(remaining > 10 ? 10 : remaining);
-    }
-
-    return BOOT_FINISHED;
-}
-
-static BootResult play_boot_sequence(
-    SDL_Renderer *renderer,
-    const char *directory,
-    int frame_count,
-    Uint32 frame_delay
-) {
-    char path[256];
-
-    for (int i = 0; i < frame_count; i++) {
-        snprintf(path, sizeof(path), "%s/%d.jpg", directory, i);
-        SDL_Texture *frame = IMG_LoadTexture(renderer, path);
-        if (!frame) {
-            fprintf(stderr, "Skipping boot frame %s: %s\n", path, IMG_GetError());
-            continue;
-        }
-
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, frame, NULL, NULL);
-        SDL_RenderPresent(renderer);
-        SDL_DestroyTexture(frame);
-
-        const BootResult result = wait_for_boot_frame(frame_delay);
-        if (result != BOOT_FINISHED) {
-            return result;
-        }
-    }
-
-    return BOOT_FINISHED;
-}
-
-static BootResult show_boot_animation(SDL_Renderer *renderer) {
-    BootResult result = play_boot_sequence(renderer, "BOOT/BOOTUP", 120, 80);
-    if (result != BOOT_FINISHED) {
+static VideoPlaybackResult show_boot_animation(SDL_Renderer *renderer) {
+    VideoPlaybackResult result = video_play_blocking(renderer, "BOOT/bootup.mpg");
+    if (result != VIDEO_PLAYBACK_FINISHED) {
         return result;
     }
 
-    return play_boot_sequence(renderer, "BOOT/BootBoy", 15, 120);
-}
-
-static void load_special_animation(SDL_Renderer *renderer, PipState *state) {
-    const char *special_names[7] = {"Strength", "Perception", "Endurance", "Charisma", "Intelligence", "Agility", "Luck"};
-    char path[256];
-
-    for (int i = 0; i < 7; i++) {
-        int frame_count = 0; // Counter for available frames
-        int frame_number = 0; // Start checking frames from 0 upwards
-
-        while (frame_count < 10) { // Load up to 10 frames per animation
-            snprintf(path, sizeof(path), "STAT/%s/%d.jpg", special_names[i], frame_number);
-            if (file_exists(path)) {
-                SDL_Surface *surface = IMG_Load(path);
-                if (!surface) {
-                    state->special_animations[i][frame_count++] = NULL;
-                } else {
-                    state->special_animations[i][frame_count++] = SDL_CreateTextureFromSurface(renderer, surface);
-                    SDL_FreeSurface(surface);
-                }
-            } else if (frame_number > 30) {
-                break;
-            }
-            frame_number++;
-        }
-
-        // Fill remaining slots with NULL
-        for (int j = frame_count; j < 10; j++) {
-            state->special_animations[i][j] = NULL;
-        }
-    }
+    return video_play_blocking(renderer, "BOOT/bootboy.mpg");
 }
 
 static void render_tabs(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
@@ -256,7 +169,12 @@ void render_attribute_description(SDL_Renderer *renderer, TTF_Font *font, int se
     }
 }
 
-static void render_stat_tab(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
+static void render_stat_tab(
+    SDL_Renderer *renderer,
+    AppResources *resources,
+    PipState *state,
+    double elapsed_seconds
+) {
     SDL_Color color = {0, 255, 0, 255};
 
     // Render the sub-tabs
@@ -265,7 +183,7 @@ static void render_stat_tab(SDL_Renderer *renderer, const AppResources *resource
     // Render content based on the active sub-tab
     switch (state->current_subtab) {
         case SUBTAB_STATUS:
-            render_status_content(renderer, resources, state);
+            render_status_content(renderer, resources, state, elapsed_seconds);
             break;
         case SUBTAB_SPECIAL:
             render_special_content(renderer, resources, state);
@@ -298,12 +216,17 @@ static void render_stat_tab(SDL_Renderer *renderer, const AppResources *resource
     SDL_DestroyTexture(ap_texture);
 }
 
-static void render_status_content(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
+static void render_status_content(
+    SDL_Renderer *renderer,
+    AppResources *resources,
+    PipState *state,
+    double elapsed_seconds
+) {
     TTF_Font *font = resources->body_font;
     SDL_Color color = {0, 255, 0, 255};
 
     // Render Vault Boy animation
-    render_vaultboy(renderer);
+    render_vaultboy(renderer, resources, elapsed_seconds);
 
      // Render Stimpak Background
     SDL_Rect stimpak_rect = {110, 395, 100, 30}; // Adjust based on position and size
@@ -443,22 +366,35 @@ static void render_map_tab(SDL_Renderer *renderer) {
 }
 
 
-static void render_radio_tab(SDL_Renderer *renderer, const AppResources *resources) {
+static void render_radio_tab(
+    SDL_Renderer *renderer,
+    AppResources *resources,
+    double elapsed_seconds
+) {
     TTF_Font *font = resources->body_font;
     SDL_Color color = {0, 255, 0, 255};
-    const char *placeholder = "Radio Tab Placeholder";
-    SDL_Surface *surface = TTF_RenderText_Solid(font, placeholder, color);
+    SDL_Rect video_rect = {290, 105, 220, 220};
+    video_player_update(resources->radio_video, elapsed_seconds);
+    video_player_render(resources->radio_video, renderer, &video_rect);
+
+    const char *station_name = "UNKNOWN SIGNAL";
+    SDL_Surface *surface = TTF_RenderText_Solid(font, station_name, color);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect rect = {75, 140, surface->w, surface->h};
+    SDL_Rect rect = {(SCREEN_WIDTH - surface->w) / 2, 345, surface->w, surface->h};
     SDL_RenderCopy(renderer, texture, NULL, &rect);
     SDL_FreeSurface(surface);
     SDL_DestroyTexture(texture);
 }
 
-static void render_current_tab(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
+static void render_current_tab(
+    SDL_Renderer *renderer,
+    AppResources *resources,
+    PipState *state,
+    double elapsed_seconds
+) {
     switch (state->current_tab) {
         case TAB_STAT:
-            render_stat_tab(renderer, resources, state);
+            render_stat_tab(renderer, resources, state, elapsed_seconds);
             break;
         case TAB_INV:
             render_inv(renderer, resources, state);
@@ -470,7 +406,7 @@ static void render_current_tab(SDL_Renderer *renderer, const AppResources *resou
             render_map_tab(renderer);
             break;
         case TAB_RADIO:
-            render_radio_tab(renderer, resources);
+            render_radio_tab(renderer, resources, elapsed_seconds);
             break;
         case NUM_TABS:
             break;
@@ -573,10 +509,13 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        const BootResult boot_result = show_boot_animation(renderer);
-        if (boot_result == BOOT_QUIT) {
+        const VideoPlaybackResult boot_result = show_boot_animation(renderer);
+        if (boot_result == VIDEO_PLAYBACK_QUIT) {
             exit_code = EXIT_SUCCESS;
             goto cleanup;
+        }
+        if (boot_result == VIDEO_PLAYBACK_ERROR) {
+            fprintf(stderr, "Boot video playback failed; continuing without it.\n");
         }
 
         if (boot_sound) {
@@ -597,17 +536,20 @@ int main(int argc, char *argv[]) {
     }
     state_initialized = true;
 
-    load_vaultboy_frames(renderer);
-    load_special_animation(renderer, &pip_state);
     map_init(renderer);
 
     bool running = true;
     SDL_Event event;
-    Uint32 last_frame_time = SDL_GetTicks();
+    const Uint64 performance_frequency = SDL_GetPerformanceFrequency();
+    Uint64 last_update_counter = SDL_GetPerformanceCounter();
     const Uint32 target_frame_time = 1000 / FRAME_RATE;
 
     while (running) {
         const Uint32 frame_started_at = SDL_GetTicks();
+        const Uint64 update_counter = SDL_GetPerformanceCounter();
+        const double elapsed_seconds =
+            (double)(update_counter - last_update_counter) / (double)performance_frequency;
+        last_update_counter = update_counter;
 
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -624,23 +566,17 @@ int main(int argc, char *argv[]) {
             map_update();
         }
 
-        Uint32 current_time = SDL_GetTicks();
-        if (current_time - last_frame_time >= 100) {
-            vaultboy_frame_index = (vaultboy_frame_index + 1) % NUM_VAULTBOY_FRAMES;
-            last_frame_time = current_time;
-        }
-
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         render_health_background(renderer, &resources);
         render_ap_bar(renderer, &resources, &pip_state);
         render_mid_background(renderer, &resources, &pip_state);
         render_tabs(renderer, &resources, &pip_state);
-        render_current_tab(renderer, &resources, &pip_state);
+        render_current_tab(renderer, &resources, &pip_state, elapsed_seconds);
         render_date_time(renderer, &resources, &pip_state);
 
         if (pip_state.current_tab == TAB_STAT && pip_state.current_subtab == SUBTAB_SPECIAL) {
-            render_special_animation(renderer, &pip_state); // Render SPECIAL animations if applicable
+            render_special_animation(renderer, &resources, &pip_state, elapsed_seconds);
         }
 
         SDL_RenderPresent(renderer);
@@ -662,7 +598,6 @@ cleanup:
         Mix_FreeChunk(boot_sound);
     }
     map_shutdown();
-    free_vaultboy_frames();
     if (state_initialized) cleanup_pip_state(&pip_state);
     if (resources_initialized) resources_destroy(&resources);
     if (mixer_open) Mix_CloseAudio();

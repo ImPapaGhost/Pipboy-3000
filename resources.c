@@ -20,6 +20,14 @@ static SDL_Texture *load_texture(SDL_Renderer *renderer, const char *path) {
     return texture;
 }
 
+static VideoPlayer *load_video(SDL_Renderer *renderer, const char *path) {
+    VideoPlayer *video = video_player_create(renderer, path, true);
+    if (!video) {
+        fprintf(stderr, "Failed to load animation %s\n", path);
+    }
+    return video;
+}
+
 bool resources_init(AppResources *resources, SDL_Renderer *renderer) {
     if (!resources || !renderer) {
         return false;
@@ -46,6 +54,36 @@ bool resources_init(AppResources *resources, SDL_Renderer *renderer) {
     resources->target_icon = load_texture(renderer, "INV/TARGET1.jpg");
     resources->ammo_icon = load_texture(renderer, "INV/ammo.png");
 
+    static const char *special_paths[7] = {
+        "STAT/strength.mpg",
+        "STAT/perception.mpg",
+        "STAT/endurance.mpg",
+        "STAT/charisma.mpg",
+        "STAT/intelligence.mpg",
+        "STAT/agility.mpg",
+        "STAT/luck.mpg"
+    };
+
+    resources->vaultboy_video = load_video(renderer, "STAT/vaultboy.mpg");
+    for (int index = 0; index < 7; index++) {
+        resources->special_videos[index] = load_video(renderer, special_paths[index]);
+    }
+    resources->radio_video = load_video(renderer, "RADIO/radio-waveform.mpg");
+
+    if (!resources->vaultboy_video || !resources->radio_video) {
+        resources_destroy(resources);
+        return false;
+    }
+    for (int index = 0; index < 7; index++) {
+        if (!resources->special_videos[index]) {
+            resources_destroy(resources);
+            return false;
+        }
+    }
+
+    video_player_set_color_mod(resources->vaultboy_video, 0, 255, 0);
+    video_player_set_color_mod(resources->radio_video, 0, 255, 0);
+
     return true;
 }
 
@@ -53,6 +91,12 @@ void resources_destroy(AppResources *resources) {
     if (!resources) {
         return;
     }
+
+    video_player_destroy(resources->radio_video);
+    for (int index = 0; index < 7; index++) {
+        video_player_destroy(resources->special_videos[index]);
+    }
+    video_player_destroy(resources->vaultboy_video);
 
     if (resources->ammo_icon) SDL_DestroyTexture(resources->ammo_icon);
     if (resources->target_icon) SDL_DestroyTexture(resources->target_icon);

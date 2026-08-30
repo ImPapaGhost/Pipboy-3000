@@ -28,21 +28,29 @@ Use `--skip-boot` for a faster development launch:
 ./build/PipBoy3000.exe --skip-boot
 ```
 
-### Boot animation videos
+### Video-backed animations
 
-The two numbered JPEG sequences are also provided as VP9 WebM videos:
+All runtime frame sequences are consolidated into MPEG-1 program streams and
+decoded in-process through the vendored, MIT-licensed PL_MPEG library:
 
-- `BOOT/bootup.webm` — 120 frames at 12.5 FPS (80 ms per source frame).
-- `BOOT/bootboy.webm` — 15 frames at 8.333 FPS (120 ms per source frame).
+- `BOOT/bootup.mpg` and `BOOT/bootboy.mpg` — full-screen, skippable startup videos.
+- `STAT/vaultboy.mpg` — looping STATUS animation.
+- `STAT/vaultboy-combat.mpg` — converted combat variant retained for future use.
+- `STAT/{strength,perception,endurance,charisma,intelligence,agility,luck}.mpg` — complete looping SPECIAL animations.
+- `RADIO/radio-waveform.mpg` — looping UNKNOWN SIGNAL waveform.
 
-Regenerate them with Python and OpenCV:
+The superseded JPG, PNG, and GIF frame exports were removed after the videos
+passed decoder/render tests. They remain recoverable from Git history. To
+convert restored or newly exported frames, install OpenCV and run:
 
 ```powershell
 python -m pip install -r scripts/requirements-video.txt
 python scripts/convert_animations.py
 ```
 
-Use `--format mp4` to generate MPEG-4 Part 2 MP4 alternatives. The application currently retains the JPEG player as its dependency-free fallback; switching runtime playback to the videos requires adding a video decoder because SDL2 does not decode video containers by itself.
+MPEG-1 is the default because the application can decode it without an external
+FFmpeg installation or runtime DLL. The converter can still produce archival
+WebM or MP4 variants with `--format webm` or `--format mp4`.
 
 Run the executable with the repository root as its working directory so it can find the fonts, CSV data, images, and sounds. The checked-in VS Code build and debug tasks already do this and no longer contain machine-specific paths.
 
@@ -75,8 +83,10 @@ On Unix-like systems, CMake discovers SDL2, SDL2_image, SDL2_mixer, and SDL2_ttf
 - `state.c` — state initialization, cleanup, XP, and damage state.
 - `inventory.c` — CSV loading and inventory selection helpers.
 - `resources.c` — fonts and static textures loaded once for reuse.
+- `video.c` — MPEG-1 decoding, SDL YUV texture upload, looping, and blocking boot playback.
 - `MAP/` — current map renderer and future offline-map integration point.
-- `tests/` — focused regression tests for state, inventory, and navigation.
+- `third_party/pl_mpeg/` — pinned MIT-licensed single-header video decoder.
+- `tests/` — regression tests for state, inventory, navigation, every video asset, and the decoder.
 - `scripts/build.ps1` — dependency-free Windows build/test entry point.
 
 ## License

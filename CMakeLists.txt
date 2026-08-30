@@ -17,6 +17,7 @@ set(PIPBOY_SOURCES
     resources.c
     state.c
     ui.c
+    video.c
     MAP/map.c
 )
 
@@ -87,6 +88,9 @@ endif()
 add_executable(PipBoy3000 WIN32 ${PIPBOY_SOURCES})
 target_include_directories(PipBoy3000 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(PipBoy3000 PRIVATE pipboy_sdl)
+if(UNIX)
+    target_link_libraries(PipBoy3000 PRIVATE m)
+endif()
 pipboy_enable_warnings(PipBoy3000)
 
 set_target_properties(PipBoy3000 PROPERTIES
@@ -131,5 +135,33 @@ if(BUILD_TESTING)
     add_test(NAME core_state_and_navigation COMMAND pipboy_core_tests)
     set_tests_properties(core_state_and_navigation PROPERTIES
         WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+    )
+
+    add_executable(pipboy_video_tests
+        tests/video_tests.c
+        video.c
+    )
+    target_compile_definitions(pipboy_video_tests PRIVATE SDL_MAIN_HANDLED)
+    target_include_directories(pipboy_video_tests PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+    target_link_libraries(pipboy_video_tests PRIVATE pipboy_sdl)
+    if(UNIX)
+        target_link_libraries(pipboy_video_tests PRIVATE m)
+    endif()
+    pipboy_enable_warnings(pipboy_video_tests)
+
+    if(PIPBOY_RUNTIME_DLLS)
+        foreach(runtime_dll IN LISTS PIPBOY_RUNTIME_DLLS)
+            add_custom_command(TARGET pipboy_video_tests POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    "${runtime_dll}"
+                    "$<TARGET_FILE_DIR:pipboy_video_tests>"
+            )
+        endforeach()
+    endif()
+
+    add_test(NAME video_assets_and_decoder COMMAND pipboy_video_tests)
+    set_tests_properties(video_assets_and_decoder PROPERTIES
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        ENVIRONMENT "SDL_VIDEODRIVER=dummy;SDL_AUDIODRIVER=dummy"
     )
 endif()
