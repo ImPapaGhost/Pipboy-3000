@@ -28,6 +28,22 @@ Use `--skip-boot` for a faster development launch:
 ./build/PipBoy3000.exe --skip-boot
 ```
 
+### Boot animation videos
+
+The two numbered JPEG sequences are also provided as VP9 WebM videos:
+
+- `BOOT/bootup.webm` — 120 frames at 12.5 FPS (80 ms per source frame).
+- `BOOT/bootboy.webm` — 15 frames at 8.333 FPS (120 ms per source frame).
+
+Regenerate them with Python and OpenCV:
+
+```powershell
+python -m pip install -r scripts/requirements-video.txt
+python scripts/convert_animations.py
+```
+
+Use `--format mp4` to generate MPEG-4 Part 2 MP4 alternatives. The application currently retains the JPEG player as its dependency-free fallback; switching runtime playback to the videos requires adding a video decoder because SDL2 does not decode video containers by itself.
+
 Run the executable with the repository root as its working directory so it can find the fonts, CSV data, images, and sounds. The checked-in VS Code build and debug tasks already do this and no longer contain machine-specific paths.
 
 ## CMake build

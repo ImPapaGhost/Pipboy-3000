@@ -94,12 +94,12 @@ static BootResult play_boot_sequence(
 }
 
 static BootResult show_boot_animation(SDL_Renderer *renderer) {
-    BootResult result = play_boot_sequence(renderer, "BOOT/BOOTUP", 119, 80);
+    BootResult result = play_boot_sequence(renderer, "BOOT/BOOTUP", 120, 80);
     if (result != BOOT_FINISHED) {
         return result;
     }
 
-    return play_boot_sequence(renderer, "BOOT/BootBoy", 14, 120);
+    return play_boot_sequence(renderer, "BOOT/BootBoy", 15, 120);
 }
 
 static void load_special_animation(SDL_Renderer *renderer, PipState *state) {

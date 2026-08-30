@@ -4,3 +4,7 @@ procexp.exe
 /PipBoy3000.exe
 *.o
 *.obj
+*.tmp.mp4
+*.tmp.webm
+__pycache__/
+*.pyc
