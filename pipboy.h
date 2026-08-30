@@ -10,7 +10,6 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 480
 #define FRAME_RATE 60
-#define NUM_VAULTBOY_FRAMES 8 // Total frames for VaultBoy animation
 #define SUBTAB_SPACING 80
 
 // Enum for Tabs
@@ -131,7 +130,6 @@ typedef struct {
     int stimpaks;
     int radaways;
     char perks[10][50];
-    SDL_Texture *special_animations[7][10]; // 10 frames per SPECIAL animation
     Uint32 subtab_animation_start_time; // Track the start of subtab animation
     int subtab_animation_offset; // Offset for animation during transition
     bool is_animating;           // Whether an animation is in progress
@@ -187,7 +185,6 @@ typedef struct {
 extern PipState pip_state; // Declare the game state
 
 // Function Prototypes
-int file_exists(const char *path);
 float ease_out_cubic(float t);
 bool initialize_pip_state(PipState *state);
 void cleanup_pip_state(PipState *state);

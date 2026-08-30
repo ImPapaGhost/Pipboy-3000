@@ -63,6 +63,7 @@ $appSources = @(
     'resources.c',
     'state.c',
     'ui.c',
+    'video.c',
     'MAP/map.c'
 ) | ForEach-Object { Join-Path $repoRoot $_ }
 
@@ -87,12 +88,24 @@ if ($LASTEXITCODE -ne 0) {
     throw "Core test build failed with exit code $LASTEXITCODE."
 }
 
+$videoTestSources = @(
+    'tests/video_tests.c',
+    'video.c'
+) | ForEach-Object { Join-Path $repoRoot $_ }
+
+$videoTestOutput = Join-Path $buildDirectory 'pipboy_video_tests.exe'
+& gcc @commonArguments '-DSDL_MAIN_HANDLED' '-o' $videoTestOutput @videoTestSources @libraries
+if ($LASTEXITCODE -ne 0) {
+    throw "Video test build failed with exit code $LASTEXITCODE."
+}
+
 foreach ($runtimeLibrary in @('SDL2.dll', 'SDL2_image.dll', 'SDL2_mixer.dll', 'SDL2_ttf.dll')) {
     Copy-Item -LiteralPath (Join-Path $repoRoot $runtimeLibrary) -Destination $buildDirectory -Force
 }
 
 Write-Host "Built $appOutput"
 Write-Host "Built $testOutput"
+Write-Host "Built $videoTestOutput"
 
 if ($RunTests) {
     Push-Location $repoRoot
@@ -102,6 +115,21 @@ if ($RunTests) {
             throw "Core tests failed with exit code $LASTEXITCODE."
         }
         Write-Host 'Core tests passed.'
+
+        $previousVideoDriver = $env:SDL_VIDEODRIVER
+        $previousAudioDriver = $env:SDL_AUDIODRIVER
+        try {
+            $env:SDL_VIDEODRIVER = 'dummy'
+            $env:SDL_AUDIODRIVER = 'dummy'
+            & $videoTestOutput
+            if ($LASTEXITCODE -ne 0) {
+                throw "Video tests failed with exit code $LASTEXITCODE."
+            }
+            Write-Host 'Video tests passed.'
+        } finally {
+            $env:SDL_VIDEODRIVER = $previousVideoDriver
+            $env:SDL_AUDIODRIVER = $previousAudioDriver
+        }
     } finally {
         Pop-Location
     }

@@ -6,7 +6,6 @@
 
 // UI rendering functions
 void render_stat_subtabs(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
-void render_special_animation(SDL_Renderer *renderer, PipState *state);
 void render_inv_subtabs(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
 void render_mid_background(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
 void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int height, int health);

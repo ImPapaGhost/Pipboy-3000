@@ -5,6 +5,7 @@ procexp.exe
 *.o
 *.obj
 *.tmp.mp4
+*.tmp.mpg
 *.tmp.webm
 __pycache__/
 *.pyc

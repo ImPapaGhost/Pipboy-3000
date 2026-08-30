@@ -49,13 +49,6 @@ bool initialize_pip_state(PipState *state) {
         memset(state->perks[i], 0, sizeof(state->perks[i]));
     }
 
-    // Initialize SPECIAL animations to NULL
-    for (int i = 0; i < 7; i++) {
-        for (int j = 0; j < 10; j++) {
-            state->special_animations[i][j] = NULL;
-        }
-    }
-
     state->current_data_subtab = SUBTAB_QUESTS;
     state->current_quest = 0;
 
@@ -367,12 +360,6 @@ void add_experience(PipState *state, int xp) {
 void cleanup_pip_state(PipState *state) {
     if (!state) {
         return;
-    }
-
-    for (int stat = 0; stat < 7; stat++) {
-        for (int frame = 0; frame < 10; frame++) {
-            SDL_DestroyTexture(state->special_animations[stat][frame]);
-        }
     }
 
     free(state->weapons);
