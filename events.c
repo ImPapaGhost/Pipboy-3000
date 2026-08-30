@@ -1,12 +1,7 @@
 #include "events.h"
+#include "input.h"
 #include "inventory.h"
-#include "pipboy.h"
-#include <SDL2/SDL.h>
-
-
-#include "events.h"
-#include "input.h" // Include the new input queue system
-#include "inventory.h"
+#include "MAP/map.h"
 #include "pipboy.h"
 #include <SDL2/SDL.h>
 
@@ -102,13 +97,12 @@ void handle_navigation(PipState *state) {
                     if (state->current_quest > 0) {
                         state->current_quest--;
                     }
-                }
-                else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_WORKSHOPS) {
+                } else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_WORKSHOPS) {
                     if (state->current_workshop > 0) {
                         state->current_workshop--;
                     }
-                }
-                else if (state->current_stat_category > 0) {
+                } else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_STATS &&
+                           state->current_stat_category > 0) {
                     state->current_stat_category--;
                 }
                 break;
@@ -120,40 +114,10 @@ void handle_navigation(PipState *state) {
                     state->special_stat_animation_start = SDL_GetTicks();
                     state->selector_position = (state->selector_position + 1) % 7; // Wrap around SPECIAL stats
                 } else if (state->current_tab == TAB_INV) {
-                    // Inventory scrolling down
-                    invItem *current_list = NULL;
-                    int current_count = 0;
-
-                    // Determine the active inventory subtab list
-                    switch (state->current_inv_subtab) {
-                        case SUBTAB_WEAPONS:
-                            current_list = state->weapons;
-                            current_count = state->weapons_count;
-                            break;
-                        case SUBTAB_APPAREL:
-                            current_list = state->apparel;
-                            current_count = state->apparel_count;
-                            break;
-                        case SUBTAB_AID:
-                            current_list = state->aid;
-                            current_count = state->aid_count;
-                            break;
-                        case SUBTAB_MISC:
-                            current_list = state->misc;
-                            current_count = state->misc_count;
-                        case SUBTAB_JUNK:
-                            current_list = state->junk;
-                            current_count = state->junk_count;
-                        case SUBTAB_MODS:
-                            current_list = state->mods;
-                            current_count = state->mods_count;
-                        case SUBTAB_AMMO:
-                            current_list = state->ammo;
-                            current_count = state->ammo_count;
-                    }
+                    InventoryView view = get_inventory_view(state);
 
                     // Scroll down within the current inventory subtab
-                    if (current_list && state->selector_position < current_count - 1) {
+                    if (view.items && state->selector_position < view.count - 1) {
                         state->selector_position++;
                         if (state->selector_position >= state->inv_scroll_index + 10) {
                             state->inv_scroll_index++;
@@ -167,15 +131,27 @@ void handle_navigation(PipState *state) {
                     if (state->current_workshop < state->workshop_count - 1) {
                         state->current_workshop++;
                     }
-                }
-                else if (state->current_stat_category < NUM_STAT_CATEGORIES - 1) {
+                } else if (state->current_tab == TAB_DATA && state->current_data_subtab == SUBTAB_STATS &&
+                           state->current_stat_category < NUM_STAT_CATEGORIES - 1) {
                     state->current_stat_category++;
+                }
+                break;
+
+            case SDLK_UP:
+            case SDLK_DOWN:
+            case SDLK_LEFT:
+            case SDLK_RIGHT:
+                if (state->current_tab == TAB_MAP) {
+                    map_handle_key(key);
                 }
                 break;
 
             // Simulate gaining XP (testing)
             case SDLK_x:
                 add_experience(state, 10);
+                break;
+
+            default:
                 break;
         }
     }

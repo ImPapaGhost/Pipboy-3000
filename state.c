@@ -4,7 +4,13 @@
 #include <stdio.h>
 #include <string.h>
 
-void initialize_pip_state(PipState *state) {
+bool initialize_pip_state(PipState *state) {
+    if (!state) {
+        return false;
+    }
+
+    memset(state, 0, sizeof(*state));
+
     // Initialize general state values
     state->current_tab = TAB_STAT;
     state->current_subtab = SUBTAB_STATUS;
@@ -26,43 +32,17 @@ void initialize_pip_state(PipState *state) {
     state->current_xp = 50;    // Start with 50 XP
     state->xp_for_next_level = 100; // XP needed for level 2
 
-    // Allocate initial space for Weapons, Apparel, and Aid
-    state->weapons_capacity = 10;
-    state->weapons = malloc(state->weapons_capacity * sizeof(invItem));
-    state->weapons_count = 0;
-
-    state->apparel_capacity = 10;
-    state->apparel = malloc(state->apparel_capacity * sizeof(invItem));
-    state->apparel_count = 0;
-
-    state->aid_capacity = 10;
-    state->aid = malloc(state->aid_capacity * sizeof(invItem));
-    state->aid_count = 0;
-
-    state->misc_capacity = 10;
-    state->misc = malloc(state->misc_capacity * sizeof(invItem));
-    state->misc_count = 0;
-
-    state->junk_capacity = 10;
-    state->junk = malloc(state->junk_capacity * sizeof(invItem));
-    state->junk_count = 0;
-
-    state->mods_capacity = 10;
-    state->mods = malloc(state->mods_capacity * sizeof(invItem));
-    state->mods_count = 0;
-
-    state->ammo_capacity = 10;
-    state->ammo = malloc(state->ammo_capacity * sizeof(invItem));
-    state->ammo_count = 0;
-
     // Load inv items into respective lists
-    load_inv("weapons.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity);
-    load_inv("apparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity);
-    load_inv("aid.csv", &state->aid, &state->aid_count, &state->aid_capacity);
-    load_inv("misc.csv", &state->misc, &state->misc_count, &state->misc_capacity);
-    load_inv("junk.csv", &state->junk, &state->junk_count, &state->junk_capacity);
-    load_inv("mods.csv", &state->mods, &state->mods_count, &state->mods_capacity);
-    load_inv("ammo.csv", &state->ammo, &state->ammo_count, &state->ammo_capacity);
+    if (load_inv("weapons.csv", &state->weapons, &state->weapons_count, &state->weapons_capacity) < 0 ||
+        load_inv("apparel.csv", &state->apparel, &state->apparel_count, &state->apparel_capacity) < 0 ||
+        load_inv("aid.csv", &state->aid, &state->aid_count, &state->aid_capacity) < 0 ||
+        load_inv("misc.csv", &state->misc, &state->misc_count, &state->misc_capacity) < 0 ||
+        load_inv("junk.csv", &state->junk, &state->junk_count, &state->junk_capacity) < 0 ||
+        load_inv("mods.csv", &state->mods, &state->mods_count, &state->mods_capacity) < 0 ||
+        load_inv("ammo.csv", &state->ammo, &state->ammo_count, &state->ammo_capacity) < 0) {
+        cleanup_pip_state(state);
+        return false;
+    }
 
     // Initialize perks to empty
     for (int i = 0; i < 10; i++) {
@@ -82,7 +62,12 @@ void initialize_pip_state(PipState *state) {
     // Allocate initial space for quests
     state->quest_capacity = 5; // Start with room for 5 quests
     state->quest_count = 0;
-    state->quests = malloc(state->quest_capacity * sizeof(Quest));
+    state->quests = calloc((size_t)state->quest_capacity, sizeof(*state->quests));
+
+    if (!state->quests) {
+        cleanup_pip_state(state);
+        return false;
+    }
 
     // Add initial quests
     if (state->quests) {
@@ -107,7 +92,12 @@ void initialize_pip_state(PipState *state) {
     // Allocate initial space for workshops
     state->workshop_capacity = 5; // Start with room for 5 workshops
     state->workshop_count = 0;
-    state->workshops = malloc(state->workshop_capacity * sizeof(Workshop));
+    state->workshops = calloc((size_t)state->workshop_capacity, sizeof(*state->workshops));
+
+    if (!state->workshops) {
+        cleanup_pip_state(state);
+        return false;
+    }
 
     // Add initial workshops
     if (state->workshops) {
@@ -138,7 +128,12 @@ void initialize_pip_state(PipState *state) {
     // Allocate initial space for stats
     state->stats_capacity = 50; // Increased capacity for stats
     state->stats_count = 0;
-    state->stats = malloc(state->stats_capacity * sizeof(PlayerStat));
+    state->stats = calloc((size_t)state->stats_capacity, sizeof(*state->stats));
+
+    if (!state->stats) {
+        cleanup_pip_state(state);
+        return false;
+    }
     // Add initial stats
     if (state->stats) {
         // GENERAL STATS
@@ -351,11 +346,17 @@ void initialize_pip_state(PipState *state) {
         state->stats[state->stats_count].category = STAT_CATEGORY_CRIME;
         state->stats_count++;
     }
+
+    return true;
 }
 
 void add_experience(PipState *state, int xp) {
+    if (!state || xp <= 0) {
+        return;
+    }
+
     state->current_xp += xp;
-    if (state->current_xp >= state->xp_for_next_level) {
+    while (state->current_xp >= state->xp_for_next_level) {
         state->current_xp -= state->xp_for_next_level; // Rollover XP
         state->level += 1;                            // Level up
         state->xp_for_next_level += 50;               // Increase XP threshold
@@ -363,13 +364,48 @@ void add_experience(PipState *state, int xp) {
     }
 }
 
+void cleanup_pip_state(PipState *state) {
+    if (!state) {
+        return;
+    }
+
+    for (int stat = 0; stat < 7; stat++) {
+        for (int frame = 0; frame < 10; frame++) {
+            SDL_DestroyTexture(state->special_animations[stat][frame]);
+        }
+    }
+
+    free(state->weapons);
+    free(state->apparel);
+    free(state->aid);
+    free(state->misc);
+    free(state->junk);
+    free(state->mods);
+    free(state->ammo);
+    free(state->quests);
+    free(state->workshops);
+    free(state->stats);
+
+    memset(state, 0, sizeof(*state));
+}
+
+static int clamp_percentage(int value) {
+    if (value < 0) return 0;
+    if (value > 100) return 100;
+    return value;
+}
+
 void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int torso, int left_leg, int right_leg) {
-    bars->head = head;
-    bars->left_arm = left_arm;
-    bars->right_arm = right_arm;
-    bars->torso = torso;
-    bars->left_leg = left_leg;
-    bars->right_leg = right_leg;
+    if (!bars) {
+        return;
+    }
+
+    bars->head = clamp_percentage(head);
+    bars->left_arm = clamp_percentage(left_arm);
+    bars->right_arm = clamp_percentage(right_arm);
+    bars->torso = clamp_percentage(torso);
+    bars->left_leg = clamp_percentage(left_leg);
+    bars->right_leg = clamp_percentage(right_leg);
 }
 
 // Define `pip_state` to allocate memory for it

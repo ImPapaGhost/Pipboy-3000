@@ -5,81 +5,164 @@
 #include "pipboy.h"
 
 int get_ammo_count(const char *ammo_type, PipState *state) {
+    int total = 0;
+
+    if (!ammo_type || !state) {
+        return 0;
+    }
+
     for (int i = 0; i < state->ammo_count; i++) {
         if (strcmp(state->ammo[i].name, ammo_type) == 0) {
-            return state->ammo[i].quantity;
+            total += state->ammo[i].quantity;
         }
     }
-    return 0; // If ammo type not found, return 0
+
+    return total;
+}
+
+InventoryView get_inventory_view(PipState *state) {
+    InventoryView view = {NULL, 0};
+
+    if (!state) {
+        return view;
+    }
+
+    switch (state->current_inv_subtab) {
+        case SUBTAB_WEAPONS:
+            view.items = state->weapons;
+            view.count = state->weapons_count;
+            break;
+        case SUBTAB_APPAREL:
+            view.items = state->apparel;
+            view.count = state->apparel_count;
+            break;
+        case SUBTAB_AID:
+            view.items = state->aid;
+            view.count = state->aid_count;
+            break;
+        case SUBTAB_MISC:
+            view.items = state->misc;
+            view.count = state->misc_count;
+            break;
+        case SUBTAB_JUNK:
+            view.items = state->junk;
+            view.count = state->junk_count;
+            break;
+        case SUBTAB_MODS:
+            view.items = state->mods;
+            view.count = state->mods_count;
+            break;
+        case SUBTAB_AMMO:
+            view.items = state->ammo;
+            view.count = state->ammo_count;
+            break;
+        case NUM_INV_SUBTABS:
+            break;
+    }
+
+    return view;
+}
+
+static int reserve_items(invItem **items, int *capacity, int required) {
+    if (*capacity >= required && *items) {
+        return 1;
+    }
+
+    int new_capacity = (*capacity > 0) ? *capacity : 8;
+    while (new_capacity < required) {
+        new_capacity *= 2;
+    }
+
+    invItem *resized = realloc(*items, (size_t)new_capacity * sizeof(*resized));
+    if (!resized) {
+        return 0;
+    }
+
+    *items = resized;
+    *capacity = new_capacity;
+    return 1;
 }
 
 // Function to load inventory items from a file
 int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity) {
+    if (!file_path || !inv_list || !inv_count || !inv_capacity) {
+        return -1;
+    }
+
     FILE *file = fopen(file_path, "r");
     if (!file) {
-        printf("Failed to open file: %s\n", file_path);
-        return 0;
+        fprintf(stderr, "Failed to open inventory file: %s\n", file_path);
+        return -1;
     }
 
     char line[256];
     int count = 0;
 
     // Skip the header line
-    fgets(line, sizeof(line), file);
+    if (!fgets(line, sizeof(line), file)) {
+        fclose(file);
+        *inv_count = 0;
+        return 0;
+    }
 
     while (fgets(line, sizeof(line), file)) {
-        if (count >= *inv_capacity) {
-            int new_capacity = *inv_capacity * 2;
-            invItem *temp = realloc(*inv_list, new_capacity * sizeof(invItem));
-            if (!temp) {
-                printf("Memory allocation failed during resizing.\n");
-                fclose(file);
-                return 0;
-            }
-            *inv_list = temp;
-            *inv_capacity = new_capacity;
+        if (line[0] == '\n' || line[0] == '\r' || line[0] == '\0') {
+            continue;
         }
 
-        // Ensure we're storing each entry separately
-        invItem *item = &(*inv_list)[count];  // Assign a pointer to the correct index
-        // Check if loading inventory item list
+        if (!reserve_items(inv_list, inv_capacity, count + 1)) {
+            fprintf(stderr, "Memory allocation failed while loading %s.\n", file_path);
+            fclose(file);
+            *inv_count = count;
+            return -1;
+        }
+
+        invItem item = {0};
+        int parsed_fields = 0;
+        int required_fields = 4;
+
         if (strstr(file_path, "weapons.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d,%d,%49[^,],%19[^,],%d,%d,%d,%d",
-                item->name, &item->quantity, &item->weight, &item->damage,
-                &item->ammo, item->ammo_type, item->speed, &item->fire_rate,
-                &item->range, &item->accuracy, &item->value);
-                // Copy speed only for melee weapons (ammo == 0)
+            required_fields = 11;
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d,%d,%49[^,],%19[^,],%d,%d,%d,%d",
+                item.name, &item.quantity, &item.weight, &item.damage,
+                &item.ammo, item.ammo_type, item.speed, &item.fire_rate,
+                &item.range, &item.accuracy, &item.value);
         } else if (strstr(file_path, "apparel.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d",
-                item->name, &item->quantity, &item->weight, &item->value);
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
+                item.name, &item.quantity, &item.weight, &item.value);
         } else if (strstr(file_path, "aid.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d",
-                item->name, &item->quantity, &item->weight, &item->value);
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
+                item.name, &item.quantity, &item.weight, &item.value);
         } else if (strstr(file_path, "misc.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d",
-                item->name, &item->quantity, &item->weight, &item->value);
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
+                item.name, &item.quantity, &item.weight, &item.value);
         } else if (strstr(file_path, "junk.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d,%49[^\n]",
-                item->name, &item->quantity, &item->weight, &item->value, item->component);
-                // Remove surrounding quotes if present
-                int len = strlen(item->component);
-                if (len > 1 && item->component[0] == '"' && item->component[len - 1] == '"') {
-                    memmove(item->component, item->component + 1, len - 2);
-                    item->component[len - 2] = '\0'; // Properly terminate the string
-                }
+            required_fields = 5;
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d,%49[^\r\n]",
+                item.name, &item.quantity, &item.weight, &item.value, item.component);
+
+            size_t length = strlen(item.component);
+            if (length > 1 && item.component[0] == '"' && item.component[length - 1] == '"') {
+                memmove(item.component, item.component + 1, length - 2);
+                item.component[length - 2] = '\0';
+            }
         } else if (strstr(file_path, "mods.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d",
-                item->name, &item->quantity, &item->weight, &item->value);
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
+                item.name, &item.quantity, &item.weight, &item.value);
         } else if (strstr(file_path, "ammo.csv")) {
-            sscanf(line, "%49[^,],%d,%f,%d",
-                item->name, &item->quantity, &item->weight, &item->value);
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
+                item.name, &item.quantity, &item.weight, &item.value);
         } else {
-            // Default parsing in case of unknown category
-            sscanf(line, "%49[^,],%d,%f,%d",
-                item->name, &item->quantity, &item->weight, &item->value);
+            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
+                item.name, &item.quantity, &item.weight, &item.value);
         }
 
-        count++;
+        if (parsed_fields < required_fields) {
+            fprintf(stderr, "Skipping malformed row in %s: %s", file_path, line);
+            continue;
+        }
+
+        (*inv_list)[count++] = item;
     }
 
     fclose(file);
@@ -90,46 +173,12 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
 
 // Reset inventory navigation when changing subtabs
 void reset_inventory_navigation(PipState *state) {
-    invItem *current_list = NULL;
-    int current_count = 0;
-
-
-    // Determine the current list and count based on the active subtab
-    switch (state->current_inv_subtab) {
-        case SUBTAB_WEAPONS:
-            current_list = state->weapons;
-            current_count = state->weapons_count;
-            break;
-        case SUBTAB_APPAREL:
-            current_list = state->apparel;
-            current_count = state->apparel_count;
-            break;
-        case SUBTAB_AID:
-            current_list = state->aid;
-            current_count = state->aid_count;
-            break;
-        case SUBTAB_MISC:
-            current_list = state->misc;
-            current_count = state->misc_count;
-            break;
-        case SUBTAB_JUNK:
-            current_list = state->junk;
-            current_count = state->junk_count;
-            break;
-        case SUBTAB_MODS:
-            current_list = state->mods;
-            current_count = state->mods_count;
-            break;
-        case SUBTAB_AMMO:
-            current_list = state->ammo;
-            current_count = state->ammo_count;
-            break;
-    }
+    InventoryView view = get_inventory_view(state);
 
     // Clamp selector_position and inv_scroll_index
-    if (current_list) {
-        if (state->selector_position >= current_count) {
-            state->selector_position = (current_count > 0) ? current_count - 1 : 0;
+    if (view.items) {
+        if (state->selector_position >= view.count) {
+            state->selector_position = (view.count > 0) ? view.count - 1 : 0;
         }
         if (state->inv_scroll_index > state->selector_position) {
             state->inv_scroll_index = state->selector_position;
@@ -139,5 +188,3 @@ void reset_inventory_navigation(PipState *state) {
         state->inv_scroll_index = 0;
     }
 }
-
-void handle_inventory_scroll(PipState *state, int direction);

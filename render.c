@@ -1,21 +1,19 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
 #include <time.h>
 #include "render.h"
 #include "pipboy.h"
 
-void render_health_background(SDL_Renderer *renderer) {
-    SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOXHP1.jpg");
+void render_health_background(SDL_Renderer *renderer, const AppResources *resources) {
+    if (!resources || !resources->health_background) return;
+
     SDL_Rect background_rect = {110, 430, 135, 30};
-    SDL_SetTextureColorMod(background, 0, 255, 0);
-    SDL_RenderCopy(renderer, background, NULL, &background_rect);
-    SDL_DestroyTexture(background);
+    SDL_SetTextureColorMod(resources->health_background, 0, 255, 0);
+    SDL_RenderCopy(renderer, resources->health_background, NULL, &background_rect);
 }
 
-void render_ap_bar(SDL_Renderer *renderer, PipState *state) {
-    SDL_Texture *bar = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    if (!bar) return;  // Prevent crashes if the texture fails to load
+void render_ap_bar(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
+    if (!resources || !resources->box_background) return;
 
     // Default AP bar settings (STAT tab)
     int bar_width = 145;
@@ -31,20 +29,20 @@ void render_ap_bar(SDL_Renderer *renderer, PipState *state) {
     SDL_Rect bar_rect = {bar_x, 430, bar_width, 30};
 
     // Render the bar
-    SDL_SetTextureColorMod(bar, 0, 255, 0);
-    SDL_RenderCopy(renderer, bar, NULL, &bar_rect);
-
-    SDL_DestroyTexture(bar);
+    SDL_SetTextureColorMod(resources->box_background, 0, 255, 0);
+    SDL_RenderCopy(renderer, resources->box_background, NULL, &bar_rect);
 }
 
-void render_date_time(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+void render_date_time(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
     if (state->current_tab != TAB_DATA) {
         return;  // Only render if in DATA tab
     }
 
+    TTF_Font *font = resources->body_font;
     SDL_Color color = {0, 255, 0, 255}; // Green text color
     time_t t = time(NULL);
     struct tm *tm_info = localtime(&t);
+    if (!tm_info) return;
 
     // Format date
     char date_text[20];

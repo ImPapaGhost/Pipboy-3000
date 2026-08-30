@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
+#include "resources.h"
 
 // Constants
 #define SCREEN_WIDTH 800
@@ -188,12 +189,12 @@ extern PipState pip_state; // Declare the game state
 // Function Prototypes
 int file_exists(const char *path);
 float ease_out_cubic(float t);
-void initialize_pip_state(PipState *state);
+bool initialize_pip_state(PipState *state);
+void cleanup_pip_state(PipState *state);
 void add_experience(PipState *state, int xp);
 void update_damage(DamageBars *bars, int head, int left_arm, int right_arm, int torso, int left_leg, int right_leg);
 int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv_capacity);
-void render_inv(SDL_Renderer *renderer, TTF_Font *font, PipState *state);
-void load_ammo_map(const char *filename, PipState *state);
+void render_inv(SDL_Renderer *renderer, const AppResources *resources, PipState *state);
 
 
 #endif

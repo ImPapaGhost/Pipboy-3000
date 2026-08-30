@@ -6,7 +6,7 @@
 
 // Input handling functions
 void capture_input(SDL_Event *event);
-bool input_queue_is_empty();
-SDL_Keycode input_dequeue();
+bool input_queue_is_empty(void);
+SDL_Keycode input_dequeue(void);
 
 #endif
