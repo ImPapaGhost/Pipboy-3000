@@ -1,5 +1,5 @@
 #include "map.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <stdio.h>
 
 static SDL_Texture* map_texture = NULL;
@@ -7,10 +7,20 @@ static int map_offset_x = 0;
 static int map_offset_y = 0;
 
 #define MAP_SCROLL_SPEED 8
+#define MAP_TEXTURE_WIDTH 1024
+#define MAP_TEXTURE_HEIGHT 1024
+#define MAP_VIEW_WIDTH 700
+#define MAP_VIEW_HEIGHT 370
+
+static int clamp(int value, int minimum, int maximum) {
+    if (value < minimum) return minimum;
+    if (value > maximum) return maximum;
+    return value;
+}
 
 void map_init(SDL_Renderer* renderer) {
     // Create a simple grid-like texture (for demo purposes)
-    SDL_Surface* surface = SDL_CreateRGBSurface(0, 1024, 1024, 32,
+    SDL_Surface* surface = SDL_CreateRGBSurface(0, MAP_TEXTURE_WIDTH, MAP_TEXTURE_HEIGHT, 32,
                                                 0x00FF0000,
                                                 0x0000FF00,
                                                 0x000000FF,
@@ -20,19 +30,19 @@ void map_init(SDL_Renderer* renderer) {
         return;
     }
 
-    // Draw vertical and horizontal grid lines
-    SDL_LockSurface(surface);
-    Uint32* pixels = (Uint32*)surface->pixels;
-    for (int y = 0; y < 1024; y++) {
-        for (int x = 0; x < 1024; x++) {
-            if (x % 64 == 0 || y % 64 == 0) {
-                pixels[y * 1024 + x] = SDL_MapRGBA(surface->format, 100, 255, 100, 255);
-            } else {
-                pixels[y * 1024 + x] = SDL_MapRGBA(surface->format, 0, 0, 0, 255);
-            }
-        }
+    const Uint32 background = SDL_MapRGBA(surface->format, 0, 0, 0, 255);
+    const Uint32 grid_color = SDL_MapRGBA(surface->format, 100, 255, 100, 255);
+    SDL_FillRect(surface, NULL, background);
+
+    // Drawing 32 narrow rectangles is much cheaper than mapping every pixel.
+    for (int x = 0; x < MAP_TEXTURE_WIDTH; x += 64) {
+        SDL_Rect line = {x, 0, 1, MAP_TEXTURE_HEIGHT};
+        SDL_FillRect(surface, &line, grid_color);
     }
-    SDL_UnlockSurface(surface);
+    for (int y = 0; y < MAP_TEXTURE_HEIGHT; y += 64) {
+        SDL_Rect line = {0, y, MAP_TEXTURE_WIDTH, 1};
+        SDL_FillRect(surface, &line, grid_color);
+    }
 
     map_texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
@@ -42,16 +52,17 @@ void map_init(SDL_Renderer* renderer) {
     }
 }
 
-void map_handle_event(SDL_Event* e) {
-    if (e->type == SDL_KEYDOWN) {
-        switch (e->key.keysym.sym) {
-            case SDLK_UP:    map_offset_y -= MAP_SCROLL_SPEED; break;
-            case SDLK_DOWN:  map_offset_y += MAP_SCROLL_SPEED; break;
-            case SDLK_LEFT:  map_offset_x -= MAP_SCROLL_SPEED; break;
-            case SDLK_RIGHT: map_offset_x += MAP_SCROLL_SPEED; break;
-            default: break;
-        }
+void map_handle_key(SDL_Keycode key) {
+    switch (key) {
+        case SDLK_UP:    map_offset_y -= MAP_SCROLL_SPEED; break;
+        case SDLK_DOWN:  map_offset_y += MAP_SCROLL_SPEED; break;
+        case SDLK_LEFT:  map_offset_x -= MAP_SCROLL_SPEED; break;
+        case SDLK_RIGHT: map_offset_x += MAP_SCROLL_SPEED; break;
+        default: return;
     }
+
+    map_offset_x = clamp(map_offset_x, 0, MAP_TEXTURE_WIDTH - MAP_VIEW_WIDTH);
+    map_offset_y = clamp(map_offset_y, 0, MAP_TEXTURE_HEIGHT - MAP_VIEW_HEIGHT);
 }
 
 void map_update() {
@@ -61,14 +72,14 @@ void map_update() {
 void map_render(SDL_Renderer* renderer) {
     if (!map_texture) return;
 
-    SDL_Rect map_area = { 50, 60, 700, 370 };
+    SDL_Rect map_area = {50, 60, MAP_VIEW_WIDTH, MAP_VIEW_HEIGHT};
 
     SDL_Rect src_rect = { map_offset_x, map_offset_y, map_area.w, map_area.h };
 
     SDL_RenderCopy(renderer, map_texture, &src_rect, &map_area);
 }
 
-void map_cleanup() {
+static void map_cleanup(void) {
     if (map_texture) {
         SDL_DestroyTexture(map_texture);
         map_texture = NULL;

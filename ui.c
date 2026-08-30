@@ -1,16 +1,14 @@
 #include "ui.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
 #include <stdio.h>
-#include <math.h>
 
-void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+void render_stat_subtabs(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
     const char *subtab_names[] = {"STATUS", "SPECIAL", "PERKS"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
+    TTF_Font *subtab_font = resources->subtab_font;
 
     int base_x = 205; // Base x-coordinate for the centered subtab
     int base_y = 45;  // Y-coordinate for subtabs
@@ -26,13 +24,15 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
         }
     }
 
-    float offset = (-1.0f + progress) * state->subtab_animation_offset; // Control direction of animation by linear interpolation
+    const int current_subtab = (int)state->current_subtab;
+    float offset = (-1.0f + progress) * (float)state->subtab_animation_offset;
+    const int offset_pixels = (int)offset;
 
     // Render each subtab
     for (int i = 0; i < NUM_SUBTABS; i++) {
-        int x_position = base_x + (i - state->current_subtab) * SUBTAB_SPACING + offset;
+        int x_position = base_x + (i - current_subtab) * SUBTAB_SPACING + offset_pixels;
 
-        SDL_Color current_color = (i == state->current_subtab) ? color_active : color_inactive;
+        SDL_Color current_color = (i == current_subtab) ? color_active : color_inactive;
 
         SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -44,15 +44,14 @@ void render_stat_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
         SDL_DestroyTexture(texture);
     }
 
-    TTF_CloseFont(subtab_font);
 }
 
-void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+void render_inv_subtabs(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
     const char *subtab_names[] = {"WEAPONS", "APPAREL", "AID", "MISC", "JUNK", "MODS", "AMMO"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
 
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
+    TTF_Font *subtab_font = resources->subtab_font;
 
     int base_y = 45;  // Y-coordinate for subtabs
 
@@ -69,7 +68,8 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
     // Calculate offset so that the selected subtab is centered
     int center_x = 300;
     int selected_offset = 0;
-    for (int i = 0; i < state->current_inv_subtab; i++) {
+    const int current_subtab = (int)state->current_inv_subtab;
+    for (int i = 0; i < current_subtab; i++) {
         selected_offset += subtab_widths[i] + 25;
     }
 
@@ -86,14 +86,15 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
         }
     }
 
-    float offset = (-1.0f + progress) * state->inv_subtab_animation_offset; // Animation shift
+    float offset = (-1.0f + progress) * (float)state->inv_subtab_animation_offset;
+    const int offset_pixels = (int)offset;
 
     // Render each subtab
     int current_x = base_x;
     for (int i = 0; i < NUM_INV_SUBTABS; i++) {
-        int x_position = current_x + offset;
+        int x_position = current_x + offset_pixels;
 
-        SDL_Color current_color = (i == state->current_inv_subtab) ? color_active : color_inactive;
+        SDL_Color current_color = (i == current_subtab) ? color_active : color_inactive;
 
         SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -107,14 +108,13 @@ void render_inv_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state)
         current_x += subtab_widths[i] + 25; // Move to the next subtab
     }
 
-    TTF_CloseFont(subtab_font);
 }
 
-void render_data_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
+void render_data_subtabs(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
     const char *subtab_names[] = {"QUESTS", "WORKSHOPS", "STATS"};
     SDL_Color color_active = {0, 255, 0, 255};   // Bright green for active subtab
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for inactive subtabs
-    TTF_Font *subtab_font = TTF_OpenFont("monofonto.ttf", 22); // Font size for subtabs
+    TTF_Font *subtab_font = resources->subtab_font;
     // Calculate widths of each subtab
     int subtab_widths[NUM_DATA_SUBTABS];
     int total_width = 0;
@@ -126,7 +126,8 @@ void render_data_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
     // Calculate offset so that the selected subtab is centered
     int center_x = 395;
     int selected_offset = 0;
-    for (int i = 0; i < state->current_data_subtab; i++) {
+    const int current_subtab = (int)state->current_data_subtab;
+    for (int i = 0; i < current_subtab; i++) {
         selected_offset += subtab_widths[i] + 25;
     }
 
@@ -145,14 +146,15 @@ void render_data_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
         }
     }
 
-    float offset = (-1.0f + progress) * state->data_subtab_animation_offset;
+    float offset = (-1.0f + progress) * (float)state->data_subtab_animation_offset;
+    const int offset_pixels = (int)offset;
 
     // Render each subtab
     int current_x = base_x;
     for (int i = 0; i < NUM_DATA_SUBTABS; i++) {
-        int x_position = current_x + offset;
+        int x_position = current_x + offset_pixels;
 
-        SDL_Color current_color = (i == state->current_data_subtab) ? color_active : color_inactive;
+        SDL_Color current_color = (i == current_subtab) ? color_active : color_inactive;
 
         SDL_Surface *surface = TTF_RenderText_Solid(subtab_font, subtab_names[i], current_color);
         SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -166,7 +168,6 @@ void render_data_subtabs(SDL_Renderer *renderer, TTF_Font *font, PipState *state
         current_x += subtab_widths[i] + 25; // Move to the next subtab
     }
 
-    TTF_CloseFont(subtab_font);
 }
 
 void render_quests(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
@@ -174,6 +175,8 @@ void render_quests(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for unselected
 
     int x = 100, y = 120, spacing = 30;
+
+    if (!state->quests || state->quest_count <= 0) return;
 
     for (int i = 0; i < state->quest_count; i++) {
         SDL_Color current_color = (state->current_quest == i) ? color_active : color_inactive;
@@ -203,6 +206,8 @@ void render_workshops(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     SDL_Color color_inactive = {0, 100, 0, 255}; // Dim for unselected
 
     int x = 100, y = 120, spacing = 30;
+
+    if (!state->workshops || state->workshop_count <= 0) return;
 
     // Render Workshop List
     for (int i = 0; i < state->workshop_count; i++) {
@@ -284,7 +289,7 @@ void render_stats(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     // Render Stats for the Selected Category on the Right
     int stat_y = y_start;
     for (int i = 0; i < state->stats_count; i++) {
-        if (state->stats[i].category == state->current_stat_category) {
+        if ((int)state->stats[i].category == state->current_stat_category) {
             // Measure text height for centering
             int stat_text_width, stat_text_height;
             TTF_SizeText(font, state->stats[i].name, &stat_text_width, &stat_text_height);
@@ -328,8 +333,9 @@ void render_stats(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
     }
 }
 
-void render_data_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
-    render_data_subtabs(renderer, font, state);
+void render_data_tab(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
+    TTF_Font *font = resources->body_font;
+    render_data_subtabs(renderer, resources, state);
 
     switch (state->current_data_subtab) {
         case SUBTAB_QUESTS:
@@ -341,12 +347,13 @@ void render_data_tab(SDL_Renderer *renderer, TTF_Font *font, PipState *state) {
         case SUBTAB_STATS:
             render_stats(renderer, font, state);
             break;
+        case NUM_DATA_SUBTABS:
+            break;
     }
 }
 
-void render_mid_background(SDL_Renderer *renderer, PipState *state) {
-    SDL_Texture *background = IMG_LoadTexture(renderer, "STAT/BOX4.jpg");
-    if (!background) return;
+void render_mid_background(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
+    if (!resources || !resources->box_background) return;
 
     // Default XP bar settings (STAT tab)
     int bg_width = 300;
@@ -360,19 +367,26 @@ void render_mid_background(SDL_Renderer *renderer, PipState *state) {
 
     SDL_Rect background_rect = {bg_x, 430, bg_width, 30};
 
-    SDL_SetTextureColorMod(background, 0, 255, 0);
-    SDL_RenderCopy(renderer, background, NULL, &background_rect);
-    SDL_DestroyTexture(background);
+    SDL_SetTextureColorMod(resources->box_background, 0, 255, 0);
+    SDL_RenderCopy(renderer, resources->box_background, NULL, &background_rect);
 }
 
 void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int height, int health) {
+    if (health < 0) health = 0;
+    if (health > 100) health = 100;
+
     // Draw the background (gray bar)
     SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255); // Dark gray
     SDL_Rect background_rect = {x, y, width, height};
     SDL_RenderFillRect(renderer, &background_rect);
 
     // Draw the health portion (green to red based on health percentage)
-    SDL_Color bar_color = {255 - (2.55 * health), 2.55 * health, 0, 255}; // Gradient
+    SDL_Color bar_color = {
+        (Uint8)(255 - ((255 * health) / 100)),
+        (Uint8)((255 * health) / 100),
+        0,
+        255
+    };
     SDL_SetRenderDrawColor(renderer, bar_color.r, bar_color.g, bar_color.b, bar_color.a);
     SDL_Rect health_rect = {x, y, (width * health) / 100, height};
     SDL_RenderFillRect(renderer, &health_rect);

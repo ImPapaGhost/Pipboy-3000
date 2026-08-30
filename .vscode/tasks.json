@@ -4,39 +4,35 @@
     {
       "label": "Build PipBoy",
       "type": "shell",
-      "command": "gcc",
+      "command": "powershell",
       "args": [
-        "-o", "PipBoy3000.exe",
-        "Pipboy3000.c",
-        "pipboy.c",
-        "inventory.c",
-        "state.c",
-        "render.c",
-        "animations.c",
-        "input.c",
-        "ui.c",
-        "events.c",
-        "MAP/map.c",
-        "-I", "SDL2-devel-2.30.11-mingw/SDL2-2.30.11/x86_64-w64-mingw32/include",
-        "-I", "SDL2_image-devel-2.8.4-mingw/SDL2_image-2.8.4/x86_64-w64-mingw32/include",
-        "-I", "SDL2_mixer-devel-2.8.0-mingw/SDL2_mixer-2.8.0/x86_64-w64-mingw32/include",
-        "-I", "SDL2_ttf-devel-2.24.0-mingw/SDL2_ttf-2.24.0/x86_64-w64-mingw32/include",
-        "-I", "SDL2-devel-2.30.11-mingw/SDL2-2.30.11/x86_64-w64-mingw32/include/SDL2",
-        "-L", "SDL2-devel-2.30.11-mingw/SDL2-2.30.11/x86_64-w64-mingw32/lib",
-        "-L", "SDL2_image-devel-2.8.4-mingw/SDL2_image-2.8.4/x86_64-w64-mingw32/lib",
-        "-L", "SDL2_mixer-devel-2.8.0-mingw/SDL2_mixer-2.8.0/x86_64-w64-mingw32/lib",
-        "-L", "SDL2_ttf-devel-2.24.0-mingw/SDL2_ttf-2.24.0/x86_64-w64-mingw32/lib",
-        "-lmingw32",
-        "-lSDL2main",
-        "-lSDL2",
-        "-lSDL2_image",
-        "-lSDL2_mixer",
-        "-lSDL2_ttf",
-        "-mwindows"
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/scripts/build.ps1",
+        "-Configuration", "Debug"
       ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": {
         "kind": "build",
         "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "Test PipBoy",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", "${workspaceFolder}/scripts/build.ps1",
+        "-Configuration", "Debug",
+        "-RunTests"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
       },
       "problemMatcher": ["$gcc"]
     }
