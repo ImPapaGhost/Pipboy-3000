@@ -83,6 +83,7 @@ On Unix-like systems, CMake discovers SDL2, SDL2_image, SDL2_mixer, and SDL2_ttf
 | `X` | Add test experience |
 | `H` | Take 40 test damage |
 | `Z` | Add 100 test radiation |
+| `C` | Reset test HP, radiation, Stimpaks, and RadAway |
 | Any key during boot | Skip the boot animation |
 
 ## Project layout

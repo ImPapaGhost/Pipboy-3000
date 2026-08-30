@@ -168,7 +168,7 @@ static PipCommandOutcome take_damage(PipState *state, int amount) {
 
 static PipCommandOutcome add_radiation(PipState *state, int amount) {
     if (amount <= 0 || state->radiation >= state->max_radiation) {
-        return outcome(PIP_COMMAND_NO_EFFECT, false, "NO RADIATION APPLIED");
+        return outcome(PIP_COMMAND_NO_EFFECT, false, "MAXIMUM RADIATION");
     }
     if (amount > state->max_radiation - state->radiation) {
         amount = state->max_radiation - state->radiation;
@@ -190,6 +190,16 @@ static PipCommandOutcome add_radiation(PipState *state, int amount) {
     return result;
 }
 
+static PipCommandOutcome reset_test_vitals(PipState *state) {
+    state->radiation = 0;
+    state->health = state->max_health;
+    invItem *stimpak = find_inventory_item(state, "aid_stimpak");
+    invItem *radaway = find_inventory_item(state, "aid_radaway");
+    if (stimpak) stimpak->quantity = 5;
+    if (radaway) radaway->quantity = 3;
+    return outcome(PIP_COMMAND_OK, true, "TEST VITALS AND AID RESET");
+}
+
 PipCommandOutcome pipboy_execute_command(PipState *state, const PipCommand *command) {
     if (!state || !command) {
         return outcome(PIP_COMMAND_INVALID, false, "INVALID COMMAND");
@@ -208,6 +218,8 @@ PipCommandOutcome pipboy_execute_command(PipState *state, const PipCommand *comm
             return take_damage(state, command->value);
         case PIP_COMMAND_ADD_RADIATION:
             return add_radiation(state, command->value);
+        case PIP_COMMAND_RESET_TEST_VITALS:
+            return reset_test_vitals(state);
     }
 
     return outcome(PIP_COMMAND_INVALID, false, "INVALID COMMAND");

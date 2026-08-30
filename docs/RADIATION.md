@@ -49,3 +49,9 @@ retains the level and XP readout plus a progress meter.
 Ambient exposure rate (`RAD/SEC`), Geiger-counter click frequency, Rad-X
 resistance, radiation-sickness thresholds, and death handling at 1000 RADS are
 separate systems and can be layered onto this accumulated-dose model later.
+
+Until death/respawn handling exists, the `Z` development control is capped at
+900 RADS. `C` restores test HP, radiation, Stimpaks, and RadAway so UI
+experiments cannot leave the prototype in a dead-but-interactive or depleted
+state. Gameplay commands can still model
+the full 1000-RAD lethal threshold independently of that debug guardrail.
