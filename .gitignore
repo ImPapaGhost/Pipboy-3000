@@ -1,6 +1,7 @@
 procexp.exe
 /build/
 /debug.log
+/saves/
 /PipBoy3000.exe
 *.o
 *.obj

@@ -398,3 +398,40 @@ void render_damage_bar(SDL_Renderer *renderer, int x, int y, int width, int heig
     // Reset render color to black for safety
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 }
+
+void render_notification(SDL_Renderer *renderer, const AppResources *resources, PipState *state) {
+    if (!state || state->notification[0] == '\0') {
+        return;
+    }
+
+    const Uint32 elapsed = SDL_GetTicks() - state->notification_start_time;
+    if (elapsed >= 3000) {
+        state->notification[0] = '\0';
+        return;
+    }
+
+    const SDL_Color color = state->notification_is_error
+        ? (SDL_Color){255, 96, 32, 255}
+        : (SDL_Color){0, 255, 0, 255};
+    SDL_Surface *surface = TTF_RenderText_Solid(resources->detail_font, state->notification, color);
+    if (!surface) {
+        return;
+    }
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+    if (!texture) {
+        SDL_FreeSurface(surface);
+        return;
+    }
+
+    SDL_Rect text_rect = {(SCREEN_WIDTH - surface->w) / 2, 70, surface->w, surface->h};
+    SDL_Rect box_rect = {text_rect.x - 12, text_rect.y - 6, text_rect.w + 24, text_rect.h + 12};
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 230);
+    SDL_RenderFillRect(renderer, &box_rect);
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    SDL_RenderDrawRect(renderer, &box_rect);
+    SDL_RenderCopy(renderer, texture, NULL, &text_rect);
+
+    SDL_FreeSurface(surface);
+    SDL_DestroyTexture(texture);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+}

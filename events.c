@@ -1,9 +1,56 @@
 #include "events.h"
+#include "core.h"
 #include "input.h"
 #include "inventory.h"
 #include "MAP/map.h"
 #include "pipboy.h"
+#include "save.h"
 #include <SDL2/SDL.h>
+#include <stdio.h>
+#include <string.h>
+
+static invItem *selected_inventory_item(PipState *state) {
+    InventoryView view = get_inventory_view(state);
+    if (!view.items || state->selector_position < 0 || state->selector_position >= view.count) {
+        return NULL;
+    }
+    return &view.items[state->selector_position];
+}
+
+static void set_notification(PipState *state, const char *message, bool is_error) {
+    snprintf(state->notification, sizeof(state->notification), "%s", message ? message : "");
+    state->notification_start_time = SDL_GetTicks();
+    state->notification_is_error = is_error;
+}
+
+static void execute_and_save(PipState *state, const PipCommand *command) {
+    const PipCommandOutcome result = pipboy_execute_command(state, command);
+    set_notification(state, result.message, result.result != PIP_COMMAND_OK);
+    if (result.state_changed && !state->persistence_enabled) {
+        set_notification(state, "STATE CHANGED - SAVING DISABLED", true);
+    } else if (result.state_changed && !save_pip_state(state, PIP_SAVE_PATH)) {
+        fprintf(stderr, "Autosave failed after command %d\n", (int)command->type);
+        set_notification(state, "STATE CHANGED - SAVE FAILED", true);
+    }
+}
+
+static void activate_selected_item(PipState *state) {
+    invItem *item = selected_inventory_item(state);
+    if (!item) {
+        set_notification(state, "NO ITEM SELECTED", true);
+        return;
+    }
+
+    PipCommand command = {PIP_COMMAND_USE_ITEM, item->id, 0};
+    if (state->current_inv_subtab == SUBTAB_WEAPONS ||
+        state->current_inv_subtab == SUBTAB_APPAREL) {
+        command.type = PIP_COMMAND_EQUIP_ITEM;
+    } else if (state->current_inv_subtab != SUBTAB_AID) {
+        set_notification(state, "NO ACTION AVAILABLE", true);
+        return;
+    }
+    execute_and_save(state, &command);
+}
 
 void handle_navigation(PipState *state) {
     while (!input_queue_is_empty()) { // Process inputs from the queue
@@ -146,9 +193,44 @@ void handle_navigation(PipState *state) {
                 }
                 break;
 
+            case SDLK_RETURN:
+            case SDLK_KP_ENTER:
+                if (state->current_tab == TAB_INV) {
+                    activate_selected_item(state);
+                }
+                break;
+
+            case SDLK_f:
+                if (state->current_tab == TAB_INV) {
+                    invItem *item = selected_inventory_item(state);
+                    if (item) {
+                        const PipCommand command = {PIP_COMMAND_TOGGLE_FAVORITE, item->id, 0};
+                        execute_and_save(state, &command);
+                    }
+                }
+                break;
+
+            case SDLK_h: {
+                const PipCommand command = {PIP_COMMAND_TAKE_DAMAGE, NULL, 40};
+                execute_and_save(state, &command);
+                break;
+            }
+
+            case SDLK_z: {
+                const PipCommand command = {PIP_COMMAND_ADD_RADIATION, NULL, 100};
+                execute_and_save(state, &command);
+                break;
+            }
+
             // Simulate gaining XP (testing)
             case SDLK_x:
                 add_experience(state, 10);
+                set_notification(state, "EXPERIENCE GAINED  +10 XP", false);
+                if (!state->persistence_enabled) {
+                    set_notification(state, "XP GAINED - SAVING DISABLED", true);
+                } else if (!save_pip_state(state, PIP_SAVE_PATH)) {
+                    set_notification(state, "XP GAINED - SAVE FAILED", true);
+                }
                 break;
 
             default:

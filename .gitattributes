@@ -1,1 +1,3 @@
 third_party/pl_mpeg/pl_mpeg.h whitespace=-trailing-space
+third_party/cjson/cJSON.c whitespace=-trailing-space
+third_party/cjson/cJSON.h whitespace=-trailing-space

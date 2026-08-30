@@ -7,11 +7,14 @@ Pip-Boy 3000 is a work-in-progress Fallout-inspired interface written in C with 
 - STAT, INV, DATA, MAP, and RADIO tabs.
 - Animated Vault Boy and SPECIAL screens.
 - Scrollable inventory categories with weapon/ammo relationships.
+- Stateful inventory actions for using Aid, equipping gear, and favoriting items.
+- Versioned autosave/load with atomic writes and backup recovery.
 - Quest, workshop, and player-stat views.
 - Optional startup audio and a skippable boot animation.
 - Bounded map panning with a lightweight fallback grid.
 
 The planned offline country-map and GPS design is documented in [docs/OFFLINE_MAP_AND_GPS.md](docs/OFFLINE_MAP_AND_GPS.md).
+The versioned persistence schema and recovery behavior are documented in [docs/SAVE_FORMAT.md](docs/SAVE_FORMAT.md).
 
 ## Windows quick start
 
@@ -73,8 +76,12 @@ On Unix-like systems, CMake discovers SDL2, SDL2_image, SDL2_mixer, and SDL2_ttf
 | `Q` / `E` | Previous / next main tab |
 | `A` / `D` | Previous / next subtab |
 | `W` / `S` | Move through the active list |
+| `Enter` | Use selected Aid item or equip selected weapon/apparel |
+| `F` | Add/remove the selected inventory item from favorites |
 | Arrow keys | Pan the map while the MAP tab is active |
 | `X` | Add test experience |
+| `H` | Take 40 test damage |
+| `Z` | Add 100 test radiation |
 | Any key during boot | Skip the boot animation |
 
 ## Project layout
@@ -82,10 +89,13 @@ On Unix-like systems, CMake discovers SDL2, SDL2_image, SDL2_mixer, and SDL2_ttf
 - `Pipboy3000.c` — application lifecycle and top-level rendering.
 - `state.c` — state initialization, cleanup, XP, and damage state.
 - `inventory.c` — CSV loading and inventory selection helpers.
+- `core.c` — gameplay commands, item effects, equipment, favorites, and damage/radiation rules.
+- `save.c` — versioned JSON persistence, autosave installation, and backup recovery.
 - `resources.c` — fonts and static textures loaded once for reuse.
 - `video.c` — MPEG-1 decoding, SDL YUV texture upload, looping, and blocking boot playback.
 - `MAP/` — current map renderer and future offline-map integration point.
 - `third_party/pl_mpeg/` — pinned MIT-licensed single-header video decoder.
+- `third_party/cjson/` — pinned MIT-licensed JSON parser used for save files.
 - `tests/` — regression tests for state, inventory, navigation, every video asset, and the decoder.
 - `scripts/build.ps1` — dependency-free Windows build/test entry point.
 

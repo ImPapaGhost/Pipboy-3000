@@ -4,20 +4,49 @@
 #include <string.h>
 #include "pipboy.h"
 
-int get_ammo_count(const char *ammo_type, PipState *state) {
+int get_ammo_count(const char *ammo_id, PipState *state) {
     int total = 0;
 
-    if (!ammo_type || !state) {
+    if (!ammo_id || !state) {
         return 0;
     }
 
     for (int i = 0; i < state->ammo_count; i++) {
-        if (strcmp(state->ammo[i].name, ammo_type) == 0) {
+        if (strcmp(state->ammo[i].id, ammo_id) == 0) {
             total += state->ammo[i].quantity;
         }
     }
 
     return total;
+}
+
+static invItem *find_in_list(invItem *items, int count, const char *id) {
+    for (int index = 0; items && index < count; index++) {
+        if (strcmp(items[index].id, id) == 0) {
+            return &items[index];
+        }
+    }
+    return NULL;
+}
+
+invItem *find_inventory_item(PipState *state, const char *id) {
+    if (!state || !id || id[0] == '\0') {
+        return NULL;
+    }
+
+    invItem *item = find_in_list(state->weapons, state->weapons_count, id);
+    if (!item) item = find_in_list(state->apparel, state->apparel_count, id);
+    if (!item) item = find_in_list(state->aid, state->aid_count, id);
+    if (!item) item = find_in_list(state->misc, state->misc_count, id);
+    if (!item) item = find_in_list(state->junk, state->junk_count, id);
+    if (!item) item = find_in_list(state->mods, state->mods_count, id);
+    if (!item) item = find_in_list(state->ammo, state->ammo_count, id);
+    return item;
+}
+
+int get_inventory_quantity(PipState *state, const char *id) {
+    invItem *item = find_inventory_item(state, id);
+    return item ? item->quantity : 0;
 }
 
 InventoryView get_inventory_view(PipState *state) {
@@ -119,27 +148,29 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
 
         invItem item = {0};
         int parsed_fields = 0;
-        int required_fields = 4;
+        int required_fields = 5;
 
         if (strstr(file_path, "weapons.csv")) {
-            required_fields = 11;
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d,%d,%49[^,],%19[^,],%d,%d,%d,%d",
-                item.name, &item.quantity, &item.weight, &item.damage,
-                &item.ammo, item.ammo_type, item.speed, &item.fire_rate,
+            required_fields = 13;
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d,%d,%63[^,],%49[^,],%19[^,],%d,%d,%d,%d",
+                item.id, item.name, &item.quantity, &item.weight, &item.damage,
+                &item.ammo, item.ammo_id, item.ammo_type, item.speed, &item.fire_rate,
                 &item.range, &item.accuracy, &item.value);
         } else if (strstr(file_path, "apparel.csv")) {
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
-                item.name, &item.quantity, &item.weight, &item.value);
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d",
+                item.id, item.name, &item.quantity, &item.weight, &item.value);
         } else if (strstr(file_path, "aid.csv")) {
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
-                item.name, &item.quantity, &item.weight, &item.value);
+            required_fields = 7;
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d,%d,%d",
+                item.id, item.name, &item.quantity, &item.weight, &item.value,
+                &item.heal_amount, &item.radiation_delta);
         } else if (strstr(file_path, "misc.csv")) {
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
-                item.name, &item.quantity, &item.weight, &item.value);
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d",
+                item.id, item.name, &item.quantity, &item.weight, &item.value);
         } else if (strstr(file_path, "junk.csv")) {
-            required_fields = 5;
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d,%49[^\r\n]",
-                item.name, &item.quantity, &item.weight, &item.value, item.component);
+            required_fields = 6;
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d,%49[^\r\n]",
+                item.id, item.name, &item.quantity, &item.weight, &item.value, item.component);
 
             size_t length = strlen(item.component);
             if (length > 1 && item.component[0] == '"' && item.component[length - 1] == '"') {
@@ -147,14 +178,14 @@ int load_inv(const char *file_path, invItem **inv_list, int *inv_count, int *inv
                 item.component[length - 2] = '\0';
             }
         } else if (strstr(file_path, "mods.csv")) {
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
-                item.name, &item.quantity, &item.weight, &item.value);
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d",
+                item.id, item.name, &item.quantity, &item.weight, &item.value);
         } else if (strstr(file_path, "ammo.csv")) {
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
-                item.name, &item.quantity, &item.weight, &item.value);
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d",
+                item.id, item.name, &item.quantity, &item.weight, &item.value);
         } else {
-            parsed_fields = sscanf(line, "%49[^,],%d,%f,%d",
-                item.name, &item.quantity, &item.weight, &item.value);
+            parsed_fields = sscanf(line, "%63[^,],%49[^,],%d,%f,%d",
+                item.id, item.name, &item.quantity, &item.weight, &item.value);
         }
 
         if (parsed_fields < required_fields) {

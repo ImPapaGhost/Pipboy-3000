@@ -21,6 +21,7 @@
 #include "ui.h"
 #include "events.h"
 #include "MAP/map.h"
+#include "save.h"
 
 
 // Initialize damage bars with full health
@@ -263,6 +264,20 @@ static void render_stat_tab(
     SDL_RenderCopy(renderer, ap_texture, NULL, &ap_rect);
     SDL_FreeSurface(ap_surface);
     SDL_DestroyTexture(ap_texture);
+
+    char radiation_text[24];
+    snprintf(radiation_text, sizeof(radiation_text), "RADS %d", state->radiation);
+    SDL_Surface *radiation_surface = TTF_RenderText_Solid(detail_font, radiation_text, color);
+    SDL_Texture *radiation_texture = SDL_CreateTextureFromSurface(renderer, radiation_surface);
+    SDL_Rect radiation_rect = {
+        (SCREEN_WIDTH - radiation_surface->w) / 2,
+        432,
+        radiation_surface->w,
+        radiation_surface->h
+    };
+    SDL_RenderCopy(renderer, radiation_texture, NULL, &radiation_rect);
+    SDL_FreeSurface(radiation_surface);
+    SDL_DestroyTexture(radiation_texture);
 }
 
 static void render_status_content(
@@ -291,8 +306,10 @@ static void render_status_content(
     }
 
     // Render Stimpak Text
+    const int stimpak_count = get_inventory_quantity(state, "aid_stimpak");
+    const int radaway_count = get_inventory_quantity(state, "aid_radaway");
     char stimpak_text[20];
-    snprintf(stimpak_text, sizeof(stimpak_text), "Stimpak (%d)", state->stimpaks);
+    snprintf(stimpak_text, sizeof(stimpak_text), "Stimpak (%d)", stimpak_count);
     SDL_Surface *stimpak_surface = TTF_RenderText_Solid(font, stimpak_text, color);
     SDL_Texture *stimpak_texture = SDL_CreateTextureFromSurface(renderer, stimpak_surface);
     SDL_Rect stimpak_text_rect = {115, 400, stimpak_surface->w, stimpak_surface->h}; // Center inside background
@@ -302,7 +319,7 @@ static void render_status_content(
 
     // Render RadAway Text
     char radaway_text[20];
-    snprintf(radaway_text, sizeof(radaway_text), "RadAway (%d)", state->radaways);
+    snprintf(radaway_text, sizeof(radaway_text), "RadAway (%d)", radaway_count);
     SDL_Surface *radaway_surface = TTF_RenderText_Solid(font, radaway_text, color);
     SDL_Texture *radaway_texture = SDL_CreateTextureFromSurface(renderer, radaway_surface);
     SDL_Rect radaway_text_rect = {230, 400, radaway_surface->w, radaway_surface->h}; // Center inside background
@@ -595,6 +612,22 @@ int main(int argc, char *argv[]) {
     }
     state_initialized = true;
 
+    const PipSaveLoadResult save_result = load_pip_state(&pip_state, PIP_SAVE_PATH);
+    if (save_result == PIP_SAVE_LOADED) {
+        snprintf(pip_state.notification, sizeof(pip_state.notification), "SAVE LOADED");
+        pip_state.notification_start_time = SDL_GetTicks();
+    } else if (save_result == PIP_SAVE_RECOVERED_BACKUP) {
+        snprintf(pip_state.notification, sizeof(pip_state.notification), "BACKUP SAVE RECOVERED");
+        pip_state.notification_start_time = SDL_GetTicks();
+        save_pip_state(&pip_state, PIP_SAVE_PATH);
+    } else if (save_result == PIP_SAVE_ERROR) {
+        pip_state.persistence_enabled = false;
+        fprintf(stderr, "Save data was present but could not be loaded.\n");
+        snprintf(pip_state.notification, sizeof(pip_state.notification), "SAVE LOAD FAILED - USING DEFAULTS");
+        pip_state.notification_start_time = SDL_GetTicks();
+        pip_state.notification_is_error = true;
+    }
+
     map_init(renderer);
 
     bool running = true;
@@ -637,6 +670,7 @@ int main(int argc, char *argv[]) {
         if (pip_state.current_tab == TAB_STAT && pip_state.current_subtab == SUBTAB_SPECIAL) {
             render_special_animation(renderer, &resources, &pip_state, elapsed_seconds);
         }
+        render_notification(renderer, &resources, &pip_state);
 
         SDL_RenderPresent(renderer);
 
@@ -657,6 +691,9 @@ cleanup:
         Mix_FreeChunk(boot_sound);
     }
     map_shutdown();
+    if (state_initialized && pip_state.persistence_enabled) {
+        save_pip_state(&pip_state, PIP_SAVE_PATH);
+    }
     if (state_initialized) cleanup_pip_state(&pip_state);
     if (resources_initialized) resources_destroy(&resources);
     if (mixer_open) Mix_CloseAudio();

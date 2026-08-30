@@ -55,16 +55,19 @@ $libraries = @(
 $appSources = @(
     'Pipboy3000.c',
     'animations.c',
+    'core.c',
     'events.c',
     'input.c',
     'inventory.c',
     'pipboy.c',
     'render.c',
     'resources.c',
+    'save.c',
     'state.c',
     'ui.c',
     'video.c',
-    'MAP/map.c'
+    'MAP/map.c',
+    'third_party/cjson/cjson_impl.c'
 ) | ForEach-Object { Join-Path $repoRoot $_ }
 
 $appOutput = Join-Path $buildDirectory 'PipBoy3000.exe'
@@ -76,10 +79,13 @@ if ($LASTEXITCODE -ne 0) {
 $testSources = @(
     'tests/core_tests.c',
     'events.c',
+    'core.c',
     'input.c',
     'inventory.c',
+    'save.c',
     'state.c',
-    'MAP/map.c'
+    'MAP/map.c',
+    'third_party/cjson/cjson_impl.c'
 ) | ForEach-Object { Join-Path $repoRoot $_ }
 
 $testOutput = Join-Path $buildDirectory 'pipboy_core_tests.exe'
